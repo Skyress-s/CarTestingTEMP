@@ -19,6 +19,7 @@ ACarPawn::ACarPawn()
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SetRootComponent(SphereComp);
 	SphereComp->SetSimulatePhysics(true);
+	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	CarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car Mesh"));
 	CarMesh->SetupAttachment(GetRootComponent());
@@ -37,7 +38,7 @@ ACarPawn::ACarPawn()
 void ACarPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHit);
 }
 
 // Called every frame
@@ -115,6 +116,7 @@ float ACarPawn::CaltAsymForce()
 void ACarPawn::MoveXAxis(float Value)
 {
 	SphereComp->AddForce(GetActorForwardVector() * Value * 1000000.f);
+	//UE_LOG(LogTemp, Warning, TEXT("move!"));
 }
 
 void ACarPawn::MoveYAxis(float Value)
@@ -193,5 +195,10 @@ FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity,
 	//UE_LOG(LogTemp, Warning, TEXT("Angle - %f"), UnsignedAngle(Velocity, Target - StartLocation))
 	FVector VelocityTowards = (Target - StartLocation).GetSafeNormal() * Speed;
 	return VelocityTowards;
+}
+
+void ACarPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HITTTT!"))
 }
 

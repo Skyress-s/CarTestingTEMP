@@ -50,4 +50,6 @@ public:
 	bool IsGrounded();
 
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
+	           
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
