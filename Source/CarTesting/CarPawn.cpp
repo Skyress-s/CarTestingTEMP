@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h" 
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -24,6 +25,7 @@ ACarPawn::ACarPawn()
 	CarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car Mesh"));
 	CarMesh->SetupAttachment(GetRootComponent());
 	CarMesh->SetSimulatePhysics(false);
+	//SetRootComponent(CarMesh);
 	CarMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
@@ -38,7 +40,7 @@ ACarPawn::ACarPawn()
 void ACarPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHit);
+	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
 }
 
 // Called every frame
@@ -48,7 +50,8 @@ void ACarPawn::Tick(float DeltaTime)
 	
 	if (IsGrounded())
 	{
-		SphereComp->AddForce(CalcAsymVector() * 100000.f);
+		FVector AsymVector = CalcAsymVector();
+		SphereComp->AddForce(AsymVector* 30.f);
 
 
 		// hovering
@@ -77,6 +80,16 @@ void ACarPawn::Tick(float DeltaTime)
 			//CarMesh->AddForce(hit.Normal * Vel.Size() * 40.f * CarMesh->GetMass());
 		}
 
+		//orients the mesh
+		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
+			GetActorForwardVector());
+		CarMesh->SetWorldRotation( FMath::RInterpTo(CarMesh->GetComponentRotation(),
+			NewRot,
+			UGameplayStatics::GetWorldDeltaSeconds(this),
+			5.f
+		) );
+
+
 	}
 	
 }
@@ -99,13 +112,14 @@ FVector ACarPawn::CalcAsymVector()
 
 	if (abs(Angle) > 90.f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Did round down"));
 		Angle = 0.f;
 	}
 
 	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +
-		-GetActorRightVector() * Angle * 1.f, FColor::Cyan, false, 1.f);
+		-GetActorRightVector() * Angle * 5.f , FColor::Cyan, false, 1.f);
 
-	return -GetActorRightVector() * Angle;
+	return -GetActorRightVector() * Angle * SphereComp->GetPhysicsLinearVelocity().Size();
 }
 
 float ACarPawn::CaltAsymForce()
@@ -115,7 +129,7 @@ float ACarPawn::CaltAsymForce()
 
 void ACarPawn::MoveXAxis(float Value)
 {
-	SphereComp->AddForce(GetActorForwardVector() * Value * 1000000.f);
+	SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
 	//UE_LOG(LogTemp, Warning, TEXT("move!"));
 }
 
@@ -197,8 +211,12 @@ FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity,
 	return VelocityTowards;
 }
 
-void ACarPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HITTTT!"))
+	/*LocalUpVector = GetActorLocation() - Hit.Location;
+	LocalUpVector.Normalize();*/
+	LocalUpVector = Hit.Normal;
+	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
+	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
 }
 
