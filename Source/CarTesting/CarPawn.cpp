@@ -9,6 +9,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/ArrowComponent.h"
+#include "BoostComponent.h"
 
 
 // Sets default values
@@ -21,6 +23,7 @@ ACarPawn::ACarPawn()
 	SetRootComponent(SphereComp);
 	SphereComp->SetSimulatePhysics(true);
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SphereComp->BodyInstance.bLockRotation = true;
 
 	CarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car Mesh"));
 	CarMesh->SetupAttachment(GetRootComponent());
@@ -30,10 +33,18 @@ ACarPawn::ACarPawn()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->CameraLagSpeed = 10.f;
+	CameraBoom->bEnableCameraRotationLag = true;
+	CameraBoom->CameraRotationLagSpeed = 20.f;
 
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	MainCamera->SetupAttachment(CameraBoom);
 
+	ArrowRayCastStart = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow RayCastStart"));
+	ArrowRayCastStart->SetupAttachment(GetRootComponent());
+	
+	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +52,12 @@ void ACarPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
+	
+	TArray<UPrimitiveComponent*> PrimitiveComponents;
+	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
+		BoostComponent->PhysComp = PrimitiveComponents[0];
+	
 }
 
 // Called every frame
@@ -98,8 +115,13 @@ void ACarPawn::Tick(float DeltaTime)
 void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Axis bindings
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACarPawn::MoveXAxis);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACarPawn::MoveYAxis);
+
+	// Action binding
+	PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
 }
 
 FVector ACarPawn::CalcAsymVector()
@@ -129,7 +151,11 @@ float ACarPawn::CaltAsymForce()
 
 void ACarPawn::MoveXAxis(float Value)
 {
-	SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
+	//comparing squared size since its faster
+	if (IsUnderMaxSpeed())
+	{
+		SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
+	}
 	//UE_LOG(LogTemp, Warning, TEXT("move!"));
 }
 
@@ -184,8 +210,8 @@ bool ACarPawn::IsGrounded()
 	FHitResult hit{};
 	GetWorld()->LineTraceSingleByObjectType(
 		hit,
-		GetActorLocation(),
-		GetActorLocation() - GetActorUpVector() * 100.f,
+		ArrowRayCastStart->GetComponentLocation(),
+		ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * 30.f,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
@@ -209,6 +235,15 @@ FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity,
 	//UE_LOG(LogTemp, Warning, TEXT("Angle - %f"), UnsignedAngle(Velocity, Target - StartLocation))
 	FVector VelocityTowards = (Target - StartLocation).GetSafeNormal() * Speed;
 	return VelocityTowards;
+}
+
+bool ACarPawn::IsUnderMaxSpeed()
+{
+	if (MaxSpeed * MaxSpeed > SphereComp->GetPhysicsLinearVelocity().SizeSquared())
+	{
+		return true;
+	}
+	return false;
 }
 
 void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

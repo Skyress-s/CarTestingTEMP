@@ -36,22 +36,33 @@ public:
 		class USpringArmComponent* CameraBoom{ nullptr };
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UCameraComponent* MainCamera{ nullptr };
-
-	FVector CalcAsymVector();
-
-	float CaltAsymForce();
-
-	void MoveXAxis(float Value);
-	void MoveYAxis(float Value);
-
-	float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
-	float UnsignedAngle(FVector v1, FVector v2);
-
-	bool IsGrounded();
-
-	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+		class UArrowComponent* ArrowRayCastStart{ nullptr };
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+		class UBoostComponent* BoostComponent = nullptr;
+	
 	           
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	FVector LocalUpVector = FVector(1.f,1.f,1.f);
+
+private:
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+		float Acceleration = 70000.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+		float MaxSpeed = 7500.f;
+
+	FVector CalcAsymVector();
+	float CaltAsymForce();
+	void MoveXAxis(float Value);
+	void MoveYAxis(float Value);
+	float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
+	float UnsignedAngle(FVector v1, FVector v2);
+	bool IsGrounded();
+	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
+
+public:
+	bool IsUnderMaxSpeed();
+
+
 };
