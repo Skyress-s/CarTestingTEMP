@@ -39,7 +39,7 @@ void UBoostComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UBoostComponent::Boost()
 {
-	if (PhysComp != nullptr && CarPawn->IsUnderMaxSpeed())
+	if (PhysComp != nullptr && CarPawn->IsUnderMaxSpeed(true))
 	{
 		PhysComp->AddImpulse(GetOwner()->GetActorForwardVector() * 100000.f);
 		/*UE_LOG(LogTemp, Warning, )*/

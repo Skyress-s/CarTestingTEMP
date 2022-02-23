@@ -50,7 +50,7 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float Acceleration = 70000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-		float MaxSpeed = 7500.f;
+		float MaxSpeed = 3500.f;
 
 	FVector CalcAsymVector();
 	float CaltAsymForce();
@@ -62,7 +62,7 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 
 public:
-	bool IsUnderMaxSpeed();
+	bool IsUnderMaxSpeed(bool bBuffer);
 
 
 };

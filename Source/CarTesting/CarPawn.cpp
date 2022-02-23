@@ -18,7 +18,7 @@ ACarPawn::ACarPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SetRootComponent(SphereComp);
 	SphereComp->SetSimulatePhysics(true);
@@ -71,31 +71,23 @@ void ACarPawn::Tick(float DeltaTime)
 		SphereComp->AddForce(AsymVector* 30.f);
 
 
-		// hovering
+		//// hovering
 
-		FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+		//FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 
-		FHitResult hit{};
-		GetWorld()->LineTraceSingleByObjectType(
-			hit,
-			GetActorLocation(),
-			GetActorLocation() - GetActorUpVector() * 100.f,
-			FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
-			TraceParams
-		);
+		//FHitResult hit{};
+		//GetWorld()->LineTraceSingleByObjectType(
+		//	hit,
+		//	GetActorLocation(),
+		//	GetActorLocation() - GetActorUpVector() * 100.f,
+		//	FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+		//	TraceParams
+		//);
 
-		if (hit.IsValidBlockingHit())
-		{
-			/*float Force = (hit.Location - GetActorLocation()).Size();
-			CarMesh->AddForce(hit.Normal * Force * 30.f * CarMesh->GetMass());
+		//rotates sphere
+		FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, SphereComp->GetForwardVector());
 
-			FVector Vel = VelocityTowardsTarget(GetActorLocation(), CarMesh->GetPhysicsLinearVelocity(),
-				hit.Location);
-			DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + Vel * 10.f, FColor::Red, false,
-				1.f);*/
-			//UE_LOG(LogTemp, Warning, TEXT("Speed - %f"), Vel.Size())
-			//CarMesh->AddForce(hit.Normal * Vel.Size() * 40.f * CarMesh->GetMass());
-		}
+		SphereComp->SetWorldRotation(NewSphereRot);
 
 		//orients the mesh
 		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
@@ -152,7 +144,7 @@ float ACarPawn::CaltAsymForce()
 void ACarPawn::MoveXAxis(float Value)
 {
 	//comparing squared size since its faster
-	if (IsUnderMaxSpeed())
+	if (IsUnderMaxSpeed(false) || Value < 0.f)
 	{
 		SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
 	}
@@ -237,10 +229,17 @@ FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity,
 	return VelocityTowards;
 }
 
-bool ACarPawn::IsUnderMaxSpeed()
+bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)
 {
-	if (MaxSpeed * MaxSpeed > SphereComp->GetPhysicsLinearVelocity().SizeSquared())
+	float BufferMaxSpeed = MaxSpeed * MaxSpeed;
+	float buffer = 0.f;
+	buffer = BufferMaxSpeed * 0.05f * bBuffer;
+
+
+	if (BufferMaxSpeed + buffer > SphereComp->GetPhysicsLinearVelocity().SizeSquared())
 	{
+		
+		//UE_LOG(LogTemp, Warning, TEXT(" awd %f Is under max speed"), GetWorld()->RealTimeSeconds)
 		return true;
 	}
 	return false;
