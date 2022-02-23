@@ -23,7 +23,7 @@ ACarPawn::ACarPawn()
 	SetRootComponent(SphereComp);
 	SphereComp->SetSimulatePhysics(true);
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	SphereComp->BodyInstance.bLockRotation = true;
+	//SphereComp->BodyInstance.bLockRotation = true;
 
 	CarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car Mesh"));
 	CarMesh->SetupAttachment(GetRootComponent());
@@ -155,6 +155,7 @@ void ACarPawn::MoveYAxis(float Value)
 {
 	//CarMesh->AddTorque(GetActorUpVector() * 1000000.f * Value);
 	SphereComp->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
+	CarMesh->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
 }
 
 /// <summary>
