@@ -101,7 +101,7 @@ void AGravitySplineActor::VisualiseUpVectors(int Segments, USplineComponent* Spl
 		}
 
 		FVector Pos = SplineComp->GetLocationAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
-		UE_LOG(LogTemp, Warning, TEXT("did create debug %f"), dist)
+		//UE_LOG(LogTemp, Warning, TEXT("did create debug %f"), dist)
 		DrawDebugLine(GetWorld(), Pos, Pos + Up * 200.f, FColor::Emerald, false, 0.4f, (uint8)0U, 40.f);
 	}
 }

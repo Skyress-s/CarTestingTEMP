@@ -53,7 +53,9 @@ public:
 	UFUNCTION()
 	void OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	UFUNCTION()
+		void OnEndOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+			int32 OtherBodyIndex);
 
 
 private:
@@ -61,12 +63,17 @@ private:
 		float Acceleration = 70000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxSpeed = 3500.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+		float GravityMod = 1.f;
+	const float BaseGravMod = 1.f;
+
 
 	FVector CalcAsymVector();
 	float CaltAsymForce();
 	void MoveXAxis(float Value);
 	void MoveYAxis(float Value);
-	float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
+	UFUNCTION(BlueprintCallable)
+	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
 	bool IsGrounded();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);

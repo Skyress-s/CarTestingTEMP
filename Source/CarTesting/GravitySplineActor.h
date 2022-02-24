@@ -48,7 +48,7 @@ public:
 
 
 	// spline up vec
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		FVector GetAdjustedUpVectorFromLocation(FVector Loc);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

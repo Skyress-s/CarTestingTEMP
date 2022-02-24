@@ -13,6 +13,7 @@
 #include "BoostComponent.h"
 #include "Components/SplineComponent.h"
 #include "GravitySplineActor.h"
+#include "HighGravityZone.h"
 
 
 // Sets default values
@@ -56,6 +57,7 @@ void ACarPawn::BeginPlay()
 	// Hit and phyus
 	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
+	SphereComp->OnComponentEndOverlap.AddDynamic(this, &ACarPawn::OnEndOverLap);
 
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
@@ -103,8 +105,12 @@ void ACarPawn::Tick(float DeltaTime)
 
 	}
 	//rotates sphere
-	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, SphereComp->GetForwardVector());
+	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
 	SphereComp->SetWorldRotation(NewSphereRot);
+
+	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
+	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
+
 
 	//gravity
 	if (GravitySplineActive != nullptr)
@@ -113,7 +119,7 @@ void ACarPawn::Tick(float DeltaTime)
 			SphereComp->GetComponentLocation());
 		GravityUpVector.Normalize();
 
-		SphereComp->AddForce(-GravityUpVector * 98.1f * 40.f, FName(), true);
+		SphereComp->AddForce(-GravityUpVector * 98.1f * 40.f * GravityMod, FName(), true);
 	}
 	
 }
@@ -169,8 +175,20 @@ void ACarPawn::MoveXAxis(float Value)
 void ACarPawn::MoveYAxis(float Value)
 {
 	//CarMesh->AddTorque(GetActorUpVector() * 1000000.f * Value);
-	SphereComp->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
+	//SphereComp->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
 	CarMesh->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), Value)
+
+	FVector Forwardd = SphereComp->GetForwardVector();
+	FVector Upp = SphereComp->GetUpVector();
+
+	Forwardd =Forwardd.RotateAngleAxis(Value * 1.f, Upp);
+
+	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(Forwardd, Upp);
+	SphereComp->SetWorldRotation(NewRot);
+
+
+
 }
 
 /// <summary>
@@ -275,6 +293,21 @@ void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	if (OtherActor->IsA<AGravitySplineActor>())
 	{
 		GravitySplineActive = Cast<AGravitySplineActor>(OtherActor);
+	}
+	else if (OtherActor->IsA<AHighGravityZone>())
+	{
+		GravityMod = Cast<AHighGravityZone>(OtherActor)->GetGravityModifier();
+		UE_LOG(LogTemp, Warning, TEXT("HIGH GRAV BABY"))
+	}
+}
+
+void ACarPawn::OnEndOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+
+	if (OtherActor->IsA<AHighGravityZone>())
+	{
+		GravityMod = BaseGravMod;
 	}
 }
 
