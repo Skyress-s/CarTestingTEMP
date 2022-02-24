@@ -44,14 +44,15 @@ public:
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
 		class AGravitySplineActor* GravitySplineActive = nullptr;
+		 
 
 	           
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	FVector LocalUpVector = FVector(1.f,1.f,1.f);
-	//UFUNCTION()
-	/*void OnBeginOverLap(UPrimitiveComponent* OnComponentBeginOverlap, UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
+	UFUNCTION()
+	void OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 
 

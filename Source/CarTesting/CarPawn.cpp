@@ -55,7 +55,7 @@ void ACarPawn::BeginPlay()
 	Super::BeginPlay();
 	// Hit and phyus
 	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
-	//SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
 
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
@@ -89,10 +89,7 @@ void ACarPawn::Tick(float DeltaTime)
 		//	TraceParams
 		//);
 
-		//rotates sphere
-		FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, SphereComp->GetForwardVector());
-
-		SphereComp->SetWorldRotation(NewSphereRot);
+		
 
 		//orients the mesh
 		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
@@ -105,6 +102,9 @@ void ACarPawn::Tick(float DeltaTime)
 
 
 	}
+	//rotates sphere
+	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, SphereComp->GetForwardVector());
+	SphereComp->SetWorldRotation(NewSphereRot);
 
 	//gravity
 	if (GravitySplineActive != nullptr)
@@ -270,8 +270,13 @@ void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
 }
 
-//void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OnComponentBeginOverlap, UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//
-//}
+void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA<AGravitySplineActor>())
+	{
+		GravitySplineActive = Cast<AGravitySplineActor>(OtherActor);
+	}
+}
+
+
 

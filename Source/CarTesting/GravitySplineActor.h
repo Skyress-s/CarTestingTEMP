@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	AGravitySplineActor();
 
+	/*UPROPERTY(EditAnywhere, Category = BlueprintOptions)
+		uint32 bRunConstructionScriptOnDrag : 1;*/
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,7 +33,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class UArrowComponent* ArrowComp = nullptr;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USplineComponent* SplineComp = nullptr;
 	
 
@@ -40,7 +43,7 @@ public:
 
 	UFUNCTION()
 		int32 GetClosestSplinePoint(class USplineComponent* splineEval, FVector Location);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void VisualiseUpVectors(int Segments, USplineComponent* SplineToUse);
 
 

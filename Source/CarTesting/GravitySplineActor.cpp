@@ -86,10 +86,23 @@ void AGravitySplineActor::VisualiseUpVectors(int Segments, USplineComponent* Spl
 	for (int32 i = 0; i < 200; i++)
 	{
 		float dist = Length * (i / (float)Segments);
-		FVector Up = SplineComp->GetUpVectorAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
+
+		FVector Up = FVector(0.f);
+		switch (EUpVectorAxis)
+		{
+		case EGravitySplineAxis::Axis_Y:
+			Up = SplineComp->GetRightVectorAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
+			break;
+		case EGravitySplineAxis::Axis_Z:
+			Up = SplineComp->GetUpVectorAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
+			break;
+		default:
+			break;
+		}
+
 		FVector Pos = SplineComp->GetLocationAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
 		UE_LOG(LogTemp, Warning, TEXT("did create debug %f"), dist)
-		DrawDebugLine(GetWorld(), Pos, Pos + Up * 200.f, FColor::Emerald, false);
+		DrawDebugLine(GetWorld(), Pos, Pos + Up * 200.f, FColor::Emerald, false, 0.4f, (uint8)0U, 40.f);
 	}
 }
 
@@ -99,10 +112,10 @@ FVector AGravitySplineActor::GetAdjustedUpVectorFromLocation(FVector Loc)
 	switch (EUpVectorAxis)
 	{
 	case EGravitySplineAxis::Axis_Y:
-		ReturnUpVector = SplineComp->FindUpVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
+		ReturnUpVector = SplineComp->FindRightVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
 		break;
 	case EGravitySplineAxis::Axis_Z:
-		ReturnUpVector = SplineComp->FindRightVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
+		ReturnUpVector = SplineComp->FindUpVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
 		break;
 	default:
 		break;
