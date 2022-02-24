@@ -11,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ArrowComponent.h"
 #include "BoostComponent.h"
+#include "Components/SplineComponent.h"
+#include "GravitySplineActor.h"
 
 
 // Sets default values
@@ -51,8 +53,11 @@ ACarPawn::ACarPawn()
 void ACarPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	// Hit and phyus
 	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
-	
+	//SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
+
+
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
 	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
 	UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
@@ -99,6 +104,16 @@ void ACarPawn::Tick(float DeltaTime)
 		) );
 
 
+	}
+
+	//gravity
+	if (GravitySplineActive != nullptr)
+	{
+		FVector GravityUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(
+			SphereComp->GetComponentLocation());
+		GravityUpVector.Normalize();
+
+		SphereComp->AddForce(-GravityUpVector * 98.1f * 40.f, FName(), true);
 	}
 	
 }
@@ -254,4 +269,9 @@ void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
 	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
 }
+
+//void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OnComponentBeginOverlap, UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//
+//}
 

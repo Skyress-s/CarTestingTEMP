@@ -7,6 +7,7 @@
 #include "CarPawn.h"
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/BoxComponent.h" 
 
 // Sets default values
 AGravitySplineActor::AGravitySplineActor()
@@ -19,7 +20,12 @@ AGravitySplineActor::AGravitySplineActor()
 	SplineComp = CreateDefaultSubobject<USplineComponent>(TEXT("Gravity Spline Component"));
 	SplineComp->SetupAttachment(ArrowComp);
 
-	
+	//setting up UBoxComponents
+	BoxSplineOne = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Spline One"));
+	BoxSplineOne->SetupAttachment(GetRootComponent());
+
+	BoxSplineTwo = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Spline Two"));
+	BoxSplineTwo->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -35,18 +41,9 @@ void AGravitySplineActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (PlayerActor != nullptr)
-	{
-		
-		int32 index = GetClosestSplinePoint(SplineComp, PlayerActor->GetActorLocation());
-		ACarPawn* PlayerCar = Cast<ACarPawn>(PlayerActor);
-		if (PlayerCar != nullptr)
-		{
-			PlayerCar->SphereComp->AddForce(SplineComp->GetUpVectorAtSplinePoint(index, ESplineCoordinateSpace::World) * -999999.f);
+	//VisualiseUpVectors(200, SplineComp);
 
-		}
-		//UE_LOG(LogTemp, Warning, TEXT("PUSH!"))
-	}
+	
 
 }
 
@@ -81,5 +78,36 @@ int32 AGravitySplineActor::GetClosestSplinePoint(USplineComponent* splineEval, F
 
 
 	return index;
+}
+
+void AGravitySplineActor::VisualiseUpVectors(int Segments, USplineComponent* SplineToUse)
+{
+	float Length = SplineComp->GetSplineLength();
+	for (int32 i = 0; i < 200; i++)
+	{
+		float dist = Length * (i / (float)Segments);
+		FVector Up = SplineComp->GetUpVectorAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
+		FVector Pos = SplineComp->GetLocationAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
+		UE_LOG(LogTemp, Warning, TEXT("did create debug %f"), dist)
+		DrawDebugLine(GetWorld(), Pos, Pos + Up * 200.f, FColor::Emerald, false);
+	}
+}
+
+FVector AGravitySplineActor::GetAdjustedUpVectorFromLocation(FVector Loc)
+{
+	FVector ReturnUpVector;
+	switch (EUpVectorAxis)
+	{
+	case EGravitySplineAxis::Axis_Y:
+		ReturnUpVector = SplineComp->FindUpVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
+		break;
+	case EGravitySplineAxis::Axis_Z:
+		ReturnUpVector = SplineComp->FindRightVectorClosestToWorldLocation(Loc, ESplineCoordinateSpace::World);
+		break;
+	default:
+		break;
+	}
+
+	return ReturnUpVector;
 }
 

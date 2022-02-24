@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GravitySplineAxis.h"
 #include "GravitySplineActor.generated.h"
 
 UCLASS()
@@ -39,6 +40,22 @@ public:
 
 	UFUNCTION()
 		int32 GetClosestSplinePoint(class USplineComponent* splineEval, FVector Location);
-	
+	UFUNCTION()
+		void VisualiseUpVectors(int Segments, USplineComponent* SplineToUse);
+
+
+	// spline up vec
+	UFUNCTION()
+		FVector GetAdjustedUpVectorFromLocation(FVector Loc);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TEnumAsByte<EGravitySplineAxis> EUpVectorAxis;
+
+
+
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* BoxSplineOne = nullptr;
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* BoxSplineTwo = nullptr;
 
 };
