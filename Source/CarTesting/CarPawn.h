@@ -72,11 +72,14 @@ private:
 	float CaltAsymForce();
 	void MoveXAxis(float Value);
 	void MoveYAxis(float Value);
+	void LookXAxis(float Value);
+	void LookYAxis(float Value);
 	UFUNCTION(BlueprintCallable)
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
 	bool IsGrounded();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
+	FHitResult ShootRayFromCenterOfScreen();
 
 public:
 	bool IsUnderMaxSpeed(bool bBuffer);

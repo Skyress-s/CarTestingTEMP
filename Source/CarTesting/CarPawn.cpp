@@ -121,6 +121,10 @@ void ACarPawn::Tick(float DeltaTime)
 
 		SphereComp->AddForce(-GravityUpVector * 98.1f * 40.f * GravityMod, FName(), true);
 	}
+
+	//shoot ray
+	ShootRayFromCenterOfScreen();
+
 	
 }
 
@@ -132,9 +136,14 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Axis bindings
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACarPawn::MoveXAxis);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACarPawn::MoveYAxis);
-
+	PlayerInputComponent->BindAxis("LookRight", this, &ACarPawn::LookXAxis);
+	PlayerInputComponent->BindAxis("LookUp", this, &ACarPawn::LookYAxis);
+	
 	// Action binding
-	PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
+	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
+	//action.bConsumeInput = false;
+
+	
 }
 
 FVector ACarPawn::CalcAsymVector()
@@ -189,6 +198,17 @@ void ACarPawn::MoveYAxis(float Value)
 
 
 
+}
+
+void ACarPawn::LookXAxis(float Value)
+{
+	CameraBoom->AddRelativeRotation(FRotator(0.f, Value, 0.f));
+	//UE_LOG(LogTemp, Warning, TEXT("Looking %f"), Value)
+}
+
+void ACarPawn::LookYAxis(float Value)
+{
+	CameraBoom->AddRelativeRotation(FRotator( Value, 0.f,  0.f));
 }
 
 /// <summary>
@@ -261,6 +281,30 @@ FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity,
 	//UE_LOG(LogTemp, Warning, TEXT("Angle - %f"), UnsignedAngle(Velocity, Target - StartLocation))
 	FVector VelocityTowards = (Target - StartLocation).GetSafeNormal() * Speed;
 	return VelocityTowards;
+}
+
+FHitResult ACarPawn::ShootRayFromCenterOfScreen()
+{
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+	
+	FVector Start = MainCamera->GetComponentLocation()/* + LocalUpVector * 250.f*/;
+	FVector End = MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * 1000000.f;
+	
+
+	FHitResult hit{};
+	GetWorld()->LineTraceSingleByObjectType(
+		hit,
+		Start,
+		End,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+		TraceParams
+	);
+
+	// draw debug line
+	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), hit.Location, FColor::Emerald, false, -1.f, (uint8)0U, 30.f);
+	if(hit.GetActor())
+		UE_LOG(LogTemp, Warning, TEXT("Hitting: %s"), *hit.GetActor()->GetName());
+	return FHitResult();
 }
 
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)

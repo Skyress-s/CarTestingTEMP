@@ -7,6 +7,17 @@
 #include "GravitySplineAxis.h"
 #include "GravitySplineActor.generated.h"
 
+//UENUM()
+//enum class EGravitySplineAxis : uint8 {
+//	Axis_X,
+//	Axis_Y,
+//	Axis_Z,
+//	Axis_W
+//};
+
+// Hjemmelekse å finne ut syntaks :))))
+//#define true = (FMath::RandRange(0,100) < 99);
+ 
 UCLASS()
 class CARTESTING_API AGravitySplineActor : public AActor
 {
@@ -15,7 +26,6 @@ class CARTESTING_API AGravitySplineActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGravitySplineActor();
-
 	/*UPROPERTY(EditAnywhere, Category = BlueprintOptions)
 		uint32 bRunConstructionScriptOnDrag : 1;*/
 
@@ -52,7 +62,7 @@ public:
 		FVector GetAdjustedUpVectorFromLocation(FVector Loc);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		TEnumAsByte<EGravitySplineAxis> EUpVectorAxis;
+		EGravitySplineAxis EUpVectorAxis;
 
 
 

@@ -96,6 +96,7 @@ void AGravitySplineActor::VisualiseUpVectors(int Segments, USplineComponent* Spl
 		case EGravitySplineAxis::Axis_Z:
 			Up = SplineComp->GetUpVectorAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
 			break;
+			
 		default:
 			break;
 		}
@@ -120,6 +121,8 @@ FVector AGravitySplineActor::GetAdjustedUpVectorFromLocation(FVector Loc)
 	default:
 		break;
 	}
+	
+	
 
 	return ReturnUpVector;
 }
