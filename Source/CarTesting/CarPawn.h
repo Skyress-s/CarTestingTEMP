@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/Enums.h"
 #include "GameFramework/Pawn.h"
 #include "CarPawn.generated.h"
 
@@ -40,6 +41,8 @@ public:
 		class UArrowComponent* ArrowRayCastStart{ nullptr };
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UBoostComponent* BoostComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+		class UGrappleComponent* GrappleComponent = nullptr;
 	
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
@@ -67,8 +70,21 @@ private:
 		float GravityMod = 1.f;
 	const float BaseGravMod = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-	float MaxAngle = 45.f;
+	float MaxAngle = 75.f;
 
+	//state machince
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|State")
+	EVehicleState CurrentVehicleState = EVehicleState::AirBorne;
+	// UFUNCTION()
+	// void StateDriving();
+	// UFUNCTION()
+	// void StateGrappling();
+	// UFUNCTION()
+	// void StateAirBorne();
+	// UFUNCTION()
+	// void StateDashing();
+
+	
 
 	FVector CalcAsymVector();
 	float CaltAsymForce();

@@ -11,9 +11,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ArrowComponent.h"
 #include "BoostComponent.h"
-#include "Components/SplineComponent.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
+#include "Grappling/GrappleComponent.h"
 
 
 // Sets default values
@@ -48,6 +48,10 @@ ACarPawn::ACarPawn()
 	ArrowRayCastStart->SetupAttachment(GetRootComponent());
 	
 	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
+	
+	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("GrappleComponent"));
+	
+	
 }
 
 // Called when the game starts or when spawned
@@ -73,7 +77,7 @@ void ACarPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//TODO if the angle is apropiate
-	if (IsGrounded() && EvaluateGroundGravityAngle())
+	if (IsGrounded())
 	{
 		
 		FVector AsymVector = CalcAsymVector();
@@ -94,9 +98,9 @@ void ACarPawn::Tick(float DeltaTime)
 	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
 	SphereComp->SetWorldRotation(NewSphereRot);
 
-	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
-	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
-
+	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
+	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
+	
 
 	//gravity
 	if (GravitySplineActive != nullptr)
@@ -107,11 +111,6 @@ void ACarPawn::Tick(float DeltaTime)
 
 		SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
 	}
-
-	//shoot ray
-	ShootRayFromCenterOfScreen();
-
-	
 }
 
 // Called to bind functionality to input
@@ -146,8 +145,8 @@ FVector ACarPawn::CalcAsymVector()
 		Angle = 0.f;
 	}
 
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +
-		-GetActorRightVector() * Angle * 5.f , FColor::Cyan, false, 1.f);
+	// DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +
+	// 	-GetActorRightVector() * Angle * 5.f , FColor::Cyan, false, 1.f);
 
 	return -GetActorRightVector() * Angle * SphereComp->GetPhysicsLinearVelocity().Size();
 }
@@ -171,7 +170,7 @@ void ACarPawn::MoveYAxis(float Value)
 {
 	//CarMesh->AddTorque(GetActorUpVector() * 1000000.f * Value);
 	//SphereComp->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
-	CarMesh->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
+	CarMesh->AddRelativeRotation(FRotator(0.f, 1.f * Value * UGameplayStatics::GetWorldDeltaSeconds(this) * 100.f, 0.f));
 	//UE_LOG(LogTemp, Warning, TEXT("%f"), Value)
 
 	FVector Forwardd = SphereComp->GetForwardVector();
@@ -248,8 +247,9 @@ bool ACarPawn::IsGrounded()
 		TraceParams
 	);
 
-	if (hit.IsValidBlockingHit() && UnsignedAngle(LocalUpVector, hit.Normal) < MaxAngle) {
+	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		
 		return true;
 	}
 	else
@@ -287,9 +287,9 @@ FHitResult ACarPawn::ShootRayFromCenterOfScreen()
 	);
 
 	// draw debug line
-	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), hit.Location, FColor::Emerald, false, -1.f, (uint8)0U, 30.f);
-	if(hit.GetActor())
-		UE_LOG(LogTemp, Warning, TEXT("Hitting: %s"), *hit.GetActor()->GetName());
+	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), hit.Location, FColor::Emerald, false, -1.f, (uint8)0U, 30.f);
+	//if(hit.GetActor())
+		//UE_LOG(LogTemp, Warning, TEXT("Hitting: %s"), *hit.GetActor()->GetName());
 	return FHitResult();
 }
 
@@ -314,7 +314,7 @@ void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	/*LocalUpVector = GetActorLocation() - Hit.Location;
 	LocalUpVector.Normalize();*/
 	LocalUpVector = Hit.Normal;
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
+	//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
 	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
 }
 
