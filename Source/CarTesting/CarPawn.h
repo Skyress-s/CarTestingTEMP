@@ -66,6 +66,8 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float GravityMod = 1.f;
 	const float BaseGravMod = 1.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+	float MaxAngle = 45.f;
 
 
 	FVector CalcAsymVector();
@@ -80,6 +82,7 @@ private:
 	bool IsGrounded();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
+	
 
 public:
 	bool IsUnderMaxSpeed(bool bBuffer);

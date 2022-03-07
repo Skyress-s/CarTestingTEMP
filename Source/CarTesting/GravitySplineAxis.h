@@ -10,3 +10,5 @@ enum class EGravitySplineAxis : uint8{
 	Axis_Z			UMETA(DisplayName = "AxisZ"),
 	Axis_W			UMETA(DisplayName = "AxisW")
 };
+
+

@@ -71,28 +71,14 @@ void ACarPawn::BeginPlay()
 void ACarPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	if (IsGrounded())
+
+	//TODO if the angle is apropiate
+	if (IsGrounded() && EvaluateGroundGravityAngle())
 	{
+		
 		FVector AsymVector = CalcAsymVector();
 		SphereComp->AddForce(AsymVector* 30.f);
-
-
-		//// hovering
-
-		//FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
-
-		//FHitResult hit{};
-		//GetWorld()->LineTraceSingleByObjectType(
-		//	hit,
-		//	GetActorLocation(),
-		//	GetActorLocation() - GetActorUpVector() * 100.f,
-		//	FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
-		//	TraceParams
-		//);
-
 		
-
 		//orients the mesh
 		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
 			GetActorForwardVector());
@@ -119,7 +105,7 @@ void ACarPawn::Tick(float DeltaTime)
 			SphereComp->GetComponentLocation());
 		GravityUpVector.Normalize();
 
-		SphereComp->AddForce(-GravityUpVector * 98.1f * 40.f * GravityMod, FName(), true);
+		SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
 	}
 
 	//shoot ray
@@ -262,7 +248,7 @@ bool ACarPawn::IsGrounded()
 		TraceParams
 	);
 
-	if (hit.IsValidBlockingHit()) {
+	if (hit.IsValidBlockingHit() && UnsignedAngle(LocalUpVector, hit.Normal) < MaxAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
 		return true;
 	}
