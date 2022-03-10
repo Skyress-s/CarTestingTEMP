@@ -13,7 +13,9 @@
 #include "BoostComponent.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
+#include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Grappling/GrappleComponent.h"
+#include "Grappling/GrappleTarget.h"
 
 
 // Sets default values
@@ -71,37 +73,15 @@ void ACarPawn::BeginPlay()
 	
 }
 
-// Called every frame
-void ACarPawn::Tick(float DeltaTime)
+void ACarPawn::RotateSphereCompToLocalUpVector()
 {
-	Super::Tick(DeltaTime);
-
-	//TODO if the angle is apropiate
-	if (IsGrounded())
-	{
-		
-		FVector AsymVector = CalcAsymVector();
-		SphereComp->AddForce(AsymVector* 30.f);
-		
-		//orients the mesh
-		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
-			GetActorForwardVector());
-		CarMesh->SetWorldRotation( FMath::RInterpTo(CarMesh->GetComponentRotation(),
-			NewRot,
-			UGameplayStatics::GetWorldDeltaSeconds(this),
-			5.f
-		) );
-
-
-	}
 	//rotates sphere
 	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
 	SphereComp->SetWorldRotation(NewSphereRot);
+}
 
-	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
-	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
-	
-
+void ACarPawn::ApplyGravity()
+{
 	//gravity
 	if (GravitySplineActive != nullptr)
 	{
@@ -111,6 +91,57 @@ void ACarPawn::Tick(float DeltaTime)
 
 		SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
 	}
+}
+
+void ACarPawn::TiltCarMesh(FVector AsymVector)
+{
+	//orients the mesh
+	FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
+	                                                    GetActorForwardVector());
+	CarMesh->SetWorldRotation( FMath::RInterpTo(CarMesh->GetComponentRotation(),
+	                                            NewRot,
+	                                            UGameplayStatics::GetWorldDeltaSeconds(this),
+	                                            5.f
+	) );
+}
+
+void ACarPawn::HandleAsymFriction(FVector& AsymVector)
+{
+	AsymVector = CalcAsymVector();
+	SphereComp->AddForce(AsymVector* 30.f);
+}
+
+// Called every frame
+void ACarPawn::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+	// state machine
+	switch (CurrentVehicleState)
+	{
+	case EVehicleState::Driving:
+		StateDriving();
+		break;
+	case EVehicleState::AirBorne:
+		StateAirBorne();
+		break;
+	case EVehicleState::Dashing:
+		StateDashing();
+		break;
+	case EVehicleState::Grappling:
+		StateGrappling();
+		break;
+		
+	}
+
+	//sets bEnterstate to false so it wont run until we enter a new state
+	bEnterState = false;
+	
+	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
+	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
+	
+
 }
 
 // Called to bind functionality to input
@@ -127,8 +158,102 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Action binding
 	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
 	//action.bConsumeInput = false;
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::FireGrapplingHook);
 
 	
+}
+
+void ACarPawn::EnterState(EVehicleState NewState)
+{
+	bEnterState = true;
+	CurrentVehicleState = NewState;
+}
+
+void ACarPawn::StateDriving()
+{
+	ApplyGravity();
+	
+	if (IsGrounded())
+	{
+		
+		if (IsGrounded())
+		{
+			FVector AsymVector;
+			HandleAsymFriction(AsymVector);
+			TiltCarMesh(AsymVector);
+		
+			// rotates sphere comp
+			RotateSphereCompToLocalUpVector();
+		}
+	
+	}
+	else
+	{
+		EnterState(EVehicleState::AirBorne);
+	}
+}
+
+void ACarPawn::StateGrappling()
+{
+	if (bEnterState)
+	{
+		if (GrappleComponent->GrappleTargetsLastFrame.Num() > 0)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("%s"), *GrappleComponent->GrappleTargetsLastFrame[0]->GetOwner()->GetName())
+			if (GrappleComponent->GrappleTargetsLastFrame[0] != nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%d"), GrappleComponent->GrappleTargetsLastFrame.Num())
+				GrappleComponent->SetTarget(GrappleComponent->GrappleTargetsLastFrame[0]);
+				GrappleComponent->SetGrappleSpeed(SphereComp->GetPhysicsLinearVelocity().Size());
+				GrappleComponent->SetDirectionAtStart((GrappleComponent->GetTarget()->GetActorLocation() - GetActorLocation()).GetSafeNormal());
+				SphereComp->SetSimulatePhysics(false);
+			}
+			else
+			{
+				EnterState(EVehicleState::AirBorne);
+			}
+			
+		}
+		else
+		{
+			EnterState(EVehicleState::AirBorne);
+		}
+	}
+	
+	
+	GrappleComponent->MoveTowardsTarget();
+
+	if (GrappleComponent->DistanceToTargetSqr() < 50.f)
+	{
+		SphereComp->SetSimulatePhysics(true);
+		SphereComp->SetPhysicsLinearVelocity(GrappleComponent->GetGrappleSpeed() * GrappleComponent->GetDirectionAtStart());
+		EnterState(EVehicleState::AirBorne);
+
+		//rotates the sphere mesh to appropiate
+		FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromXZ(GrappleComponent->GetDirectionAtStart(), LocalUpVector);
+		SphereComp->SetWorldRotation(NewSphereRot);
+		SphereComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
+	}
+	
+}
+
+void ACarPawn::StateAirBorne()
+{
+	ApplyGravity();
+	if (IsGrounded())
+	{
+		EnterState(EVehicleState::Driving);
+	}
+	
+}
+
+void ACarPawn::StateDashing()
+{
+}
+
+void ACarPawn::FireGrapplingHook()
+{
+	EnterState(EVehicleState::Grappling);
 }
 
 FVector ACarPawn::CalcAsymVector()

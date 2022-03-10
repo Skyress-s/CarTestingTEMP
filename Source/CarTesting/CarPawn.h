@@ -20,6 +20,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void RotateSphereCompToLocalUpVector();
+	void ApplyGravity();
+	void TiltCarMesh(FVector AsymVector);
+	void HandleAsymFriction(FVector& AsymVector);
 
 public:	
 	// Called every frame
@@ -73,17 +77,31 @@ private:
 	float MaxAngle = 75.f;
 
 	//state machince
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|State")
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")
 	EVehicleState CurrentVehicleState = EVehicleState::AirBorne;
-	// UFUNCTION()
-	// void StateDriving();
-	// UFUNCTION()
-	// void StateGrappling();
-	// UFUNCTION()
-	// void StateAirBorne();
-	// UFUNCTION()
-	// void StateDashing();
 
+	bool bEnterState = false;
+	UFUNCTION()
+	void EnterState(EVehicleState NewState);
+
+	
+	UFUNCTION()
+	void StateDriving();
+	
+	UFUNCTION()
+	void StateGrappling();
+	// UPROPERTY()
+	// FVector VelocityAtStartOfGrapple = FVector::ZeroVector;
+	
+	UFUNCTION()
+	void StateAirBorne();
+	
+	UFUNCTION()
+	void StateDashing();
+
+
+	UFUNCTION()
+	void FireGrapplingHook();
 	
 
 	FVector CalcAsymVector();

@@ -31,8 +31,31 @@ private:
 	float SphereOverlapRadius = 400.f;
 	UPROPERTY()
 	class ACarPawn* CarPawn = nullptr;
+public:
 	UPROPERTY()
 	TArray<class AGrappleTarget*> GrappleTargetsLastFrame;
+private:
+	
+	UPROPERTY()
+	AActor* Target = nullptr;
+	UPROPERTY()
+	float GrappleSpeed = 50.f;
+	UPROPERTY()
+	FVector DirectionAtStart = FVector::ZeroVector;
+public:
+	void SetTarget(AActor* NewTarget);
+	AActor* GetTarget() const;
+	
+	void SetGrappleSpeed(float NewSpeed) { NewSpeed > 529.f ? GrappleSpeed = NewSpeed : GrappleSpeed = 529.f; }
+	float GetGrappleSpeed(){return GrappleSpeed; }
+
+	void SetDirectionAtStart(FVector NewDirection) {DirectionAtStart = NewDirection; }
+	FVector GetDirectionAtStart(){ return DirectionAtStart; }
+	
+	void MoveTowardsTarget();
+	float DistanceToTargetSqr();
+	
+	
 
 public:
 		
