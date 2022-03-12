@@ -172,6 +172,7 @@ void ACarPawn::EnterState(EVehicleState NewState)
 void ACarPawn::StateDriving()
 {
 	ApplyGravity();
+	SetUpVectorAsSplineUpAxis();
 	
 	if (IsGrounded())
 	{
@@ -223,7 +224,7 @@ void ACarPawn::StateGrappling()
 	
 	GrappleComponent->MoveTowardsTarget();
 
-	if (GrappleComponent->DistanceToTargetSqr() < 50.f)
+	if (GrappleComponent->DistanceToTargetSqr() < FinishGrappleDistance * FinishGrappleDistance)
 	{
 		SphereComp->SetSimulatePhysics(true);
 		SphereComp->SetPhysicsLinearVelocity(GrappleComponent->GetGrappleSpeed() * GrappleComponent->GetDirectionAtStart());
@@ -418,6 +419,12 @@ FHitResult ACarPawn::ShootRayFromCenterOfScreen()
 	return FHitResult();
 }
 
+void ACarPawn::SetUpVectorAsSplineUpAxis()
+{
+	LocalUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation());
+	
+}
+
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)
 {
 	float BufferMaxSpeed = MaxSpeed * MaxSpeed;
@@ -438,7 +445,7 @@ void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 {
 	/*LocalUpVector = GetActorLocation() - Hit.Location;
 	LocalUpVector.Normalize();*/
-	LocalUpVector = Hit.Normal;
+	//LocalUpVector = Hit.Normal;
 	//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
 	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
 }

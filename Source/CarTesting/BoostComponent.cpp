@@ -35,14 +35,31 @@ void UBoostComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		PhysComp->AddForce(GetOwner()->GetActorUpVector() * 7000000.f);
 	}*/
+	if (bBoosting)
+	{
+		float Force = BoostCurve->GetFloatValue(CurrentBoostTime);
+		CurrentBoostTime += DeltaTime/BoostDuration;
+		
+		PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 100000.f * Force);
+		UE_LOG(LogTemp, Warning, TEXT("Is boosting - %f"), Force)
+	}
 }
 
 void UBoostComponent::Boost()
 {
+	// if (PhysComp != nullptr && CarPawn->IsUnderMaxSpeed(true))
+	// {
+	// 	PhysComp->AddImpulse(GetOwner()->GetActorForwardVector() * 100000.f);
+	// 	/*UE_LOG(LogTemp, Warning, )*/
+	// }
+
 	if (PhysComp != nullptr && CarPawn->IsUnderMaxSpeed(true))
 	{
-		PhysComp->AddImpulse(GetOwner()->GetActorForwardVector() * 100000.f);
-		/*UE_LOG(LogTemp, Warning, )*/
+		bBoosting = true;
+		GetWorld()->GetTimerManager().SetTimer(BoostDurationTimerHandle,this, &UBoostComponent::Disable_bBoosting,
+			BoostDuration, false);
+		CurrentBoostTime = 0.f;
 	}
+	
 }
 

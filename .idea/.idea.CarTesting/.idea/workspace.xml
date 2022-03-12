@@ -9,23 +9,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6fb794af-cbac-4f57-a13d-c8be47a5b90c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Other/Hvordan laste ned git prosjekt.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Other/Hvordan laste ned git prosjekt.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Other/Hvordan laste ned git prosjekt.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Other/Hvordan laste ned git prosjekt.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/GravitySplineActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/GravitySplineActor.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../../UE versions/UE_4.27/Engine/Source/ThirdParty/PhysX3/APEX_1.4/include/ApexDefs.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -35,19 +34,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ Project.CarTesting">
     <configuration name="CarTesting" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -326,6 +325,8 @@
       <workItem from="1646673609579" duration="433000" />
       <workItem from="1646674120654" duration="8093000" />
       <workItem from="1646932960521" duration="6269000" />
+      <workItem from="1646987779895" duration="596000" />
+      <workItem from="1646990635662" duration="6514000" />
     </task>
     <servers />
   </component>

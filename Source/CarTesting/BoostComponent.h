@@ -28,8 +28,23 @@ public:
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Boost|Movment")
 	UPrimitiveComponent* PhysComp = nullptr;
+	UPROPERTY(EditAnywhere, Category = "Boost")
+	float BoostDuration = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Boost")
+	class UCurveFloat* BoostCurve = nullptr;
+	UPROPERTY()
+	bool bBoosting = false;
+	UPROPERTY()
+	float CurrentBoostTime = 0.f;
+	
+	UPROPERTY()
+	FTimerHandle BoostDurationTimerHandle;
 
-
+	UFUNCTION()
+	void Disable_bBoosting() {
+		bBoosting = false;
+		CurrentBoostTime = 0.f;
+	}
 
 	UFUNCTION()
 		void Boost();

@@ -61,7 +61,7 @@ int32 AGravitySplineActor::GetClosestSplinePoint(USplineComponent* splineEval, F
 			index = i;
 		}
 	}
-
+	
 	return index;
 
 	FVector loc = splineEval->GetLocationAtSplinePoint(index, ESplineCoordinateSpace::World);

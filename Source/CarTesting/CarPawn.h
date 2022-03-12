@@ -64,6 +64,7 @@ public:
 		void OnEndOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			int32 OtherBodyIndex);
 
+	
 
 private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -83,15 +84,14 @@ private:
 	bool bEnterState = false;
 	UFUNCTION()
 	void EnterState(EVehicleState NewState);
-
 	
 	UFUNCTION()
 	void StateDriving();
 	
 	UFUNCTION()
 	void StateGrappling();
-	// UPROPERTY()
-	// FVector VelocityAtStartOfGrapple = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Car|State")
+	float FinishGrappleDistance = 100.f;
 	
 	UFUNCTION()
 	void StateAirBorne();
@@ -116,7 +116,7 @@ private:
 	bool IsGrounded();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
-	
+	void SetUpVectorAsSplineUpAxis();
 
 public:
 	bool IsUnderMaxSpeed(bool bBuffer);
