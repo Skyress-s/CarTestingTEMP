@@ -45,8 +45,14 @@ public:
 		class UArrowComponent* ArrowRayCastStart{ nullptr };
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UBoostComponent* BoostComponent = nullptr;
+	// UPROPERTY(EditDefaultsOnly, Category = "Car")
+	// 	class UGrappleComponent* GrappleComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
-		class UGrappleComponent* GrappleComponent = nullptr;
+	class UStaticMeshComponent* GrappleHookMesh = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+	class UStaticMeshComponent* GrappleSensor = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+	class UPhysicsGrapplingComponent* PhysicsGrappleComponent = nullptr;
 	
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
@@ -85,6 +91,7 @@ private:
 	UFUNCTION()
 	void EnterState(EVehicleState NewState);
 	
+	
 	UFUNCTION()
 	void StateDriving();
 	
@@ -98,10 +105,9 @@ private:
 	
 	UFUNCTION()
 	void StateDashing();
-
-
+	
 	UFUNCTION()
-	void FireGrapplingHook();
+	void ToggleGrappleHook();
 	
 
 	FVector CalcAsymVector();
@@ -117,6 +123,7 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
+	
 
 public:
 	bool IsUnderMaxSpeed(bool bBuffer);

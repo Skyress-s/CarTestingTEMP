@@ -13,6 +13,7 @@
 #include "BoostComponent.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
+#include "PhysicsGrapplingComponent.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Grappling/GrappleComponent.h"
 #include "Grappling/GrappleTarget.h"
@@ -51,9 +52,21 @@ ACarPawn::ACarPawn()
 	
 	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
 	
-	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("GrappleComponent"));
+	//GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("GrappleComponent"));
 	
 	
+	GrappleHookMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrapplingHookMesh"));
+	GrappleHookMesh->SetupAttachment(SphereComp);
+	GrappleHookMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GrappleHookMesh->SetEnableGravity(false);
+
+	GrappleSensor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrappleSensor"));
+	GrappleSensor->SetupAttachment(GrappleHookMesh);
+	GrappleSensor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//response to channel manually set in BP
+
+
+	PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -65,11 +78,14 @@ void ACarPawn::BeginPlay()
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
 	SphereComp->OnComponentEndOverlap.AddDynamic(this, &ACarPawn::OnEndOverLap);
 
+	GrappleHookMesh->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
+	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
 	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
 	UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
 		BoostComponent->PhysComp = PrimitiveComponents[0];
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
 	
 }
 
@@ -89,7 +105,11 @@ void ACarPawn::ApplyGravity()
 			SphereComp->GetComponentLocation());
 		GravityUpVector.Normalize();
 
-		SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
+		if (SphereComp->IsSimulatingPhysics())
+		{
+			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
+			SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
+		}
 	}
 }
 
@@ -108,7 +128,10 @@ void ACarPawn::TiltCarMesh(FVector AsymVector)
 void ACarPawn::HandleAsymFriction(FVector& AsymVector)
 {
 	AsymVector = CalcAsymVector();
-	SphereComp->AddForce(AsymVector* 30.f);
+	if (SphereComp->IsSimulatingPhysics())
+	{
+		SphereComp->AddForce(AsymVector* 30.f);
+	}
 }
 
 // Called every frame
@@ -136,7 +159,7 @@ void ACarPawn::Tick(float DeltaTime)
 	}
 
 	//sets bEnterstate to false so it wont run until we enter a new state
-	bEnterState = false;
+	//bEnterState = false;
 	
 	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetUpVector() * 300.f, FColor::Green, false, 0.5f);
 	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + SphereComp->GetRightVector() * 300.f, FColor::Green, false, 0.5f);
@@ -158,7 +181,7 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Action binding
 	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
 	//action.bConsumeInput = false;
-	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::FireGrapplingHook);
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::ToggleGrappleHook);
 
 	
 }
@@ -171,26 +194,35 @@ void ACarPawn::EnterState(EVehicleState NewState)
 
 void ACarPawn::StateDriving()
 {
+	if (bEnterState)
+	{
+		bEnterState = false;
+	}
 	ApplyGravity();
 	SetUpVectorAsSplineUpAxis();
 	
 	if (IsGrounded())
 	{
 		
-		if (IsGrounded())
-		{
-			FVector AsymVector;
-			HandleAsymFriction(AsymVector);
-			TiltCarMesh(AsymVector);
 		
-			// rotates sphere comp
-			RotateSphereCompToLocalUpVector();
-		}
+		FVector AsymVector;
+		HandleAsymFriction(AsymVector);
+		TiltCarMesh(AsymVector);
 	
+		// rotates sphere comp
+		RotateSphereCompToLocalUpVector();
+		
 	}
 	else
 	{
 		EnterState(EVehicleState::AirBorne);
+	}
+
+
+	//should we be grappling
+	if (PhysicsGrappleComponent->ValidGrappleState())
+	{
+		EnterState(EVehicleState::Grappling);
 	}
 }
 
@@ -198,63 +230,105 @@ void ACarPawn::StateGrappling()
 {
 	if (bEnterState)
 	{
-		if (GrappleComponent->GrappleTargetsLastFrame.Num() > 0)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("%s"), *GrappleComponent->GrappleTargetsLastFrame[0]->GetOwner()->GetName())
-			if (GrappleComponent->GrappleTargetsLastFrame[0] != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%d"), GrappleComponent->GrappleTargetsLastFrame.Num())
-				GrappleComponent->SetTarget(GrappleComponent->GrappleTargetsLastFrame[0]);
-				GrappleComponent->SetGrappleSpeed(SphereComp->GetPhysicsLinearVelocity().Size());
-				GrappleComponent->SetDirectionAtStart((GrappleComponent->GetTarget()->GetActorLocation() - GetActorLocation()).GetSafeNormal());
-				SphereComp->SetSimulatePhysics(false);
-			}
-			else
-			{
-				EnterState(EVehicleState::AirBorne);
-			}
-			
-		}
-		else
-		{
-			EnterState(EVehicleState::AirBorne);
-		}
+		bEnterState = false;
+		//PhysicsGrappleComponent->FireGrapplingHook();
+		//EnterState(EVehicleState::Driving);
+		SphereComp->SetSimulatePhysics(false);
 	}
-	
-	
-	GrappleComponent->MoveTowardsTarget();
 
-	if (GrappleComponent->DistanceToTargetSqr() < FinishGrappleDistance * FinishGrappleDistance)
+	//psudo on exit
+	if (PhysicsGrappleComponent->ValidGrappleState() == false)
 	{
 		SphereComp->SetSimulatePhysics(true);
-		SphereComp->SetPhysicsLinearVelocity(GrappleComponent->GetGrappleSpeed() * GrappleComponent->GetDirectionAtStart());
+		FVector NewVel = PhysicsGrappleComponent->GetOnHookedDirection() * PhysicsGrappleComponent->GetOnHookedVelocitySize();
+		SphereComp->SetPhysicsLinearVelocity(NewVel);
+		
 		EnterState(EVehicleState::AirBorne);
-
-		//rotates the sphere mesh to appropiate
-		FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromXZ(GrappleComponent->GetDirectionAtStart(), LocalUpVector);
-		SphereComp->SetWorldRotation(NewSphereRot);
-		SphereComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
 	}
-	
+	/*// if (bEnterState)
+	// {
+	// 	if (GrappleComponent->GrappleTargetsLastFrame.Num() > 0)
+	// 	{
+	// 		//UE_LOG(LogTemp, Warning, TEXT("%s"), *GrappleComponent->GrappleTargetsLastFrame[0]->GetOwner()->GetName())
+	// 		if (GrappleComponent->GrappleTargetsLastFrame[0] != nullptr)
+	// 		{
+	// 			UE_LOG(LogTemp, Warning, TEXT("%d"), GrappleComponent->GrappleTargetsLastFrame.Num())
+	// 			GrappleComponent->SetTarget(GrappleComponent->GrappleTargetsLastFrame[0]);
+	// 			GrappleComponent->SetGrappleSpeed(SphereComp->GetPhysicsLinearVelocity().Size());
+	// 			GrappleComponent->SetDirectionAtStart((GrappleComponent->GetTarget()->GetActorLocation() - GetActorLocation()).GetSafeNormal());
+	// 			SphereComp->SetSimulatePhysics(false);
+	// 		}
+	// 		else
+	// 		{
+	// 			EnterState(EVehicleState::AirBorne);
+	// 		}
+	// 		
+	// 	}
+	// 	else
+	// 	{
+	// 		EnterState(EVehicleState::AirBorne);
+	// 	}
+	// }
+	//
+	//
+	// GrappleComponent->MoveTowardsTarget();
+	//
+	// if (GrappleComponent->DistanceToTargetSqr() < FinishGrappleDistance * FinishGrappleDistance)
+	// {
+	// 	SphereComp->SetSimulatePhysics(true);
+	// 	SphereComp->SetPhysicsLinearVelocity(GrappleComponent->GetGrappleSpeed() * GrappleComponent->GetDirectionAtStart());
+	// 	EnterState(EVehicleState::AirBorne);
+	//
+	// 	//rotates the sphere mesh to appropiate
+	// 	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromXZ(GrappleComponent->GetDirectionAtStart(), LocalUpVector);
+	// 	SphereComp->SetWorldRotation(NewSphereRot);
+	// 	SphereComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
+	// }*/
 }
 
 void ACarPawn::StateAirBorne()
 {
+	if (bEnterState)
+	{
+		bEnterState = false;
+		
+	}
 	ApplyGravity();
 	if (IsGrounded())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
 		EnterState(EVehicleState::Driving);
+	}
+
+	//shoud we be in grapple state
+	if (PhysicsGrappleComponent->ValidGrappleState())
+	{
+		EnterState(EVehicleState::Grappling);
 	}
 	
 }
 
 void ACarPawn::StateDashing()
 {
+	if (bEnterState)
+	{
+		bEnterState = false;
+	}
 }
 
-void ACarPawn::FireGrapplingHook()
+void ACarPawn::ToggleGrappleHook()
 {
-	EnterState(EVehicleState::Grappling);
+	if (PhysicsGrappleComponent->GetCurrentGrappleState() == EGrappleStates::InActive)
+	{
+		//EnterState(EVehicleState::Grappling);
+		PhysicsGrappleComponent->FireGrapplingHook();
+	}
+	else
+	{
+		// EnterState(EVehicleState::AirBorne);
+		PhysicsGrappleComponent->RetractGrapplingHook();
+	}
+	
 }
 
 FVector ACarPawn::CalcAsymVector()
@@ -267,7 +341,7 @@ FVector ACarPawn::CalcAsymVector()
 
 	if (abs(Angle) > 90.f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Did round down"));
+		//UE_LOG(LogTemp, Warning, TEXT("Did round down"));
 		Angle = 0.f;
 	}
 
@@ -287,7 +361,10 @@ void ACarPawn::MoveXAxis(float Value)
 	//comparing squared size since its faster
 	if (IsUnderMaxSpeed(false) || Value < 0.f)
 	{
-		SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
+		if (SphereComp->IsSimulatingPhysics())
+		{
+			SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
+		}
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("move!"));
 }
@@ -372,9 +449,9 @@ bool ACarPawn::IsGrounded()
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
-
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+	
 		
 		return true;
 	}
@@ -424,6 +501,8 @@ void ACarPawn::SetUpVectorAsSplineUpAxis()
 	LocalUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation());
 	
 }
+
+
 
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)
 {

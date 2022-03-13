@@ -10,3 +10,11 @@ enum class EVehicleState : uint8{
 	AirBorne			UMETA(DisplayName = "EAirBorne"),
 	Dashing				UMETA(DisplayName = "EDashing")
 };
+
+UENUM(BlueprintType)
+enum class EGrappleStates : uint8{
+	InActive				UMETA(DisplayName = "EInActive"),
+	Traveling				UMETA(DisplayName = "ETraveling"),
+	Hooked					UMETA(DisplayName = "EHooked"),
+	Returning				UMETA(DisplayName = "EReturning")
+	};

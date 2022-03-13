@@ -39,8 +39,12 @@ void UBoostComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		float Force = BoostCurve->GetFloatValue(CurrentBoostTime);
 		CurrentBoostTime += DeltaTime/BoostDuration;
-		
-		PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 100000.f * Force);
+
+		if (CarPawn->SphereComp->IsSimulatingPhysics())
+		{
+			PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 100000.f * Force);
+			
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Is boosting - %f"), Force)
 	}
 }
