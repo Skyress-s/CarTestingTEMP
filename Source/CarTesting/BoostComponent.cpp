@@ -42,7 +42,7 @@ void UBoostComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 		if (CarPawn->SphereComp->IsSimulatingPhysics())
 		{
-			PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 100000.f * Force);
+			PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 500000.f * Force);
 			
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Is boosting - %f"), Force)
@@ -57,12 +57,13 @@ void UBoostComponent::Boost()
 	// 	/*UE_LOG(LogTemp, Warning, )*/
 	// }
 
-	if (PhysComp != nullptr && CarPawn->IsUnderMaxSpeed(true))
+	if (PhysComp != nullptr)
 	{
 		bBoosting = true;
 		GetWorld()->GetTimerManager().SetTimer(BoostDurationTimerHandle,this, &UBoostComponent::Disable_bBoosting,
 			BoostDuration, false);
 		CurrentBoostTime = 0.f;
+		
 	}
 	
 }

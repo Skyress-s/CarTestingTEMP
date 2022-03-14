@@ -45,8 +45,16 @@ private:
 	float GrappleRotationSpeed = 500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
 	FVector OnHookedDirection = FVector::ZeroVector;
-	UPROPERTY()
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
+	FVector TravelingDirection = FVector::ZeroVector;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
 	FVector HomingTargetLocation = FVector::ZeroVector;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
+	bool bHoming = false;
+	UPROPERTY()
+	float MoveToTargetModifier = 1.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
+	float MoveToTargetAcceleration = 1.3f;
 	
 public:
 	UFUNCTION()
@@ -55,7 +63,8 @@ public:
 	float GetOnHookedVelocitySize(){ return OnHookedVelocity; }
 	UFUNCTION()
 	FVector GetOnHookedDirection(){ return OnHookedDirection; }
-
+	UFUNCTION()
+	FVector GetTravelingDirection(){ return TravelingDirection; }
 	
 	UFUNCTION()
 	void FireGrapplingHook();

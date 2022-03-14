@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ArrowComponent.h"
 #include "BoostComponent.h"
+#include "CameraEffecttComponent.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
 #include "PhysicsGrapplingComponent.h"
@@ -66,8 +67,10 @@ ACarPawn::ACarPawn()
 	GrappleSensor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	//response to channel manually set in BP
 
+    PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
 
-	PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
+	CameraEffectComponent = CreateDefaultSubobject<UCameraEffecttComponent>(TEXT("CameraEffectComponent"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -81,13 +84,17 @@ void ACarPawn::BeginPlay()
 
 	GrappleHookMesh->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
 	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
+	CameraEffectComponent->SetCameraCurrent(MainCamera);
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
 	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
 		BoostComponent->PhysComp = PrimitiveComponents[0];
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
 	StartPlayerLocation = SphereComp->GetComponentLocation();
+	
+	//setting camera lag
+	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
 	
 }
 
@@ -181,7 +188,7 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("LookUp", this, &ACarPawn::LookYAxis);
 	
 	// Action binding
-	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, BoostComponent, &UBoostComponent::Boost);
+	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, this, &ACarPawn::HandleBoost);
 	//action.bConsumeInput = false;
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::ToggleGrappleHook);
 
@@ -236,14 +243,34 @@ void ACarPawn::StateGrappling()
 		//PhysicsGrappleComponent->FireGrapplingHook();
 		//EnterState(EVehicleState::Driving);
 		SphereComp->SetSimulatePhysics(false);
+
+		//sets on exit
+		CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
+		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
 	}
 
+	//orients the sphere comp
+	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
+	SphereComp->SetWorldRotation(NewRot);
+	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + PhysicsGrappleComponent->GetOnHookedDirection() * 400.f, FColor::Red, true);
+	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + GravitySplineActive->
+		GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()) * 400.f,
+		FColor::Green, true);
+	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
+
+	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
 	{
+		// sets velocity
 		SphereComp->SetSimulatePhysics(true);
 		FVector NewVel = PhysicsGrappleComponent->GetOnHookedDirection() * PhysicsGrappleComponent->GetOnHookedVelocitySize();
 		SphereComp->SetPhysicsLinearVelocity(NewVel);
+
+		//sets rotation speed
+		CameraBoom->CameraLagSpeed = OnStartCameraLag.X;
+		CameraBoom->CameraRotationLagSpeed = OnStartCameraLag.Y;
+		
 		
 		EnterState(EVehicleState::AirBorne);
 	}
@@ -404,6 +431,16 @@ void ACarPawn::LookYAxis(float Value)
 	CameraBoom->AddRelativeRotation(FRotator( Value, 0.f,  0.f));
 }
 
+void ACarPawn::HandleBoost()
+{
+	if (IsUnderMaxSpeed(true) && SphereComp->IsSimulatingPhysics())
+	{
+		BoostComponent->Boost();
+		CameraEffectComponent->PlayCameraEffect();
+		
+	}
+}
+
 /// <summary>
 /// Returns angle in radians
 /// </summary>
@@ -515,11 +552,11 @@ bool ACarPawn::IsOutOfBounds()
 		FindLocationClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 
 		float dist = (test - SphereComp->GetComponentLocation()).Size();
-		UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
+		//UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
 		
 		if (dist > 10000.f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Resetting"))
+			//UE_LOG(LogTemp, Warning, TEXT("Resetting"))
 			//SphereComp->SetWorldLocation(StartPlayerLocation);
 		}
 	}

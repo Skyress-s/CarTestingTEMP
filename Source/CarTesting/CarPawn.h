@@ -53,6 +53,8 @@ public:
 	class UStaticMeshComponent* GrappleSensor = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 	class UPhysicsGrapplingComponent* PhysicsGrappleComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+	class UCameraEffecttComponent* CameraEffectComponent = nullptr;
 	
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
@@ -85,6 +87,12 @@ private:
 	UPROPERTY()
 	FVector StartPlayerLocation = FVector::ZeroVector;
 
+	UPROPERTY()
+	FVector2D OnStartCameraLag = FVector2D::ZeroVector;
+	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Movment")
+	FVector2D GrapplingCameraLag = FVector2D::ZeroVector;
+
+	
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")
 	EVehicleState CurrentVehicleState = EVehicleState::AirBorne;
@@ -118,6 +126,8 @@ private:
 	void MoveYAxis(float Value);
 	void LookXAxis(float Value);
 	void LookYAxis(float Value);
+	UFUNCTION()
+	void HandleBoost();
 	UFUNCTION(BlueprintCallable)
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
@@ -125,7 +135,7 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
-
+	
 	UFUNCTION()
 	bool IsOutOfBounds();
 	
