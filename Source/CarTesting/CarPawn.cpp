@@ -15,6 +15,7 @@
 #include "HighGravityZone.h"
 #include "PhysicsGrapplingComponent.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
+#include "Components/SplineComponent.h"
 #include "Grappling/GrappleComponent.h"
 #include "Grappling/GrappleTarget.h"
 
@@ -86,6 +87,7 @@ void ACarPawn::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
 		BoostComponent->PhysComp = PrimitiveComponents[0];
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
+	StartPlayerLocation = SphereComp->GetComponentLocation();
 	
 }
 
@@ -293,6 +295,9 @@ void ACarPawn::StateAirBorne()
 		bEnterState = false;
 		
 	}
+	SetUpVectorAsSplineUpAxis();
+	RotateSphereCompToLocalUpVector();
+	IsOutOfBounds();
 	ApplyGravity();
 	if (IsGrounded())
 	{
@@ -502,6 +507,24 @@ void ACarPawn::SetUpVectorAsSplineUpAxis()
 	
 }
 
+bool ACarPawn::IsOutOfBounds()
+{
+	if (GravitySplineActive != nullptr)
+	{
+		FVector test = GravitySplineActive->SplineComp->
+		FindLocationClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
+
+		float dist = (test - SphereComp->GetComponentLocation()).Size();
+		UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
+		
+		if (dist > 10000.f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Resetting"))
+			//SphereComp->SetWorldLocation(StartPlayerLocation);
+		}
+	}
+	return false;
+}
 
 
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)

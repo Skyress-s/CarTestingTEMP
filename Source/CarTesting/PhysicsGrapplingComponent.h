@@ -39,9 +39,12 @@ private:
 	bool bEnterState = false;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
 	float OnHookedVelocity = 0.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
+	float FireGrappleSpeed = 10000.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
+	float GrappleRotationSpeed = 500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	FVector OnHookedDirection;
-
+	FVector OnHookedDirection = FVector::ZeroVector;
 	UPROPERTY()
 	FVector HomingTargetLocation = FVector::ZeroVector;
 	

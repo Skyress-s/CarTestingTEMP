@@ -82,6 +82,8 @@ private:
 	const float BaseGravMod = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 	float MaxAngle = 75.f;
+	UPROPERTY()
+	FVector StartPlayerLocation = FVector::ZeroVector;
 
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")
@@ -123,6 +125,9 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
+
+	UFUNCTION()
+	bool IsOutOfBounds();
 	
 
 public:
