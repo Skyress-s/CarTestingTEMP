@@ -127,11 +127,34 @@ void ACarPawn::TiltCarMesh(FVector AsymVector)
 	//orients the mesh
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
 	                                                    GetActorForwardVector());
+
+	/*
+	float sign = NewRot.Roll / abs(NewRot.Roll);
+	if (abs(NewRot.Roll) > 45.f)
+	{
+		NewRot.Roll = 45.f * sign;
+	}*/
+	
+	
 	CarMesh->SetWorldRotation( FMath::RInterpTo(CarMesh->GetComponentRotation(),
 	                                            NewRot,
 	                                            UGameplayStatics::GetWorldDeltaSeconds(this),
 	                                            5.f
 	) );
+
+	//clamps the roll rotation
+	float ClampValue = 45.f;
+	FRotator LocalRot = CarMesh->GetRelativeRotation();
+	if (LocalRot.Roll > ClampValue)
+	{
+		LocalRot.Roll = ClampValue;
+	}
+	else if (LocalRot.Roll < -ClampValue)
+	{
+		LocalRot.Roll = -ClampValue;
+	}
+	CarMesh->SetRelativeRotation(LocalRot);
+	
 }
 
 void ACarPawn::HandleAsymFriction(FVector& AsymVector)
