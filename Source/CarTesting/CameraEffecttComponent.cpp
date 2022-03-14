@@ -41,7 +41,7 @@ void UCameraEffecttComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		Time += UGameplayStatics::GetWorldDeltaSeconds(this);
 
 		CameraCurrent->PostProcessSettings.SceneFringeIntensity = SpeedBoostCurve->GetFloatValue(Time) * 10.f;
-		CameraCurrent->FieldOfView = StartFOV + SpeedBoostCurve->GetFloatValue(Time) * 20.f;
+		CameraCurrent->FieldOfView = StartFOV + SpeedBoostCurve->GetFloatValue(Time) * 25.f;
 		
 		
 
@@ -56,5 +56,6 @@ void UCameraEffecttComponent::TickComponent(float DeltaTime, ELevelTick TickType
 void UCameraEffecttComponent::PlayCameraEffect()
 {
 	bPlaying = true;
+	Time = 0.f;
 }
 

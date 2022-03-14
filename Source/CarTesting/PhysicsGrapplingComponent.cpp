@@ -3,6 +3,7 @@
 
 #include "PhysicsGrapplingComponent.h"
 
+#include "CameraEffecttComponent.h"
 #include "CarPawn.h"
 #include "DrawDebugHelpers.h"
 #include "GravitySplineActor.h"
@@ -105,6 +106,17 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
 	}
 }
 
+void UPhysicsGrapplingComponent::OnSensorEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor->IsA(AGrappleTarget::StaticClass()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Stopped overlapping"));
+		HomingTargetLocation = FVector::ZeroVector;
+		bHoming = false;
+	}
+}
+
 void UPhysicsGrapplingComponent::EnterState(EGrappleStates NewState)
 {
 	bEnterState = true;
@@ -187,6 +199,9 @@ void UPhysicsGrapplingComponent::HookedState()
 		OnHookedDirection = (CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->GetActorLocation()).GetSafeNormal();
 		
 		MoveToTargetModifier = 1.f;
+
+		CarPawn->CameraEffectComponent->PlayCameraEffect();
+	
 		
 		bEnterState = false;
 	}

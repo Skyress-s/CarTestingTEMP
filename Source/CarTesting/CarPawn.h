@@ -92,6 +92,8 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Movment")
 	FVector2D GrapplingCameraLag = FVector2D::ZeroVector;
 
+	UPROPERTY()
+	float StartCameraBoomLength = 0.f;
 	
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")
@@ -135,6 +137,10 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
+
+	
+	UFUNCTION()
+	void SpeedHandleCameraBoomEffect(bool bSoft);
 	
 	UFUNCTION()
 	bool IsOutOfBounds();

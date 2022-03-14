@@ -10,9 +10,17 @@
   <component name="ChangeListManager">
     <list default="true" id="6fb794af-cbac-4f57-a13d-c8be47a5b90c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.blend" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.blend1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -336,6 +344,7 @@
       <workItem from="1647185296575" duration="14129000" />
       <workItem from="1647253410553" duration="6201000" />
       <workItem from="1647268785563" duration="10491000" />
+      <workItem from="1647288848157" duration="2090000" />
     </task>
     <servers />
   </component>

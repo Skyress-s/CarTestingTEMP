@@ -84,6 +84,7 @@ void ACarPawn::BeginPlay()
 
 	GrappleHookMesh->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
 	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
+	GrappleSensor->OnComponentEndOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorEndOverlap);
 	CameraEffectComponent->SetCameraCurrent(MainCamera);
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
@@ -95,7 +96,7 @@ void ACarPawn::BeginPlay()
 	
 	//setting camera lag
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
-	
+	StartCameraBoomLength = CameraBoom->TargetArmLength;
 }
 
 void ACarPawn::RotateSphereCompToLocalUpVector()
@@ -232,7 +233,7 @@ void ACarPawn::StateDriving()
 	}
 	ApplyGravity();
 	SetUpVectorAsSplineUpAxis();
-	
+	SpeedHandleCameraBoomEffect(true);
 	if (IsGrounded())
 	{
 		
@@ -272,6 +273,8 @@ void ACarPawn::StateGrappling()
 		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
 	}
 
+	SpeedHandleCameraBoomEffect(false);
+	
 	//orients the sphere comp
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
 	SphereComp->SetWorldRotation(NewRot);
@@ -349,6 +352,7 @@ void ACarPawn::StateAirBorne()
 	RotateSphereCompToLocalUpVector();
 	IsOutOfBounds();
 	ApplyGravity();
+	SpeedHandleCameraBoomEffect(true);
 	if (IsGrounded())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
@@ -565,6 +569,21 @@ void ACarPawn::SetUpVectorAsSplineUpAxis()
 {
 	LocalUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation());
 	
+}
+
+void ACarPawn::SpeedHandleCameraBoomEffect(bool bSoft)
+{
+	float speed = SphereComp->GetPhysicsLinearVelocity().Size();
+
+	
+	if (bSoft)
+	{
+		CameraBoom->TargetArmLength = StartCameraBoomLength + speed/30.f;
+	}
+	else
+	{
+		CameraBoom->TargetArmLength = StartCameraBoomLength + speed/90.f;
+	}
 }
 
 bool ACarPawn::IsOutOfBounds()
