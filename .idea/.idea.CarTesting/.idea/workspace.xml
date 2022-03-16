@@ -10,21 +10,23 @@
   <component name="ChangeListManager">
     <list default="true" id="6fb794af-cbac-4f57-a13d-c8be47a5b90c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.blend" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.blend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_yGrappleTarget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_yGrappleTarget.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Enums/Enums.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Enums/Enums.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -328,6 +330,9 @@
       <workItem from="1646987779895" duration="596000" />
       <workItem from="1646990635662" duration="6514000" />
       <workItem from="1647185296575" duration="14129000" />
+      <workItem from="1647255402659" duration="575000" />
+      <workItem from="1647260992046" duration="540000" />
+      <workItem from="1647262956572" duration="4807000" />
     </task>
     <servers />
   </component>
