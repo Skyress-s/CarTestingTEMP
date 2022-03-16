@@ -444,7 +444,6 @@ void ACarPawn::MoveYAxis(float Value)
 	SphereComp->SetWorldRotation(NewRot);
 
 
-
 }
 
 void ACarPawn::LookXAxis(float Value)
