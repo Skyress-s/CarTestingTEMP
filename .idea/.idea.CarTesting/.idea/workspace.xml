@@ -10,12 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6fb794af-cbac-4f57-a13d-c8be47a5b90c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +28,8 @@
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/GravitySplineActor.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -341,7 +338,7 @@
       <workItem from="1647288848157" duration="2090000" />
       <workItem from="1647426093690" duration="325000" />
       <workItem from="1647430120601" duration="689000" />
-      <workItem from="1647451895357" duration="3570000" />
+      <workItem from="1647451895357" duration="4847000" />
     </task>
     <servers />
   </component>
