@@ -195,7 +195,14 @@ void UPhysicsGrapplingComponent::HookedState()
 		//UE_LOG(LogTemp, Warning, TEXT("Disables physics"))
 		CarPawn->GrappleHookMesh->SetSimulatePhysics(false);
 		CarPawn->GrappleHookMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 		OnHookedVelocity = CarPawn->SphereComp->GetPhysicsLinearVelocity().Size();
+		if (OnHookedVelocity >= HighestOnHookedSpeed) // clamps the velocity
+			OnHookedVelocity = HighestOnHookedSpeed;
+		else if (OnHookedVelocity <= LowestOnHookedSpeed)
+			OnHookedVelocity = LowestOnHookedSpeed;
+		
+		
 		OnHookedDirection = (CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->GetActorLocation()).GetSafeNormal();
 		
 		MoveToTargetModifier = 1.f;
@@ -211,7 +218,7 @@ void UPhysicsGrapplingComponent::HookedState()
 	TravelingDirection = Direction;
 	
 	//cheks if we are close enough
-	if ((CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->SphereComp->GetComponentLocation()).SizeSquared() < 200.f*200.f)
+	if ((CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->SphereComp->GetComponentLocation()).SizeSquared() < 400.f*400.f)
 	{
 		
 		
@@ -227,6 +234,11 @@ void UPhysicsGrapplingComponent::ReturningState()
 void UPhysicsGrapplingComponent::MoveTowardsGrapple()
 {
 	MoveToTargetModifier += UGameplayStatics::GetWorldDeltaSeconds(this) * MoveToTargetAcceleration;
+	if (MoveToTargetAcceleration > 20.f)
+	{
+		MoveToTargetAcceleration = 20.f;
+	}
+	
 	FVector Direction = CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->GetActorLocation();
 	Direction = Direction.GetSafeNormal();
 	CarPawn->AddActorWorldOffset(Direction * GetOnHookedVelocitySize() * MoveToTargetModifier * UGameplayStatics::GetWorldDeltaSeconds(this), true);

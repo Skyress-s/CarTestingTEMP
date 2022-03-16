@@ -76,7 +76,9 @@ public:
 
 private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-		float Acceleration = 70000.f;
+		float AccelerationForce = 90000.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+	float DeaccelerationForce = 400000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxSpeed = 3500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -87,11 +89,12 @@ private:
 	UPROPERTY()
 	FVector StartPlayerLocation = FVector::ZeroVector;
 
-	UPROPERTY()
+	
+	UPROPERTY() //gets set at begin play
 	FVector2D OnStartCameraLag = FVector2D::ZeroVector;
-	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Movment")
+	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Camera")
 	FVector2D GrapplingCameraLag = FVector2D::ZeroVector;
-
+	
 	UPROPERTY()
 	float StartCameraBoomLength = 0.f;
 	
@@ -137,6 +140,7 @@ private:
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
+	bool IsMovingForward();
 
 	
 	UFUNCTION()

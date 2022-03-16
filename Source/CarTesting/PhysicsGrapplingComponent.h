@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CarPawn.h"
 #include "Components/ActorComponent.h"
 
 #include "Enums/Enums.h"
@@ -55,6 +56,11 @@ private:
 	float MoveToTargetModifier = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
 	float MoveToTargetAcceleration = 1.3f;
+	
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
+	float LowestOnHookedSpeed = 2000.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
+	float HighestOnHookedSpeed = 9000.f;
 	
 public:
 	UFUNCTION()

@@ -15,6 +15,7 @@
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
 #include "PhysicsGrapplingComponent.h"
+#include "Chaos/KinematicTargets.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Components/SplineComponent.h"
 #include "Grappling/GrappleComponent.h"
@@ -271,9 +272,11 @@ void ACarPawn::StateGrappling()
 		//sets on exit
 		CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
 		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
+		// CameraBoom->CameraLagSpeed = 0.f;
+		// CameraBoom->CameraRotationLagSpeed = 0.f;
 	}
 
-	SpeedHandleCameraBoomEffect(false);
+	//SpeedHandleCameraBoomEffect(false);
 	
 	//orients the sphere comp
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
@@ -417,12 +420,43 @@ float ACarPawn::CaltAsymForce()
 
 void ACarPawn::MoveXAxis(float Value)
 {
-	//comparing squared size since its faster
-	if (IsUnderMaxSpeed(false) || Value < 0.f)
+	/*//comparing squared size since its faster
+	if (IsUnderMaxSpeed(false) /*|| Value < 0.f#1#)
 	{
 		if (SphereComp->IsSimulatingPhysics())
 		{
-			SphereComp->AddForce(GetActorForwardVector() * Value * 70000.f);
+			float BreakForce = Value > 0.f ? 90000.f : 400000.f; 
+			SphereComp->AddForce(GetActorForwardVector() * Value * BreakForce);
+		}
+	}*/
+
+	if (!SphereComp->IsSimulatingPhysics()) // guard cluase
+		return;
+
+	if (IsMovingForward()) // is moving forward
+	{
+		if (Value > 0.f) // accelerating
+		{
+			if (IsUnderMaxSpeed(false))
+				SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, false);
+			
+		}
+		else // deaccelerating
+		{
+			SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * Value, NAME_None, false);
+		}
+	}
+	else // moving bacward
+	{
+		if (Value > 0.f) // accelerating
+		{
+			SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, false);
+		}
+		else // still deaccelerating
+		{
+			if (IsUnderMaxSpeed(false))
+				SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * 0.2f * Value, NAME_None, false);
+			
 		}
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("move!"));
@@ -463,7 +497,6 @@ void ACarPawn::HandleBoost()
 	{
 		BoostComponent->Boost();
 		CameraEffectComponent->PlayCameraEffect();
-		
 	}
 }
 
@@ -570,6 +603,24 @@ void ACarPawn::SetUpVectorAsSplineUpAxis()
 	
 }
 
+bool ACarPawn::IsMovingForward()
+{
+	const FVector VehicleForward = SphereComp->GetForwardVector();
+	FVector VelocityDirection = VehicleForward;
+	if (SphereComp->IsSimulatingPhysics())
+	{
+		VelocityDirection = SphereComp->GetPhysicsLinearVelocity().GetSafeNormal();
+	}
+	const float Angle = UnsignedAngle(VehicleForward, VelocityDirection);
+	
+	if (Angle <= 90.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Moving fowards!"))
+		return true;
+	}
+	return false;
+}
+
 void ACarPawn::SpeedHandleCameraBoomEffect(bool bSoft)
 {
 	float speed = SphereComp->GetPhysicsLinearVelocity().Size();
@@ -603,7 +654,6 @@ bool ACarPawn::IsOutOfBounds()
 	}
 	return false;
 }
-
 
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)
 {
