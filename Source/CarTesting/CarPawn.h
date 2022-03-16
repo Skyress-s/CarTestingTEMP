@@ -120,6 +120,7 @@ private:
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
 	bool IsGrounded();
+	float DistanceToGround();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();

@@ -108,7 +108,18 @@ void ACarPawn::ApplyGravity()
 		if (SphereComp->IsSimulatingPhysics())
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
-			SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
+			static
+			float HeightAboveGround{DistanceToGround()};
+			UE_LOG(LogTemp, Warning, TEXT("Height %f"), HeightAboveGround);
+			FVector HeightVelocity{
+				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
+			};
+			FVector GravityForce{-GravityUpVector * 68.1f * 40.f * GravityMod};
+			FVector HoverForce{
+				-GravityForce*UKismetMathLibrary::Exp(1.f - HeightAboveGround*0.02) -
+					HeightVelocity*UKismetMathLibrary::Exp(1.f - HeightAboveGround*0.02)
+			};
+			SphereComp->AddForce(GravityForce+HoverForce, FName(), true);
 		}
 	}
 }
@@ -450,7 +461,7 @@ bool ACarPawn::IsGrounded()
 		TraceParams
 	);
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
-		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		UE_LOG(LogTemp, Warning, TEXT("HIT %f"), (hit.ImpactPoint - ArrowRayCastStart()->GetComponentLocation()).Size());
 	
 		
 		return true;
@@ -462,6 +473,26 @@ bool ACarPawn::IsGrounded()
 	}
 
 	
+}
+
+float ACarPawn::DistanceToGround()
+{
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+	FHitResult hit{};
+	FVector StartLocation{ArrowRayCastStart->GetComponentLocation()};
+	GetWorld()->LineTraceSingleByObjectType(
+		hit,
+		StartLocation,
+		StartLocation - GetActorUpVector() * 30.f,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+		TraceParams
+	);
+	if (hit.IsValidBlockingHit()) {
+		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		return (hit.ImpactPoint - StartLocation).Size();
+	
+		
+	}
 }
 
 FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target)
