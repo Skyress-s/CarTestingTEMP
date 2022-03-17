@@ -234,7 +234,7 @@ void ACarPawn::StateDriving()
 	}
 	ApplyGravity();
 	SetUpVectorAsSplineUpAxis();
-	SpeedHandleCameraBoomEffect(true);
+	//SpeedHandleCameraBoomEffect(true);
 	if (IsGrounded())
 	{
 		
@@ -355,7 +355,7 @@ void ACarPawn::StateAirBorne()
 	RotateSphereCompToLocalUpVector();
 	IsOutOfBounds();
 	ApplyGravity();
-	SpeedHandleCameraBoomEffect(true);
+	//SpeedHandleCameraBoomEffect(true);
 	if (IsGrounded())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("wohoo"))

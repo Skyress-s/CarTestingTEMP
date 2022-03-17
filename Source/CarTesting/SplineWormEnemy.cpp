@@ -20,7 +20,6 @@ ASplineWormEnemy::ASplineWormEnemy()
 void ASplineWormEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	GetOwner()->AddInstanceComponent() 
 }
 
 // Called every frame
