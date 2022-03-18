@@ -89,7 +89,9 @@ private:
 	UPROPERTY()
 	FVector StartPlayerLocation = FVector::ZeroVector;
 
-	
+	//Camera variables
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Camera")
+	float CameraLookSpeed = 70.f;
 	UPROPERTY() //gets set at begin play
 	FVector2D OnStartCameraLag = FVector2D::ZeroVector;
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Camera")

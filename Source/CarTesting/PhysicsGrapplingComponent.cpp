@@ -6,8 +6,10 @@
 #include "CameraEffecttComponent.h"
 #include "CarPawn.h"
 #include "DrawDebugHelpers.h"
+#include "GrappleSphereComponent.h"
 #include "GravitySplineActor.h"
 #include "Camera/CameraComponent.h"
+#include "Chaos/GeometryParticlesfwd.h"
 #include "Components/SphereComponent.h"
 #include "Grappling/GrappleTarget.h"
 #include "Kismet/GameplayStatics.h"
@@ -80,27 +82,48 @@ void UPhysicsGrapplingComponent::RetractGrapplingHook()
 	EnterState(EGrappleStates::InActive);
 }
 
+/**
+ * @brief When the grappleComponent hits a grappleHit channel
+ * @param OverlappedComponent 
+ * @param OtherActor 
+ * @param OtherComp 
+ * @param OtherBodyIndex 
+ * @param bFromSweep 
+ * @param SweepResult 
+ */
 void UPhysicsGrapplingComponent::OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"))
+	//UE_LOG(LogTemp, Warning, TEXT("Hit"))
 	if (OtherActor->IsA(AGrappleTarget::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("did set visibility"))
+		//UE_LOG(LogTemp, Warning, TEXT("did set visibility"))
 		Cast<AGrappleTarget>(OtherActor)->SetVisbility(false);
+	}
+	else if (OtherComp->IsA(UGrappleSphereComponent::StaticClass()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit GrappleSphereCOmponent %s"), *OtherComp->GetName())
+		if (CurrentGrappleState == EGrappleStates::Traveling) // to ensure it dosen't gets called repeatedly
+		{
+			UGrappleSphereComponent* GrappleSphere = OtherActor->FindComponentByClass<UGrappleSphereComponent>(); // better?
+			GrappleSphere->OnGrapple();
+			TempGrappleSphereComponent = GrappleSphere;
+			
+		}
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("Grapple hit simethung"))
 	EnterState(EGrappleStates::Hooked);
 }
 
+
 void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Overlap with -> %s"), *OtherActor->GetName())
 	if (OtherActor->IsA(AGrappleTarget::StaticClass()))
 	{
 		
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName())
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName())
 		HomingTargetLocation = OtherActor->GetActorLocation();
 		bHoming = true;
 	}
@@ -111,7 +134,7 @@ void UPhysicsGrapplingComponent::OnSensorEndOverlap(UPrimitiveComponent* Overlap
 {
 	if (OtherActor->IsA(AGrappleTarget::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Stopped overlapping"));
+		//UE_LOG(LogTemp, Warning, TEXT("Stopped overlapping"));
 		HomingTargetLocation = FVector::ZeroVector;
 		bHoming = false;
 	}
@@ -137,13 +160,7 @@ void UPhysicsGrapplingComponent::InActiveState()
 
 		HomingTargetLocation = FVector::ZeroVector;
 		//CarPawn->GrappleSensor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		
-
-		
 	}
-	
-	
 }
 
 void UPhysicsGrapplingComponent::TravelingState()
@@ -178,13 +195,8 @@ void UPhysicsGrapplingComponent::TravelingState()
 		{
 			Vel = Vel.RotateAngleAxis(UGameplayStatics::GetWorldDeltaSeconds(this) * GrappleRotationSpeed, Cross);
 			CarPawn->GrappleHookMesh->SetPhysicsLinearVelocity(Vel);
-			
 		}
 	}
-
-
-	
-	
 }
 
 void UPhysicsGrapplingComponent::HookedState()
@@ -208,7 +220,9 @@ void UPhysicsGrapplingComponent::HookedState()
 		MoveToTargetModifier = 1.f;
 
 		CarPawn->CameraEffectComponent->PlayCameraEffect();
-	
+
+
+		
 		
 		bEnterState = false;
 	}
@@ -217,10 +231,15 @@ void UPhysicsGrapplingComponent::HookedState()
 	Direction = Direction.GetSafeNormal();
 	TravelingDirection = Direction;
 	
-	//cheks if we are close enough
+	//cheks if we are close enough (on exit)
 	if ((CarPawn->GrappleHookMesh->GetComponentLocation() - CarPawn->SphereComp->GetComponentLocation()).SizeSquared() < 400.f*400.f)
 	{
-		
+		// handlig grappleSphere and its events
+		if (TempGrappleSphereComponent != nullptr)
+		{
+			TempGrappleSphereComponent->OnReached();
+			TempGrappleSphereComponent = nullptr;
+		}
 		
 		EnterState(EGrappleStates::InActive);
 	}

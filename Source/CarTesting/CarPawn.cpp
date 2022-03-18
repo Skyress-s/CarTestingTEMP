@@ -129,7 +129,6 @@ void ACarPawn::TiltCarMesh(FVector AsymVector)
 	//orients the mesh
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector + AsymVector * 0.0001f,
 	                                                    GetActorForwardVector());
-
 	/*
 	float sign = NewRot.Roll / abs(NewRot.Roll);
 	if (abs(NewRot.Roll) > 45.f)
@@ -406,7 +405,7 @@ FVector ACarPawn::CalcAsymVector()
 		//UE_LOG(LogTemp, Warning, TEXT("Did round down"));
 		Angle = 0.f;
 	}
-
+	
 	// DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +
 	// 	-GetActorRightVector() * Angle * 5.f , FColor::Cyan, false, 1.f);
 
@@ -429,7 +428,7 @@ void ACarPawn::MoveXAxis(float Value)
 			SphereComp->AddForce(GetActorForwardVector() * Value * BreakForce);
 		}
 	}*/
-
+	Value = Value * UGameplayStatics::GetWorldDeltaSeconds(this);
 	if (!SphereComp->IsSimulatingPhysics()) // guard cluase
 		return;
 
@@ -438,24 +437,24 @@ void ACarPawn::MoveXAxis(float Value)
 		if (Value > 0.f) // accelerating
 		{
 			if (IsUnderMaxSpeed(false))
-				SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, false);
+				SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, true);
 			
 		}
 		else // deaccelerating
 		{
-			SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * Value, NAME_None, false);
+			SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * Value, NAME_None, true);
 		}
 	}
 	else // moving bacward
 	{
 		if (Value > 0.f) // accelerating
 		{
-			SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, false);
+			SphereComp->AddForce(GetActorForwardVector() * AccelerationForce * Value, NAME_None, true);
 		}
 		else // still deaccelerating
 		{
 			if (IsUnderMaxSpeed(false))
-				SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * 0.2f * Value, NAME_None, false);
+				SphereComp->AddForce(GetActorForwardVector() * DeaccelerationForce * 0.2f * Value, NAME_None, true);
 			
 		}
 	}
@@ -482,13 +481,13 @@ void ACarPawn::MoveYAxis(float Value)
 
 void ACarPawn::LookXAxis(float Value)
 {
-	CameraBoom->AddRelativeRotation(FRotator(0.f, Value, 0.f));
+	CameraBoom->AddRelativeRotation(FRotator(0.f,CameraLookSpeed * Value * UGameplayStatics::GetWorldDeltaSeconds(this), 0.f));
 	//UE_LOG(LogTemp, Warning, TEXT("Looking %f"), Value)
 }
 
 void ACarPawn::LookYAxis(float Value)
 {
-	CameraBoom->AddRelativeRotation(FRotator( Value, 0.f,  0.f));
+	CameraBoom->AddRelativeRotation(FRotator( CameraLookSpeed* Value * UGameplayStatics::GetWorldDeltaSeconds(this), 0.f,  0.f));
 }
 
 void ACarPawn::HandleBoost()
@@ -615,7 +614,7 @@ bool ACarPawn::IsMovingForward()
 	
 	if (Angle <= 90.f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Moving fowards!"))
+		//UE_LOG(LogTemp, Warning, TEXT("Moving fowards!"))
 		return true;
 	}
 	return false;

@@ -45,7 +45,7 @@ void UBoostComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			PhysComp->AddForce(GetOwner()->GetActorForwardVector() * 500000.f * Force);
 			
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Is boosting - %f"), Force)
+		//UE_LOG(LogTemp, Warning, TEXT("Is boosting - %f"), Force)
 	}
 }
 

@@ -77,6 +77,8 @@ public:
 	UFUNCTION()
 	void RetractGrapplingHook();
 
+	UPROPERTY()
+	class UGrappleSphereComponent* TempGrappleSphereComponent = nullptr;
 	UFUNCTION()
 	void OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
