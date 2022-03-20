@@ -6,7 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "GrappleSphereComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGrappleEvent, float, AddSpeedAmount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGrappleEvent, FTransform, SphereCompTransfrom);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnReachedEvent, float, AddSpeedAmount);
 
 /**
@@ -25,6 +25,7 @@ public:
 	UPROPERTY(BlueprintAssignable ,Category = "Event")
 	FOnReachedEvent OnReachedEvent;
 
+	
 	
 	
 	UFUNCTION()

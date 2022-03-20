@@ -82,6 +82,8 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxSpeed = 3500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+	float TurnSpeed = 0.5f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float GravityMod = 1.f;
 	const float BaseGravMod = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -90,15 +92,19 @@ private:
 	FVector StartPlayerLocation = FVector::ZeroVector;
 
 	//Camera variables
+	
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Camera")
-	float CameraLookSpeed = 70.f;
-	UPROPERTY() //gets set at begin play
+	float CameraLookSpeed = 70.f; //gets set at begin play
+	UPROPERTY()
+	float StartCameraBoomLength = 0.f; //gets set at begin play
+	UPROPERTY() 
 	FVector2D OnStartCameraLag = FVector2D::ZeroVector;
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Camera")
 	FVector2D GrapplingCameraLag = FVector2D::ZeroVector;
-	
-	UPROPERTY()
-	float StartCameraBoomLength = 0.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
+	float MaxYawLookAngle = 45.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
+	float MaxPichLookAngle = 45.f;
 	
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")

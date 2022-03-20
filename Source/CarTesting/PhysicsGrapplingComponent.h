@@ -38,44 +38,62 @@ private:
 	EGrappleStates CurrentGrappleState = EGrappleStates::InActive;
 	UPROPERTY()
 	bool bEnterState = false;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
-	float OnHookedVelocity = 0.f;
+	
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
 	float FireGrappleSpeed = 10000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
 	float GrappleRotationSpeed = 500.f;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	FVector OnHookedDirection = FVector::ZeroVector;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	FVector TravelingDirection = FVector::ZeroVector;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	FVector HomingTargetLocation = FVector::ZeroVector;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	bool bHoming = false;
+	
 	UPROPERTY()
 	float MoveToTargetModifier = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
 	float MoveToTargetAcceleration = 1.3f;
-	
+
+	//caps how slow or fast 
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
 	float LowestOnHookedSpeed = 2000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
 	float HighestOnHookedSpeed = 9000.f;
+
+	UPROPERTY(/*meta = (AllowPrivateAccess = "true"),  EditAnywhere, Category = "Grapple"*/)
+	float OnHookedSpeed = 0.f;
+	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple"*/)
+	FVector OnHookedDirection = FVector::ZeroVector;
+	UPROPERTY()
+	FTransform OnHookedVehicleTransfrom = FTransform::Identity;
+	UPROPERTY()
+	FVector TravelingDirection = FVector::ZeroVector;
+	UPROPERTY()
+	FVector HomingTargetLocation = FVector::ZeroVector;
+	UPROPERTY()
+	bool bHoming = false;
+
+	UPROPERTY(meta = (ToolTip = "Will be used to orient the sphere component mesh, gets set via on hooked event"))
+	FTransform TargetComponentTransfrom = FTransform::Identity;
+	
 	
 public:
 	UFUNCTION()
 	EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
 	UFUNCTION()
-	float GetOnHookedVelocitySize(){ return OnHookedVelocity; }
+	float GetOnHookedVelocitySize(){ return OnHookedSpeed; }
 	UFUNCTION()
 	FVector GetOnHookedDirection(){ return OnHookedDirection; }
 	UFUNCTION()
+	FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
+	UFUNCTION()
 	FVector GetTravelingDirection(){ return TravelingDirection; }
+	UFUNCTION()
+	FTransform GetTargetComponentTransfrom(){return TargetComponentTransfrom; }
+
 	
 	UFUNCTION()
 	void FireGrapplingHook();
 	UFUNCTION()
 	void RetractGrapplingHook();
+
+	UFUNCTION()
+	void ResetTemporalVariables();
 
 	UPROPERTY()
 	class UGrappleSphereComponent* TempGrappleSphereComponent = nullptr;

@@ -264,28 +264,29 @@ void ACarPawn::StateGrappling()
 	if (bEnterState)
 	{
 		bEnterState = false;
-		//PhysicsGrappleComponent->FireGrapplingHook();
-		//EnterState(EVehicleState::Driving);
 		SphereComp->SetSimulatePhysics(false);
 
-		//sets on exit
+		
 		CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
 		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
-		// CameraBoom->CameraLagSpeed = 0.f;
-		// CameraBoom->CameraRotationLagSpeed = 0.f;
 	}
 
 	//SpeedHandleCameraBoomEffect(false);
 	
 	//orients the sphere comp
-	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
+	/*FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
 	SphereComp->SetWorldRotation(NewRot);
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + PhysicsGrappleComponent->GetOnHookedDirection() * 400.f, FColor::Red, true);
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + GravitySplineActive->
-		GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()) * 400.f,
-		FColor::Green, true);
-	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));*/
+	float StartDistance = (PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
+	float CurrentDistance = (SphereComp->GetComponentLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
+	float lerpFactor = CurrentDistance / StartDistance; // at start will be 1, and will progress towards 0
+	lerpFactor = 1.f -lerpFactor; // at start will be 0, will progress towards 1
 
+	/*FRotator NewRot = FMath::Lerp<FRotator, float>(
+		PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetRotation(),
+		PhysicsGrappleComponent->GetTargetComponentTransfrom().GetRotation(),
+		lerpFactor);*/
+	
 	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
@@ -302,45 +303,7 @@ void ACarPawn::StateGrappling()
 		
 		EnterState(EVehicleState::AirBorne);
 	}
-	/*// if (bEnterState)
-	// {
-	// 	if (GrappleComponent->GrappleTargetsLastFrame.Num() > 0)
-	// 	{
-	// 		//UE_LOG(LogTemp, Warning, TEXT("%s"), *GrappleComponent->GrappleTargetsLastFrame[0]->GetOwner()->GetName())
-	// 		if (GrappleComponent->GrappleTargetsLastFrame[0] != nullptr)
-	// 		{
-	// 			UE_LOG(LogTemp, Warning, TEXT("%d"), GrappleComponent->GrappleTargetsLastFrame.Num())
-	// 			GrappleComponent->SetTarget(GrappleComponent->GrappleTargetsLastFrame[0]);
-	// 			GrappleComponent->SetGrappleSpeed(SphereComp->GetPhysicsLinearVelocity().Size());
-	// 			GrappleComponent->SetDirectionAtStart((GrappleComponent->GetTarget()->GetActorLocation() - GetActorLocation()).GetSafeNormal());
-	// 			SphereComp->SetSimulatePhysics(false);
-	// 		}
-	// 		else
-	// 		{
-	// 			EnterState(EVehicleState::AirBorne);
-	// 		}
-	// 		
-	// 	}
-	// 	else
-	// 	{
-	// 		EnterState(EVehicleState::AirBorne);
-	// 	}
-	// }
-	//
-	//
-	// GrappleComponent->MoveTowardsTarget();
-	//
-	// if (GrappleComponent->DistanceToTargetSqr() < FinishGrappleDistance * FinishGrappleDistance)
-	// {
-	// 	SphereComp->SetSimulatePhysics(true);
-	// 	SphereComp->SetPhysicsLinearVelocity(GrappleComponent->GetGrappleSpeed() * GrappleComponent->GetDirectionAtStart());
-	// 	EnterState(EVehicleState::AirBorne);
-	//
-	// 	//rotates the sphere mesh to appropiate
-	// 	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromXZ(GrappleComponent->GetDirectionAtStart(), LocalUpVector);
-	// 	SphereComp->SetWorldRotation(NewSphereRot);
-	// 	SphereComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
-	// }*/
+	
 }
 
 void ACarPawn::StateAirBorne()
@@ -471,7 +434,7 @@ void ACarPawn::MoveYAxis(float Value)
 	FVector Forwardd = SphereComp->GetForwardVector();
 	FVector Upp = SphereComp->GetUpVector();
 
-	Forwardd =Forwardd.RotateAngleAxis(Value * 1.f, Upp);
+	Forwardd =Forwardd.RotateAngleAxis(Value * TurnSpeed, Upp);
 
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(Forwardd, Upp);
 	SphereComp->SetWorldRotation(NewRot);
@@ -481,13 +444,22 @@ void ACarPawn::MoveYAxis(float Value)
 
 void ACarPawn::LookXAxis(float Value)
 {
-	CameraBoom->AddRelativeRotation(FRotator(0.f,CameraLookSpeed * Value * UGameplayStatics::GetWorldDeltaSeconds(this), 0.f));
-	//UE_LOG(LogTemp, Warning, TEXT("Looking %f"), Value)
+	FRotator OldRotation = CameraBoom->GetRelativeRotation();
+	float Yaw = OldRotation.Yaw + CameraLookSpeed* Value * UGameplayStatics::GetWorldDeltaSeconds(this);
+	Yaw = FMath::Clamp(Yaw, -MaxYawLookAngle, MaxYawLookAngle);
+
+	OldRotation.Yaw = Yaw;
+	CameraBoom->SetRelativeRotation(OldRotation);
 }
 
 void ACarPawn::LookYAxis(float Value)
 {
-	CameraBoom->AddRelativeRotation(FRotator( CameraLookSpeed* Value * UGameplayStatics::GetWorldDeltaSeconds(this), 0.f,  0.f));
+	FRotator OldRotation = CameraBoom->GetRelativeRotation();
+	float Pitch = OldRotation.Pitch + CameraLookSpeed* Value * UGameplayStatics::GetWorldDeltaSeconds(this);
+	Pitch = FMath::Clamp(Pitch, -MaxPichLookAngle, MaxPichLookAngle);
+
+	OldRotation.Pitch = Pitch;
+	CameraBoom->SetRelativeRotation(OldRotation);
 }
 
 void ACarPawn::HandleBoost()

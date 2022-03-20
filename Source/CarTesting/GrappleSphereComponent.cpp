@@ -11,7 +11,7 @@ UGrappleSphereComponent::UGrappleSphereComponent()
 
 void UGrappleSphereComponent::OnGrapple()
 {
-	OnGrappleHitEvent.Broadcast(AddSpeed);
+	OnGrappleHitEvent.Broadcast(GetComponentTransform());
 	UE_LOG(LogTemp, Warning, TEXT("On Grapple(From GrapleSphereComponent!)"))
 }
 

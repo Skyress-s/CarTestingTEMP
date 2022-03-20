@@ -9,21 +9,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6fb794af-cbac-4f57-a13d-c8be47a5b90c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/VeryBadPipe.blend" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/VeryBadPipe.blend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/VeryBadPipe.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/VeryBadPipe.blend1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/VeryBadPipe.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/VeryBadPipe.fbx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Meshes/VeryBadPipe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Meshes/VeryBadPipe.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/BoostComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/SplineWormEnemy.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,8 +27,6 @@
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/CarPawn.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.h" root0="FORCE_HIGHLIGHTING" />
@@ -43,11 +34,12 @@
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/GravitySplineActor.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CarTesting/TestingActor.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CarTesting/TestingActor.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="25nJxdEDdsQZFm9LR8j6FNP0fJq" />
   <component name="ProjectViewState">
@@ -357,6 +349,7 @@
       <workItem from="1647550491218" duration="1231000" />
       <workItem from="1647593596188" duration="2995000" />
       <workItem from="1647605411224" duration="9402000" />
+      <workItem from="1647768975812" duration="4153000" />
     </task>
     <servers />
   </component>
