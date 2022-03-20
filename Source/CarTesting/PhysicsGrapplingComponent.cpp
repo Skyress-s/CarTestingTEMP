@@ -120,7 +120,7 @@ void UPhysicsGrapplingComponent::OnGrappleHit(UPrimitiveComponent* HitComp, AAct
 			UGrappleSphereComponent* GrappleSphere = OtherActor->FindComponentByClass<UGrappleSphereComponent>(); // better?
 			GrappleSphere->OnGrapple();
 			TempGrappleSphereComponent = GrappleSphere;
-			TargetComponentTransfrom = GrappleSphere->GetComponentTransform();
+			TargetComponentTransfrom = GrappleSphere->GetOwner()->GetTransform();
 			
 			
 		}

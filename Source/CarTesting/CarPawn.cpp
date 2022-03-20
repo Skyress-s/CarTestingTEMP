@@ -281,7 +281,13 @@ void ACarPawn::StateGrappling()
 	float CurrentDistance = (SphereComp->GetComponentLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
 	float lerpFactor = CurrentDistance / StartDistance; // at start will be 1, and will progress towards 0
 	lerpFactor = 1.f -lerpFactor; // at start will be 0, will progress towards 1
-
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), lerpFactor)
+	FRotator NewRot = UKismetMathLibrary::RLerp(
+		PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetRotation().Rotator(),
+		PhysicsGrappleComponent->GetTargetComponentTransfrom().GetRotation().Rotator(),
+		lerpFactor,
+		true);
+	SphereComp->SetWorldRotation(NewRot);
 	/*FRotator NewRot = FMath::Lerp<FRotator, float>(
 		PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetRotation(),
 		PhysicsGrappleComponent->GetTargetComponentTransfrom().GetRotation(),
