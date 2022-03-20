@@ -3,6 +3,7 @@
 
 #include "GrappleTarget.h"
 
+#include "CarTesting/GrappleSphereComponent.h"
 #include "Components/BillboardComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h" 
@@ -19,8 +20,11 @@ AGrappleTarget::AGrappleTarget()
 	Widgett = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	Widgett->SetupAttachment(GetRootComponent());
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	SphereComponent->SetupAttachment(GetRootComponent());
+	// SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	// SphereComponent->SetupAttachment(GetRootComponent());
+
+	GrappleSphereComponent = CreateDefaultSubobject<UGrappleSphereComponent>(TEXT("GrappleSphereComponent"));
+	GrappleSphereComponent->SetupAttachment(GetRootComponent());
 	
 }
 

@@ -7,6 +7,7 @@ UGrappleSphereComponent::UGrappleSphereComponent()
 {
 	SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
+	SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 }
 
 void UGrappleSphereComponent::OnGrapple()

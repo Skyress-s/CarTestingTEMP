@@ -47,7 +47,7 @@ private:
 	UPROPERTY()
 	float MoveToTargetModifier = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	float MoveToTargetAcceleration = 1.3f;
+	float MoveToTargetAcceleration = 2.f;
 
 	//caps how slow or fast 
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
@@ -70,6 +70,10 @@ private:
 
 	UPROPERTY(meta = (ToolTip = "Will be used to orient the sphere component mesh, gets set via on hooked event"))
 	FTransform TargetComponentTransfrom = FTransform::Identity;
+	UPROPERTY()
+	FVector TargetComponentForwardVector = FVector::ZeroVector;
+	UPROPERTY()
+	FVector TargetComponentUpVector = FVector::ZeroVector;
 	
 	
 public:
@@ -83,6 +87,8 @@ public:
 	FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
 	UFUNCTION()
 	FVector GetTravelingDirection(){ return TravelingDirection; }
+	UFUNCTION()
+	FRotator GetTargetComponentRotator();
 	UFUNCTION()
 	FTransform GetTargetComponentTransfrom(){return TargetComponentTransfrom; }
 

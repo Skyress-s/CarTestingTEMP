@@ -274,24 +274,19 @@ void ACarPawn::StateGrappling()
 	//SpeedHandleCameraBoomEffect(false);
 	
 	//orients the sphere comp
-	/*FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(PhysicsGrappleComponent->GetTravelingDirection(), GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()));
-	SphereComp->SetWorldRotation(NewRot);
-	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));*/
+	
 	float StartDistance = (PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
 	float CurrentDistance = (SphereComp->GetComponentLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
 	float lerpFactor = CurrentDistance / StartDistance; // at start will be 1, and will progress towards 0
 	lerpFactor = 1.f -lerpFactor; // at start will be 0, will progress towards 1
 	//UE_LOG(LogTemp, Warning, TEXT("%f"), lerpFactor)
 	FRotator NewRot = UKismetMathLibrary::RLerp(
-		PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetRotation().Rotator(),
-		PhysicsGrappleComponent->GetTargetComponentTransfrom().GetRotation().Rotator(),
+		PhysicsGrappleComponent->GetOnHookedVehicleTransform().Rotator(),
+		PhysicsGrappleComponent->GetTargetComponentTransfrom().Rotator(),
 		lerpFactor,
 		true);
 	SphereComp->SetWorldRotation(NewRot);
-	/*FRotator NewRot = FMath::Lerp<FRotator, float>(
-		PhysicsGrappleComponent->GetOnHookedVehicleTransform().GetRotation(),
-		PhysicsGrappleComponent->GetTargetComponentTransfrom().GetRotation(),
-		lerpFactor);*/
+	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
 	
 	
 	//psudo on exit

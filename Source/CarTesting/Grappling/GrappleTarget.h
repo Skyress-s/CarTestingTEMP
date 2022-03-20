@@ -28,8 +28,10 @@ private:
 	class UBillboardComponent* BillboardComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	class UWidgetComponent* Widgett = nullptr;
+	// UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
+	// class USphereComponent* SphereComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class USphereComponent* SphereComponent = nullptr;
+	class UGrappleSphereComponent* GrappleSphereComponent = nullptr;
 
 public:
 	void SetVisbility(bool bVisible);
