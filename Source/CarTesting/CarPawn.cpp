@@ -108,18 +108,18 @@ void ACarPawn::ApplyGravity()
 		if (SphereComp->IsSimulatingPhysics())
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
-			static
 			float HeightAboveGround{DistanceToGround()};
-			UE_LOG(LogTemp, Warning, TEXT("Height %f"), HeightAboveGround);
+			float ScaleHeight{HeightAboveGround/EqHeight};
 			FVector HeightVelocity{
 				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
 			};
 			FVector GravityForce{-GravityUpVector * 68.1f * 40.f * GravityMod};
 			FVector HoverForce{
-				-GravityForce*UKismetMathLibrary::Exp(1.f - HeightAboveGround*0.02) -
-					HeightVelocity*UKismetMathLibrary::Exp(1.f - HeightAboveGround*0.02)
+				-GravityForce * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
+					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight)
 			};
 			SphereComp->AddForce(GravityForce+HoverForce, FName(), true);
+			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f, h = %f"), GravityForce.Z, HoverForce.Z, ScaleHeight, HeightAboveGround);
 		}
 	}
 }
@@ -456,19 +456,18 @@ bool ACarPawn::IsGrounded()
 	GetWorld()->LineTraceSingleByObjectType(
 		hit,
 		ArrowRayCastStart->GetComponentLocation(),
-		ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * 30.f,
+		ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * 1.5 * EqHeight,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
+	// DrawDebugLine(GetWorld(), ArrowRayCastStart->GetComponentLocation(), ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * 200.f * EqHeight, FColor::Red, true);
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
-		UE_LOG(LogTemp, Warning, TEXT("HIT %f"), (hit.ImpactPoint - ArrowRayCastStart()->GetComponentLocation()).Size());
-	
-		
+		UE_LOG(LogTemp, Warning, TEXT("Hit"))
 		return true;
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("NO HIT"))
+		UE_LOG(LogTemp, Warning, TEXT("NO HIT"))
 		return false;
 	}
 
@@ -480,18 +479,22 @@ float ACarPawn::DistanceToGround()
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 	FHitResult hit{};
 	FVector StartLocation{ArrowRayCastStart->GetComponentLocation()};
+	FVector EndLocation{StartLocation - GetActorUpVector()*200*EqHeight};
 	GetWorld()->LineTraceSingleByObjectType(
 		hit,
 		StartLocation,
-		StartLocation - GetActorUpVector() * 30.f,
+		EndLocation,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
-	if (hit.IsValidBlockingHit()) {
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
+	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
-		return (hit.ImpactPoint - StartLocation).Size();
-	
-		
+		return hit.Distance;
+	}
+	else
+	{
+		return 1000*EqHeight;
 	}
 }
 

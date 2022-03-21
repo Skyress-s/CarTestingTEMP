@@ -57,6 +57,11 @@ public:
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
 		class AGravitySplineActor* GravitySplineActive = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car|Movment|Hover")
+		float EqHeight{50.f};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car|Movment|Hover")
+		float HoverDampingFactor{3};
 		 
 
 	           
@@ -98,7 +103,7 @@ private:
 	UFUNCTION()
 	void StateGrappling();
 	UPROPERTY(EditAnywhere, Category = "Car|State")
-	float FinishGrappleDistance = 100.f;
+	float FinishGrappleDistance = 300.f;
 	
 	UFUNCTION()
 	void StateAirBorne();
