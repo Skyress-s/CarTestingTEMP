@@ -24,15 +24,27 @@ public:
 	virtual void Tick(float DeltaTime) override;
 // my deseg
 private:
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class UBillboardComponent* BillboardComponent = nullptr;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class UWidgetComponent* Widgett = nullptr;
+	/*UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
+	class UBillboardComponent* BillboardComponent = nullptr;*/
+	/*UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
+	class UWidgetComponent* Widget = nullptr;*/
 	// UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	// class USphereComponent* SphereComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	class UGrappleSphereComponent* GrappleSphereComponent = nullptr;
-
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
+	class USkeletalMeshComponent* MainMesh = nullptr;
+	UPROPERTY()
+	class UBoxComponent* Trigger = nullptr;
+	
+	
 public:
 	void SetVisbility(bool bVisible);
+	UFUNCTION()
+	void OnReachedTarget(float AddSpeedAmount);
+	UFUNCTION()
+	void OnGrappleTarget(FTransform SphereCompTransfrom);
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

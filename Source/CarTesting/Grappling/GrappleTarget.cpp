@@ -5,6 +5,7 @@
 
 #include "CarTesting/GrappleSphereComponent.h"
 #include "Components/BillboardComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h" 
 
@@ -14,17 +15,20 @@ AGrappleTarget::AGrappleTarget()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComp"));
-	SetRootComponent(BillboardComponent);
 	
-	Widgett = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
-	Widgett->SetupAttachment(GetRootComponent());
+	
+	/*Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	Widget->SetupAttachment(GetRootComponent());*/
 
-	// SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	// SphereComponent->SetupAttachment(GetRootComponent());
+	MainMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MainSkeletalMesh"));
+	SetRootComponent(MainMesh);
 
 	GrappleSphereComponent = CreateDefaultSubobject<UGrappleSphereComponent>(TEXT("GrappleSphereComponent"));
-	GrappleSphereComponent->SetupAttachment(GetRootComponent());
+	GrappleSphereComponent->SetupAttachment(MainMesh, FName("Grapple"));
+
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box Component"));
+	Trigger->SetupAttachment(GetRootComponent());
+	
 	
 }
 
@@ -33,6 +37,10 @@ void AGrappleTarget::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GrappleSphereComponent->OnReachedEvent.AddDynamic(this, &AGrappleTarget::OnReachedTarget);
+	GrappleSphereComponent->OnGrappleHitEvent.AddDynamic(this, &AGrappleTarget::OnGrappleTarget);
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AGrappleTarget::OnTriggerEnter);
+	
 }
 
 // Called every frame
@@ -40,10 +48,29 @@ void AGrappleTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
+
 }
 
 void AGrappleTarget::SetVisbility(bool bVisible)
 {
-	Widgett->SetVisibility(bVisible);
+	//Widget->SetVisibility(bVisible);
+}
+
+void AGrappleTarget::OnReachedTarget(float AddSpeedAmount)
+{
+	Destroy();
+	UE_LOG(LogTemp, Warning, TEXT("Reached Grapple Target"))
+}
+
+void AGrappleTarget::OnGrappleTarget(FTransform SphereCompTransfrom)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grapple Grapple target"))
+}
+
+void AGrappleTarget::OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	MainMesh->Play(false);
 }
 

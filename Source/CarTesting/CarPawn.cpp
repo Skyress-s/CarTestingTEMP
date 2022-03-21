@@ -383,15 +383,12 @@ float ACarPawn::CaltAsymForce()
 
 void ACarPawn::MoveXAxis(float Value)
 {
-	/*//comparing squared size since its faster
-	if (IsUnderMaxSpeed(false) /*|| Value < 0.f#1#)
+	//guard cluase
+	if (CurrentVehicleState != EVehicleState::Driving)
 	{
-		if (SphereComp->IsSimulatingPhysics())
-		{
-			float BreakForce = Value > 0.f ? 90000.f : 400000.f; 
-			SphereComp->AddForce(GetActorForwardVector() * Value * BreakForce);
-		}
-	}*/
+		return;
+	}
+	
 	Value = Value * UGameplayStatics::GetWorldDeltaSeconds(this);
 	if (!SphereComp->IsSimulatingPhysics()) // guard cluase
 		return;
@@ -427,15 +424,15 @@ void ACarPawn::MoveXAxis(float Value)
 
 void ACarPawn::MoveYAxis(float Value)
 {
-	//CarMesh->AddTorque(GetActorUpVector() * 1000000.f * Value);
-	//SphereComp->AddRelativeRotation(FRotator(0.f, 1.f * Value, 0.f));
-	CarMesh->AddRelativeRotation(FRotator(0.f, 1.f * Value * UGameplayStatics::GetWorldDeltaSeconds(this) * 100.f, 0.f));
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), Value)
-
+	//guard cluase
+	if (CurrentVehicleState != EVehicleState::Driving)
+	{
+		return;
+	}
+	
 	FVector Forwardd = SphereComp->GetForwardVector();
 	FVector Upp = SphereComp->GetUpVector();
-
-	Forwardd =Forwardd.RotateAngleAxis(Value * TurnSpeed, Upp);
+	Forwardd =Forwardd.RotateAngleAxis(Value * TurnSpeed * UGameplayStatics::GetWorldDeltaSeconds(this), Upp);
 
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(Forwardd, Upp);
 	SphereComp->SetWorldRotation(NewRot);

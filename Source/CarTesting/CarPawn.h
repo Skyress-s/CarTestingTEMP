@@ -82,7 +82,7 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxSpeed = 3500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-	float TurnSpeed = 0.5f;
+	float TurnSpeed = 50.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float GravityMod = 1.f;
 	const float BaseGravMod = 1.f;

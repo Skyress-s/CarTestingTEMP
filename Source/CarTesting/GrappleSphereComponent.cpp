@@ -19,5 +19,6 @@ void UGrappleSphereComponent::OnGrapple()
 void UGrappleSphereComponent::OnReached()
 {
 	OnReachedEvent.Broadcast(AddSpeed);
+	
 	UE_LOG(LogTemp, Warning, TEXT("On Reached (From GrapleSphereComponent!)"))
 }
