@@ -18,6 +18,7 @@
 #include "Chaos/KinematicTargets.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Components/SplineComponent.h"
+#include "Components/SplineMeshComponent.h"
 #include "Grappling/GrappleComponent.h"
 #include "Grappling/GrappleTarget.h"
 
@@ -53,23 +54,30 @@ ACarPawn::ACarPawn()
 	ArrowRayCastStart = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow RayCastStart"));
 	ArrowRayCastStart->SetupAttachment(GetRootComponent());
 	
-	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
-	
-	//GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("GrappleComponent"));
-	
+	GrappleHookSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("GrappleHookSphereComp"));
+	GrappleHookSphereComponent->SetupAttachment(GetRootComponent());
+	GrappleHookSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	
 	GrappleHookMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrapplingHookMesh"));
-	GrappleHookMesh->SetupAttachment(SphereComp);
+	GrappleHookMesh->SetupAttachment(GrappleHookSphereComponent);
 	GrappleHookMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GrappleHookMesh->SetEnableGravity(false);
 
 	GrappleSensor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrappleSensor"));
-	GrappleSensor->SetupAttachment(GrappleHookMesh);
-	GrappleSensor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GrappleSensor->SetupAttachment(GrappleHookSphereComponent);
+	GrappleSensor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//response to channel manually set in BP
 
-    PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
+	// neck
+	NeckSpline = CreateDefaultSubobject<USplineComponent>(TEXT("NeckSpline"));
+	NeckSpline->SetupAttachment(CarMesh);
+	
+	NeckSplineMesh = CreateDefaultSubobject<USplineMeshComponent>(TEXT("NeckSplineMesh"));
+	NeckSplineMesh->SetupAttachment(CarMesh);
 
+	// actor componentns
+    PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
+	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
 	CameraEffectComponent = CreateDefaultSubobject<UCameraEffecttComponent>(TEXT("CameraEffectComponent"));
 	
 }
@@ -83,7 +91,7 @@ void ACarPawn::BeginPlay()
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
 	SphereComp->OnComponentEndOverlap.AddDynamic(this, &ACarPawn::OnEndOverLap);
 
-	GrappleHookMesh->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
+	GrappleHookSphereComponent->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
 	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
 	GrappleSensor->OnComponentEndOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorEndOverlap);
 	CameraEffectComponent->SetCameraCurrent(MainCamera);
@@ -244,7 +252,7 @@ void ACarPawn::StateDriving()
 	
 		// rotates sphere comp
 		RotateSphereCompToLocalUpVector();
-		
+		UpdateSplinePoints();
 	}
 	else
 	{
@@ -287,7 +295,7 @@ void ACarPawn::StateGrappling()
 		true);
 	SphereComp->SetWorldRotation(NewRot);
 	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
-	
+	UpdateSplinePoints();
 	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
@@ -324,7 +332,7 @@ void ACarPawn::StateAirBorne()
 		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
 		EnterState(EVehicleState::Driving);
 	}
-
+	UpdateSplinePoints();
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())
 	{
@@ -354,6 +362,36 @@ void ACarPawn::ToggleGrappleHook()
 		PhysicsGrappleComponent->RetractGrapplingHook();
 	}
 	
+}
+
+void ACarPawn::UpdateSplinePoints()
+{
+	FVector StartLocation, StartTangent, EndLocation, EndTangent = FVector::ZeroVector;
+	
+	StartLocation = CarMesh->GetComponentLocation();
+	EndLocation = GrappleHookMesh->GetComponentLocation();
+
+	float Distance = (StartLocation - EndLocation).Size();
+	
+	EndTangent = GrappleHookMesh->GetForwardVector() * Distance;
+	StartTangent = CarMesh->GetForwardVector() * Distance;
+	
+	//Sets the values to the spline
+	NeckSpline->SetLocationAtSplinePoint(0, StartLocation, ESplineCoordinateSpace::World, false);
+	NeckSpline->SetTangentAtSplinePoint(0, StartTangent, ESplineCoordinateSpace::World, false);
+	NeckSpline->SetLocationAtSplinePoint(1, EndLocation, ESplineCoordinateSpace::World, false);
+	NeckSpline->SetTangentAtSplinePoint(1, EndTangent, ESplineCoordinateSpace::World, true);
+
+	//TODO TEMP FOR TESTING MOVE TO UPDATE SPLINE MESH!
+	NeckSplineMesh->SetStartPosition(StartLocation);
+	NeckSplineMesh->SetStartTangent(StartTangent);
+	NeckSplineMesh->SetEndPosition(EndLocation);
+	NeckSplineMesh->SetEndTangent(EndTangent);
+	
+}
+
+void ACarPawn::UpdateSplineMesh()
+{
 }
 
 FVector ACarPawn::CalcAsymVector()

@@ -45,23 +45,27 @@ public:
 		class UArrowComponent* ArrowRayCastStart{ nullptr };
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UBoostComponent* BoostComponent = nullptr;
-	// UPROPERTY(EditDefaultsOnly, Category = "Car")
-	// 	class UGrappleComponent* GrappleComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
-	class UStaticMeshComponent* GrappleHookMesh = nullptr;
+	class USphereComponent* GrappleHookSphereComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
-	class UStaticMeshComponent* GrappleSensor = nullptr;
+		class UStaticMeshComponent* GrappleHookMesh = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
-	class UPhysicsGrapplingComponent* PhysicsGrappleComponent = nullptr;
+		class UStaticMeshComponent* GrappleSensor = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
-	class UCameraEffecttComponent* CameraEffectComponent = nullptr;
+		class UPhysicsGrapplingComponent* PhysicsGrappleComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+		class UCameraEffecttComponent* CameraEffectComponent = nullptr;
+
+	// spline neck
+	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
+		class USplineComponent* NeckSpline = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
+		class USplineMeshComponent* NeckSplineMesh = nullptr;
 	
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
 		class AGravitySplineActor* GravitySplineActive = nullptr;
-		 
-
-	           
+	
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	FVector LocalUpVector = FVector(1.f,1.f,1.f);
@@ -80,7 +84,7 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 	float DeaccelerationForce = 400000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-		float MaxSpeed = 3500.f;
+		float MaxSpeed = 7500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 	float TurnSpeed = 50.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -132,7 +136,16 @@ private:
 	UFUNCTION()
 	void ToggleGrappleHook();
 	
-
+	// Neck handling
+	UFUNCTION()
+	void UpdateSplinePoints();
+	UFUNCTION()
+	void UpdateSplineMesh();
+	
+	
+	//TODO orgenize these :)
+	//other funcs
+	
 	FVector CalcAsymVector();
 	float CaltAsymForce();
 	void MoveXAxis(float Value);
