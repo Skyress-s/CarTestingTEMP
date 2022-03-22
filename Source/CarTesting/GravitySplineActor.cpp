@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h" 
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGravitySplineActor::AGravitySplineActor()
@@ -121,7 +122,6 @@ FVector AGravitySplineActor::GetAdjustedUpVectorFromLocation(FVector Loc)
 	default:
 		break;
 	}
-	
 	
 
 	return ReturnUpVector;

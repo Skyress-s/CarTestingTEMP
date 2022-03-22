@@ -388,6 +388,7 @@ void ACarPawn::UpdateSplinePoints()
 	NeckSplineMesh->SetEndPosition(EndLocation);
 	NeckSplineMesh->SetEndTangent(EndTangent);
 	
+	
 }
 
 void ACarPawn::UpdateSplineMesh()
