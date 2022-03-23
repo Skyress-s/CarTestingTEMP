@@ -23,7 +23,8 @@ void UNeckComponent::BeginPlay()
 
 	CarPawn = Cast<ACarPawn>(GetOwner());
 	Spline = CarPawn->NeckSpline;
-	// ...
+
+	SplineMeshComponents.Init(nullptr, 0);
 	
 }
 
@@ -33,7 +34,7 @@ void UNeckComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	
 }
 
 void UNeckComponent::UpdateSplinePoints()
