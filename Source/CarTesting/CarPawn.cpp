@@ -32,6 +32,7 @@ ACarPawn::ACarPawn()
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SetRootComponent(SphereComp);
 	SphereComp->SetSimulatePhysics(true);
+	SphereComp->SetEnableGravity(false);
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	//SphereComp->BodyInstance.bLockRotation = true;
 
