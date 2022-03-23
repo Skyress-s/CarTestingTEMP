@@ -71,6 +71,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
 		float HoverCutOffHeight{1.5f*HoverHeight};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
+		float HoverDampingFactor{4};
 	
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

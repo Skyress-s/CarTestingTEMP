@@ -123,11 +123,22 @@ void ACarPawn::ApplyGravity()
 		FVector GravityUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(
 			SphereComp->GetComponentLocation());
 		GravityUpVector.Normalize();
-
+		FVector HoverForce(0.f);
 		if (SphereComp->IsSimulatingPhysics())
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
-			SphereComp->AddForce(-GravityUpVector * 68.1f * 40.f * GravityMod, FName(), true);
+			float ScaleHeight{DistanceToGround()/HoverHeight};
+			FVector HeightVelocity{
+				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
+			};
+			FVector GravityForce{-GravityUpVector * 68.1f * 40.f * GravityMod};
+			if (IsGrounded())
+			{
+				HoverForce = (-GravityForce * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
+					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight));
+			}
+			SphereComp->AddForce(GravityForce+HoverForce, FName(), true);
+			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForce.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }
@@ -554,7 +565,7 @@ bool ACarPawn::IsGrounded()
 	GetWorld()->LineTraceSingleByObjectType(
 		hit,
 		ArrowRayCastStart->GetComponentLocation(),
-		ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * 30.f,
+		ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * HoverCutOffHeight,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
