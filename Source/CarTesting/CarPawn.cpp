@@ -573,6 +573,30 @@ bool ACarPawn::IsGrounded()
 	
 }
 
+float ACarPawn::DistanceToGround()
+{
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+	FHitResult hit{};
+	FVector StartLocation{ArrowRayCastStart->GetComponentLocation()};
+	FVector EndLocation{StartLocation - GetActorUpVector()*20*HoverHeight};
+	GetWorld()->LineTraceSingleByObjectType(
+		hit,
+		StartLocation,
+		EndLocation,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+		TraceParams
+	);
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
+	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
+		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		return hit.Distance;
+	}
+	else
+	{
+		return 1000*HoverHeight;
+	}
+}
+
 FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target)
 {
 	float Speed = UKismetMathLibrary::Cos(UnsignedAngle(Velocity, Target - StartLocation)) * Velocity.Size();

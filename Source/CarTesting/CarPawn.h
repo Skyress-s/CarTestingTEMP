@@ -65,6 +65,12 @@ public:
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
 		class AGravitySplineActor* GravitySplineActive = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
+		float HoverHeight{50};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
+		float HoverCutOffHeight{1.5f*HoverHeight};
 	
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -158,6 +164,7 @@ private:
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
 	bool IsGrounded();
+	float DistanceToGround();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
