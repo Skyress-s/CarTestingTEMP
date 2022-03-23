@@ -61,7 +61,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car|Movment|Hover")
 		float EqHeight{50.f};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car|Movment|Hover")
-		float HoverDampingFactor{3};
+		float HoverDampingFactor{4};
 		 
 
 	           

@@ -104,22 +104,22 @@ void ACarPawn::ApplyGravity()
 		FVector GravityUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(
 			SphereComp->GetComponentLocation());
 		GravityUpVector.Normalize();
-
+		FVector HoverForce(0.f);
 		if (SphereComp->IsSimulatingPhysics())
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
-			float HeightAboveGround{DistanceToGround()};
-			float ScaleHeight{HeightAboveGround/EqHeight};
+			float ScaleHeight{DistanceToGround()/EqHeight};
 			FVector HeightVelocity{
 				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
 			};
 			FVector GravityForce{-GravityUpVector * 68.1f * 40.f * GravityMod};
-			FVector HoverForce{
-				-GravityForce * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
-					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight)
-			};
+			if (IsGrounded())
+			{
+				HoverForce = (-GravityForce * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
+					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight));
+			}
 			SphereComp->AddForce(GravityForce+HoverForce, FName(), true);
-			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f, h = %f"), GravityForce.Z, HoverForce.Z, ScaleHeight, HeightAboveGround);
+			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f, h = %f"), GravityForce.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }
@@ -479,7 +479,7 @@ float ACarPawn::DistanceToGround()
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 	FHitResult hit{};
 	FVector StartLocation{ArrowRayCastStart->GetComponentLocation()};
-	FVector EndLocation{StartLocation - GetActorUpVector()*200*EqHeight};
+	FVector EndLocation{StartLocation - GetActorUpVector()*20*EqHeight};
 	GetWorld()->LineTraceSingleByObjectType(
 		hit,
 		StartLocation,
@@ -487,7 +487,7 @@ float ACarPawn::DistanceToGround()
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
 		return hit.Distance;
