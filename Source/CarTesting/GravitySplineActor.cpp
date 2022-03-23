@@ -24,9 +24,11 @@ AGravitySplineActor::AGravitySplineActor()
 	//setting up UBoxComponents
 	BoxSplineOne = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Spline One"));
 	BoxSplineOne->SetupAttachment(GetRootComponent());
+	BoxSplineOne->SetBoxExtent(FVector(200.f));
 
 	BoxSplineTwo = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Spline Two"));
 	BoxSplineTwo->SetupAttachment(GetRootComponent());
+	BoxSplineTwo->SetBoxExtent(FVector(200.f));
 }
 
 // Called when the game starts or when spawned
@@ -105,6 +107,14 @@ void AGravitySplineActor::VisualiseUpVectors(int Segments, USplineComponent* Spl
 		FVector Pos = SplineComp->GetLocationAtDistanceAlongSpline(dist, ESplineCoordinateSpace::World);
 		//UE_LOG(LogTemp, Warning, TEXT("did create debug %f"), dist)
 		DrawDebugLine(GetWorld(), Pos, Pos + Up * 200.f, FColor::Emerald, false, 0.4f, (uint8)0U, 40.f);
+
+
+		//alsodraws a blue on in the forward direction
+		float SplineLength = SplineComp->GetSplineLength();
+		FVector ForwardPos = SplineComp->GetLocationAtDistanceAlongSpline(SplineLength, ESplineCoordinateSpace::World);
+		FVector ForwardForwardVec = SplineComp->GetDirectionAtDistanceAlongSpline(SplineLength, ESplineCoordinateSpace::World);
+
+		DrawDebugLine(GetWorld(), ForwardPos, ForwardPos + ForwardForwardVec * 200.f, FColor::Blue, false, 0.4f, (uint8)0U, 40.f);
 	}
 }
 

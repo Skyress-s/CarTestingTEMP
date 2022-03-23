@@ -55,6 +55,8 @@ public:
 		class UPhysicsGrapplingComponent* PhysicsGrappleComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UCameraEffecttComponent* CameraEffectComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Car")
+		class UNeckComponent* NeckComponent = nullptr;
 
 	// spline neck
 	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
@@ -74,6 +76,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
 		float HoverDampingFactor{4};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Car|Hover")
+		float GravityForce{2720};
+	
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Hover")
+		float GravityMod = 1.f;
+	
+	const float BaseGravMod = 1.f;
 	
 	UFUNCTION()
 	void OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -95,14 +105,15 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxSpeed = 7500.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-	float TurnSpeed = 50.f;
+		float TurnSpeed = 50.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-		float GravityMod = 1.f;
-	const float BaseGravMod = 1.f;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
-	float MaxAngle = 75.f;
+		float MaxGroundAngle = 75.f;
 	UPROPERTY()
-	FVector StartPlayerLocation = FVector::ZeroVector;
+		FVector StartPlayerLocation = FVector::ZeroVector;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+		float MaxCar_SplineAngle = 45.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
+		float MaxCar_SplineAngleCorrectionSpeed = 100.f;
 
 	//Camera variables
 	
@@ -115,7 +126,7 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Camera")
 	FVector2D GrapplingCameraLag = FVector2D::ZeroVector;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
-	float MaxYawLookAngle = 45.f;
+	float MaxYawLookAngle = 90.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
 	float MaxPichLookAngle = 45.f;
 	
@@ -145,13 +156,6 @@ private:
 	UFUNCTION()
 	void ToggleGrappleHook();
 	
-	// Neck handling
-	UFUNCTION()
-	void UpdateSplinePoints();
-	UFUNCTION()
-	void UpdateSplineMesh();
-	
-	
 	//TODO orgenize these :)
 	//other funcs
 	
@@ -172,6 +176,9 @@ private:
 	FHitResult ShootRayFromCenterOfScreen();
 	void SetUpVectorAsSplineUpAxis();
 	bool IsMovingForward();
+
+	float GetSplineCarForwardAngle();
+	void HandleMaxTurnWithSpline();
 
 	
 	UFUNCTION()

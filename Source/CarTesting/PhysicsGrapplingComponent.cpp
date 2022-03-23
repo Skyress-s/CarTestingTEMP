@@ -73,6 +73,17 @@ FRotator UPhysicsGrapplingComponent::GetTargetComponentRotator()
 	return UKismetMathLibrary::MakeRotFromXZ(TargetComponentForwardVector, TargetComponentUpVector);
 }
 
+bool UPhysicsGrapplingComponent::IsGrappleInsideOfRange()
+{
+	float SqrDistance = (CarPawn->SphereComp->GetComponentLocation() - CarPawn->GrappleHookSphereComponent->GetComponentLocation()).SizeSquared();
+
+	//using squared distance since it cheaper
+	if (SqrDistance < MaxGrappleDistance * MaxGrappleDistance)
+		return true;
+
+	return false;
+}
+
 void UPhysicsGrapplingComponent::FireGrapplingHook()
 {
 	
@@ -196,7 +207,12 @@ void UPhysicsGrapplingComponent::TravelingState()
     
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity(), CarPawn->SphereComp->GetUpVector());
 	CarPawn->GrappleSensor->SetWorldRotation(NewRot);
-	//UE_LOG(LogTemp, Warning, TEXT("1"))
+
+	if (!IsGrappleInsideOfRange())
+	{
+		EnterState(EGrappleStates::InActive);
+	}
+	
 	if (bHoming)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("2"))

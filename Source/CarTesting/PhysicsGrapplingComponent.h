@@ -31,80 +31,83 @@ public:
 	//my deseg ------------
 private:
 	UPROPERTY()
-	class ACarPawn* CarPawn = nullptr;
+		class ACarPawn* CarPawn = nullptr;
 	UPROPERTY()
-	FVector StartLocationGrappleMesh;
+		FVector StartLocationGrappleMesh;
 	UPROPERTY()
-	EGrappleStates CurrentGrappleState = EGrappleStates::InActive;
+		EGrappleStates CurrentGrappleState = EGrappleStates::InActive;
 	UPROPERTY()
-	bool bEnterState = false;
+		bool bEnterState = false;
 	
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
-	float FireGrappleSpeed = 19000.f;
+		float FireGrappleSpeed = 19000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
-	float GrappleRotationSpeed = 500.f;
+		float GrappleRotationSpeed = 500.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
+		float MaxGrappleDistance = 15000.f; 
 	
 	UPROPERTY()
-	float MoveToTargetModifier = 1.f;
+		float MoveToTargetModifier = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-	float MoveToTargetAcceleration = 2.f;
+		float MoveToTargetAcceleration = 2.f;
 
 	//caps how slow or fast 
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
-	float LowestOnHookedSpeed = 2000.f;
+		float LowestOnHookedSpeed = 2000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
-	float HighestOnHookedSpeed = 9000.f;
+		float HighestOnHookedSpeed = 9000.f;
 
 	UPROPERTY(/*meta = (AllowPrivateAccess = "true"),  EditAnywhere, Category = "Grapple"*/)
-	float OnHookedSpeed = 0.f;
+		float OnHookedSpeed = 0.f;
 	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple"*/)
-	FVector OnHookedDirection = FVector::ZeroVector;
+		FVector OnHookedDirection = FVector::ZeroVector;
 	UPROPERTY()
-	FTransform OnHookedVehicleTransfrom = FTransform::Identity;
+		FTransform OnHookedVehicleTransfrom = FTransform::Identity;
 	UPROPERTY()
-	FVector TravelingDirection = FVector::ZeroVector;
+		FVector TravelingDirection = FVector::ZeroVector;
 	UPROPERTY()
-	FVector HomingTargetLocation = FVector::ZeroVector;
+		FVector HomingTargetLocation = FVector::ZeroVector;
 	UPROPERTY()
-	bool bHoming = false;
+		bool bHoming = false;
 
 	UPROPERTY(meta = (ToolTip = "Will be used to orient the sphere component mesh, gets set via on hooked event"))
-	FTransform TargetComponentTransfrom = FTransform::Identity;
+		FTransform TargetComponentTransfrom = FTransform::Identity;
 	UPROPERTY()
-	FVector TargetComponentForwardVector = FVector::ZeroVector;
+		FVector TargetComponentForwardVector = FVector::ZeroVector;
 	UPROPERTY()
-	FVector TargetComponentUpVector = FVector::ZeroVector;
+		FVector TargetComponentUpVector = FVector::ZeroVector;
 	
 	
 public:
 	UFUNCTION()
-	EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
+		EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
 	UFUNCTION()
-	float GetOnHookedVelocitySize(){ return OnHookedSpeed; }
+		float GetOnHookedVelocitySize(){ return OnHookedSpeed; }
 	UFUNCTION()
-	FVector GetOnHookedDirection(){ return OnHookedDirection; }
+		FVector GetOnHookedDirection(){ return OnHookedDirection; }
 	UFUNCTION()
-	FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
+		FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
 	UFUNCTION()
-	FVector GetTravelingDirection(){ return TravelingDirection; }
+		FVector GetTravelingDirection(){ return TravelingDirection; }
 	UFUNCTION()
-	FRotator GetTargetComponentRotator();
+		FRotator GetTargetComponentRotator();
 	UFUNCTION()
-	FTransform GetTargetComponentTransfrom(){return TargetComponentTransfrom; }
-
+		FTransform GetTargetComponentTransfrom(){return TargetComponentTransfrom; }
+	UFUNCTION()
+		bool IsGrappleInsideOfRange();
 	
 	UFUNCTION()
-	void FireGrapplingHook();
+		void FireGrapplingHook();
 	UFUNCTION()
-	void RetractGrapplingHook();
+		void RetractGrapplingHook();
 
 	UFUNCTION()
-	void ResetTemporalVariables();
+		void ResetTemporalVariables();
 
 	UPROPERTY()
-	class UGrappleSphereComponent* TempGrappleSphereComponent = nullptr;
+		class UGrappleSphereComponent* TempGrappleSphereComponent = nullptr;
 	UFUNCTION()
-	void OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
 	void OnSensorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -113,19 +116,19 @@ public:
 	
 	
 	UFUNCTION()
-	void EnterState(EGrappleStates NewState);
+		void EnterState(EGrappleStates NewState);
 	UFUNCTION()
-	void InActiveState();
+		void InActiveState();
 	UFUNCTION()
-	void TravelingState();
+		void TravelingState();
 	UFUNCTION()
-	void HookedState();
+		void HookedState();
 	UFUNCTION()
-	void ReturningState();
+		void ReturningState();
 
 	UFUNCTION()
-	void MoveTowardsGrapple();
+		void MoveTowardsGrapple();
 	UFUNCTION()
-	bool ValidGrappleState();
+		bool ValidGrappleState();
 		
 };

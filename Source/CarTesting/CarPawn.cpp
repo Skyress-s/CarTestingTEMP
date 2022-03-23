@@ -14,6 +14,7 @@
 #include "CameraEffecttComponent.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
+#include "NeckComponent.h"
 #include "PhysicsGrapplingComponent.h"
 #include "Chaos/KinematicTargets.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
@@ -80,7 +81,7 @@ ACarPawn::ACarPawn()
     PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
 	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
 	CameraEffectComponent = CreateDefaultSubobject<UCameraEffecttComponent>(TEXT("CameraEffectComponent"));
-	
+	NeckComponent = CreateDefaultSubobject<UNeckComponent>(TEXT("NeckSplineComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -132,14 +133,14 @@ void ACarPawn::ApplyGravity()
 			FVector HeightVelocity{
 				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
 			};
-			FVector GravityForce{-GravityUpVector * 68.1f * 40.f * GravityMod};
+			FVector GravityForceVector{-GravityUpVector * GravityForce * GravityMod};
 			if (IsGrounded())
 			{
-				HoverForce = (-GravityForce * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
+				HoverForce = (-GravityForceVector * UKismetMathLibrary::Exp(1.f - ScaleHeight) -
 					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight));
 			}
-			SphereComp->AddForce(GravityForce+HoverForce, FName(), true);
-			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForce.Z, HoverForce.Z, ScaleHeight);
+			SphereComp->AddForce(GravityForceVector+HoverForce, FName(), true);
+			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }
@@ -264,14 +265,15 @@ void ACarPawn::StateDriving()
 	
 		// rotates sphere comp
 		RotateSphereCompToLocalUpVector();
-		UpdateSplinePoints();
+		NeckComponent->UpdateSplinePoints();
 	}
 	else
 	{
 		EnterState(EVehicleState::AirBorne);
 	}
 
-
+	HandleMaxTurnWithSpline();
+	
 	//should we be grappling
 	if (PhysicsGrappleComponent->ValidGrappleState())
 	{
@@ -307,7 +309,7 @@ void ACarPawn::StateGrappling()
 		true);
 	SphereComp->SetWorldRotation(NewRot);
 	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
-	UpdateSplinePoints();
+	NeckComponent->UpdateSplinePoints();
 	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
@@ -344,7 +346,7 @@ void ACarPawn::StateAirBorne()
 		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
 		EnterState(EVehicleState::Driving);
 	}
-	UpdateSplinePoints();
+	NeckComponent->UpdateSplinePoints();
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())
 	{
@@ -376,36 +378,7 @@ void ACarPawn::ToggleGrappleHook()
 	
 }
 
-void ACarPawn::UpdateSplinePoints()
-{
-	FVector StartLocation, StartTangent, EndLocation, EndTangent = FVector::ZeroVector;
-	
-	StartLocation = CarMesh->GetComponentLocation();
-	EndLocation = GrappleHookMesh->GetComponentLocation();
 
-	float Distance = (StartLocation - EndLocation).Size();
-	
-	EndTangent = GrappleHookMesh->GetForwardVector() * Distance;
-	StartTangent = CarMesh->GetForwardVector() * Distance;
-	
-	//Sets the values to the spline
-	NeckSpline->SetLocationAtSplinePoint(0, StartLocation, ESplineCoordinateSpace::World, false);
-	NeckSpline->SetTangentAtSplinePoint(0, StartTangent, ESplineCoordinateSpace::World, false);
-	NeckSpline->SetLocationAtSplinePoint(1, EndLocation, ESplineCoordinateSpace::World, false);
-	NeckSpline->SetTangentAtSplinePoint(1, EndTangent, ESplineCoordinateSpace::World, true);
-
-	//TODO TEMP FOR TESTING MOVE TO UPDATE SPLINE MESH!
-	NeckSplineMesh->SetStartPosition(StartLocation);
-	NeckSplineMesh->SetStartTangent(StartTangent);
-	NeckSplineMesh->SetEndPosition(EndLocation);
-	NeckSplineMesh->SetEndTangent(EndTangent);
-	
-	
-}
-
-void ACarPawn::UpdateSplineMesh()
-{
-}
 
 FVector ACarPawn::CalcAsymVector()
 {
@@ -570,7 +543,7 @@ bool ACarPawn::IsGrounded()
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
-	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
+	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxGroundAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
 	
 		
@@ -599,7 +572,7 @@ float ACarPawn::DistanceToGround()
 		TraceParams
 	);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
-	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxAngle) {
+	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxGroundAngle) {
 		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
 		return hit.Distance;
 	}
@@ -663,6 +636,32 @@ bool ACarPawn::IsMovingForward()
 		return true;
 	}
 	return false;
+}
+
+float ACarPawn::GetSplineCarForwardAngle()
+{
+	FVector SplineForward = GravitySplineActive->SplineComp->FindDirectionClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
+	FVector CarForward = SphereComp->GetForwardVector();
+	float Angle = SignedAngleAxis(SplineForward, CarForward, LocalUpVector);
+	//UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
+
+	return Angle;
+}
+
+void ACarPawn::HandleMaxTurnWithSpline()
+{
+	float Angle = GetSplineCarForwardAngle();
+
+	
+	if (Angle > MaxCar_SplineAngle)
+	{
+		FRotator CurrentRot = SphereComp->GetRelativeRotation();
+		AddActorLocalRotation(FRotator(0.f,-MaxCar_SplineAngleCorrectionSpeed * UGameplayStatics::GetWorldDeltaSeconds(this),0.f));
+	}
+	else if (Angle < -MaxCar_SplineAngle)
+	{
+		AddActorLocalRotation(FRotator(0.f,MaxCar_SplineAngleCorrectionSpeed * UGameplayStatics::GetWorldDeltaSeconds(this),0.f));
+	}
 }
 
 void ACarPawn::SpeedHandleCameraBoomEffect(bool bSoft)

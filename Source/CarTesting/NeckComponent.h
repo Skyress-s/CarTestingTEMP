@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CarPawn.h"
 #include "Components/ActorComponent.h"
 #include "NeckComponent.generated.h"
 
@@ -24,5 +25,31 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	//My deseg
+
+private:
+
+	UPROPERTY()
+		ACarPawn* CarPawn = nullptr;
+	//could use carpawn refrence, but going to use the spline alot, so this is shorthand
+	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Neck"*/)
+		class USplineComponent* Spline = nullptr;
+
+	// functions
+	UFUNCTION()
+	int CalculateNumberOfSegments();
+
+
+	//variables
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Neck" )
+		float TargetSegmentsLength = 1000.f;
+	
+	UPROPERTY()
+	TArray<USplineMeshComponent*> SplineMeshComponents; 
+public:
+	// Neck handling
+	UFUNCTION()
+	void UpdateSplinePoints();
+	UFUNCTION()
+	void UpdateSplineMesh();
 };
