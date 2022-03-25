@@ -37,15 +37,17 @@ private:
 
 	// functions
 	UFUNCTION()
-	int CalculateNumberOfSegments();
+	int32 CalculateNumberOfSegments();
 
 
 	//variables
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Neck" )
-		float TargetSegmentsLength = 1000.f;
+		float TargetSegmentsLength = 100.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Neck")
+		class UStaticMesh* StaticMeshClass = nullptr;
 	
 	UPROPERTY()
-	TArray<USplineMeshComponent*> SplineMeshComponents; 
+	TArray<USplineMeshComponent*> SplineMeshComponents;
 public:
 	// Neck handling
 	UFUNCTION()
