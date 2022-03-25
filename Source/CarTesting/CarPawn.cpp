@@ -236,8 +236,6 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, this, &ACarPawn::HandleBoost);
 	//action.bConsumeInput = false;
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::ToggleGrappleHook);
-
-	
 }
 
 void ACarPawn::EnterState(EVehicleState NewState)
@@ -265,7 +263,6 @@ void ACarPawn::StateDriving()
 	
 		// rotates sphere comp
 		RotateSphereCompToLocalUpVector();
-		NeckComponent->UpdateSplinePoints();
 	}
 	else
 	{
@@ -377,8 +374,6 @@ void ACarPawn::ToggleGrappleHook()
 	}
 	
 }
-
-
 
 FVector ACarPawn::CalcAsymVector()
 {

@@ -38,6 +38,7 @@ private:
 	class UBoxComponent* Trigger = nullptr;
 	
 	
+	
 public:
 	void SetVisbility(bool bVisible);
 	UFUNCTION()

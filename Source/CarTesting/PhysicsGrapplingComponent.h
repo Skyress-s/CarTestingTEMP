@@ -65,8 +65,10 @@ private:
 		FTransform OnHookedVehicleTransfrom = FTransform::Identity;
 	UPROPERTY()
 		FVector TravelingDirection = FVector::ZeroVector;
+
+	// homing
 	UPROPERTY()
-		FVector HomingTargetLocation = FVector::ZeroVector;
+		USceneComponent* HomingTargetComponent = nullptr;
 	UPROPERTY()
 		bool bHoming = false;
 

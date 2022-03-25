@@ -16,27 +16,27 @@ UCLASS()
 class CARTESTING_API UGrappleSphereComponent : public USphereComponent
 {
 	GENERATED_BODY()
-	UGrappleSphereComponent();
 public:
+	UGrappleSphereComponent();
 	//My deseg
 	//these are called by the Physics grapple component
 	UPROPERTY(BlueprintAssignable , Category = "Event")
-	FOnGrappleEvent OnGrappleHitEvent;
+		FOnGrappleEvent OnGrappleHitEvent;
 	UPROPERTY(BlueprintAssignable ,Category = "Event")
-	FOnReachedEvent OnReachedEvent;
+		FOnReachedEvent OnReachedEvent;
 
-	
-	
+	UPROPERTY(EditAnywhere, Category = "Eatable")
+		bool Eatable = false;
 	
 	UFUNCTION()
-	void OnGrapple();
+		void OnGrapple();
 	UFUNCTION()
-	void OnReached();
+		void OnReached();
 
 	UFUNCTION()
-	float GetAddSpeed() const {return AddSpeed; }
-private:
+		float GetAddSpeed() const {return AddSpeed; }
 	UPROPERTY()
-	float AddSpeed = 550.f;
+		float AddSpeed = 550.f;
+protected:
 	
 };
