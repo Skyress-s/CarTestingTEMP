@@ -34,7 +34,7 @@ private:
 	class UGrappleSphereComponent* GrappleSphereComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	class USkeletalMeshComponent* MainMesh = nullptr;
-	UPROPERTY()
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	class UBoxComponent* Trigger = nullptr;
 	
 	

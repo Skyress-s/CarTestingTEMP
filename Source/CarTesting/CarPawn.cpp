@@ -140,7 +140,7 @@ void ACarPawn::ApplyGravity()
 					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(1.f - ScaleHeight));
 			}
 			SphereComp->AddForce(GravityForceVector+HoverForce, FName(), true);
-			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
+			//UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }

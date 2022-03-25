@@ -48,6 +48,7 @@ void AGrappleTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	GrappleSphereComponent->SetRelativeLocation(FVector::ZeroVector);
 	
 
 }
@@ -72,5 +73,6 @@ void AGrappleTarget::OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AA
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	MainMesh->Play(false);
+	UE_LOG(LogTemp, Warning, TEXT("(GrappleTarget)Activated GrappleTarget"))
 }
 
