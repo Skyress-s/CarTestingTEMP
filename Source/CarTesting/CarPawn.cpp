@@ -269,6 +269,7 @@ void ACarPawn::StateDriving()
 	}
 
 	HandleMaxTurnWithSpline();
+	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + LocalUpVector * 10000.f, FColor::Red, false);
 	
 	//should we be grappling
 	if (PhysicsGrappleComponent->ValidGrappleState())
@@ -643,7 +644,7 @@ float ACarPawn::GetSplineCarForwardAngle()
 	FVector SplineForward = GravitySplineActive->SplineComp->FindDirectionClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 	FVector CarForward = SphereComp->GetForwardVector();
 	float Angle = SignedAngleAxis(SplineForward, CarForward, LocalUpVector);
-	//UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
+	UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
 
 	return Angle;
 }

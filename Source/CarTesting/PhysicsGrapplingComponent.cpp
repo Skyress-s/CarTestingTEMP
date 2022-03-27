@@ -140,7 +140,7 @@ void UPhysicsGrapplingComponent::OnGrappleHit(UPrimitiveComponent* HitComp, AAct
 
 			TargetGrappableComponent = GrappleSphere;
 
-			if (GrappleSphere->IsEatable())
+			if (GrappleSphere->GetEatable())
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Eatable"))
 				EnterState(EGrappleStates::HookedEatable);
@@ -303,6 +303,12 @@ void UPhysicsGrapplingComponent::HookedState()
 		if (TargetGrappableComponent != nullptr)
 		{
 			TargetGrappableComponent->OnReached();
+
+			if (TargetGrappableComponent->GetOverrideReleaseVelocity())
+			{
+				OnHookedDirection = TargetGrappableComponent->GetForwardVector();
+				
+			}
 			TargetGrappableComponent = nullptr;
 		}
 		

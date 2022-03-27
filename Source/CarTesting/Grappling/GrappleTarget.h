@@ -31,11 +31,13 @@ private:
 	// UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
 	// class USphereComponent* SphereComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class UGrappleSphereComponent* GrappleSphereComponent = nullptr;
+		class UArrowComponent* RootArrow = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class USkeletalMeshComponent* MainMesh = nullptr;
+		class UGrappleSphereComponent* GrappleSphereComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
-	class UBoxComponent* Trigger = nullptr;
+		class USkeletalMeshComponent* MainMesh = nullptr;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "GrappleTarget")
+		class UBoxComponent* Trigger = nullptr;
 	
 	
 	

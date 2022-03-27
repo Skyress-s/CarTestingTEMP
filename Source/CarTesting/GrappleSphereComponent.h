@@ -34,7 +34,9 @@ public:
 	UFUNCTION()
 		float GetAddSpeed() const {return AddSpeed; }
 	UFUNCTION()
-		bool IsEatable() const {return bEatable; }
+		bool GetEatable() const {return bEatable; }
+	UFUNCTION()
+		bool GetOverrideReleaseVelocity() const{ return bOverrideReleaseVelocity; }
 
 	UFUNCTION()
 		void SetIsEatable(bool bEnable) {bEatable = bEnable; }
@@ -43,5 +45,7 @@ protected:
 		float AddSpeed = 550.f;
 	UPROPERTY(EditAnywhere, Category = "Eatable")
 		bool bEatable = false;
+	UPROPERTY(EditAnywhere, Category = "Eatable")
+		bool bOverrideReleaseVelocity = false;
 	
 };

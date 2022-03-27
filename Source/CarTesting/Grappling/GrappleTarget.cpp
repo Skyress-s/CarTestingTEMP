@@ -4,6 +4,7 @@
 #include "GrappleTarget.h"
 
 #include "CarTesting/GrappleSphereComponent.h"
+#include "Components/ArrowComponent.h"
 #include "Components/BillboardComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
@@ -17,17 +18,18 @@ AGrappleTarget::AGrappleTarget()
 
 	
 	
-	/*Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
-	Widget->SetupAttachment(GetRootComponent());*/
+	RootArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("RootArrow"));
+	SetRootComponent(RootArrow);
 
 	MainMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MainSkeletalMesh"));
-	SetRootComponent(MainMesh);
+	MainMesh->SetupAttachment(GetRootComponent());
 
 	GrappleSphereComponent = CreateDefaultSubobject<UGrappleSphereComponent>(TEXT("GrappleSphereComponent"));
 	GrappleSphereComponent->SetupAttachment(MainMesh, FName("Grapple"));
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box Component"));
 	Trigger->SetupAttachment(GetRootComponent());
+	Trigger->SetBoxExtent(FVector(200.f));
 	
 	
 }
