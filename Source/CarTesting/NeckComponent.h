@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CarPawn.h"
 #include "Components/ActorComponent.h"
+#include "Components/SplineMeshComponent.h"
 #include "NeckComponent.generated.h"
 
 
@@ -26,7 +27,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	//My deseg
-
+friend UPhysicsGrapplingComponent;
+	
 private:
 
 	UPROPERTY()
@@ -38,6 +40,7 @@ private:
 	// functions
 	UFUNCTION()
 	int32 CalculateNumberOfSegments();
+	
 
 
 	//variables
@@ -48,10 +51,11 @@ private:
 	
 	UPROPERTY()
 	TArray<USplineMeshComponent*> SplineMeshComponents;
-public:
+protected:
 	// Neck handling
 	UFUNCTION()
 	void UpdateSplinePoints();
 	UFUNCTION()
 	void UpdateSplineMesh();
+	void UpdateSplineMesh(float StartLength, float EndLength);
 };
