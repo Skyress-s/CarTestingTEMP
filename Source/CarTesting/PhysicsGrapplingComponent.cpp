@@ -3,11 +3,13 @@
 
 #include "PhysicsGrapplingComponent.h"
 
+#include "BoostComponent.h"
 #include "CameraEffecttComponent.h"
 #include "CarPawn.h"
 #include "DrawDebugHelpers.h"
 #include "GrappleSphereComponent.h"
 #include "GravitySplineActor.h"
+#include "NeckComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Chaos/GeometryParticlesfwd.h"
 #include "Components/SphereComponent.h"
@@ -60,6 +62,9 @@ void UPhysicsGrapplingComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	case EGrappleStates::Hooked:
 		HookedState();
 		break;
+	case EGrappleStates::HookedEatable:
+		HookedEatableState();
+		break;
 	case EGrappleStates::Returning:
 		ReturningState();
 		break;
@@ -69,10 +74,6 @@ void UPhysicsGrapplingComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	
 }
 
-FRotator UPhysicsGrapplingComponent::GetTargetComponentRotator()
-{
-	return UKismetMathLibrary::MakeRotFromXZ(TargetComponentForwardVector, TargetComponentUpVector);
-}
 
 bool UPhysicsGrapplingComponent::IsGrappleInsideOfRange()
 {
@@ -102,15 +103,13 @@ void UPhysicsGrapplingComponent::RetractGrapplingHook()
 
 void UPhysicsGrapplingComponent::ResetTemporalVariables()
 {
-	TempGrappleSphereComponent = nullptr;
-	TargetComponentForwardVector = FVector::ZeroVector;
-	TargetComponentUpVector = FVector::ZeroVector;
 	bHoming = false;
 	OnHookedDirection = FVector::ZeroVector;
 	OnHookedVehicleTransfrom = FTransform::Identity;
 	OnHookedSpeed = 0.f;
-	HomingTargetComponent = nullptr;
+	TargetGrappableComponent = nullptr;
 	MoveToTargetModifier = 1.f;
+	CurrentReturnTime = 0.f;
 	
 }
 
@@ -127,6 +126,10 @@ void UPhysicsGrapplingComponent::OnGrappleHit(UPrimitiveComponent* HitComp, AAct
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HIT!"))
+	if (CurrentGrappleState != EGrappleStates::Traveling)
+	{
+		return;
+	}
 	if (OtherComp->IsA(UGrappleSphereComponent::StaticClass()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit GrappleSphereComponent %s"), *OtherComp->GetName())
@@ -134,28 +137,39 @@ void UPhysicsGrapplingComponent::OnGrappleHit(UPrimitiveComponent* HitComp, AAct
 		{
 			UGrappleSphereComponent* GrappleSphere = OtherActor->FindComponentByClass<UGrappleSphereComponent>(); // better?
 			GrappleSphere->OnGrapple();
-			TempGrappleSphereComponent = GrappleSphere;
-			TargetComponentTransfrom = GrappleSphere->GetComponentTransform();
-			TargetComponentForwardVector = GrappleSphere->GetForwardVector();
-			TargetComponentUpVector = GrappleSphere->GetUpVector();
-			
+
+			TargetGrappableComponent = GrappleSphere;
+
+			if (GrappleSphere->IsEatable())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Eatable"))
+				EnterState(EGrappleStates::HookedEatable);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Grappable"))
+				EnterState(EGrappleStates::Hooked);
+			}
 			
 		}
 	}
-	EnterState(EGrappleStates::Hooked);
 }
 
 
 void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (CurrentGrappleState != EGrappleStates::Traveling)
+	{
+		return;
+	}
 	//UE_LOG(LogTemp, Warning, TEXT("Overlap with -> %s"), *OtherActor->GetName())
 	if (OtherComp->IsA(UGrappleSphereComponent::StaticClass()))
 	{
 	UE_LOG(LogTemp, Warning, TEXT("(PhysicsGrappleComp) Sensor overlapped with %s"), *OtherActor->GetName())
 		
 		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName())
-		HomingTargetComponent = OtherComp;
+		TargetGrappableComponent = Cast<UGrappleSphereComponent>(OtherComp);
 		bHoming = true;
 	}
 }
@@ -163,10 +177,15 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
 void UPhysicsGrapplingComponent::OnSensorEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (CurrentGrappleState != EGrappleStates::Traveling)
+	{
+		return;
+	}
+	
 	if (OtherComp->IsA(UGrappleSphereComponent::StaticClass()))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Stopped overlapping"));
-		HomingTargetComponent = nullptr;
+		//TargetGrappableComponent = nullptr;
 		bHoming = false;
 	}
 }
@@ -190,6 +209,8 @@ void UPhysicsGrapplingComponent::InActiveState()
 		ResetTemporalVariables();
 		
 	}
+	CarPawn->NeckComponent->UpdateSplinePoints();
+	CarPawn->NeckComponent->UpdateSplineMesh();
 }
 
 void UPhysicsGrapplingComponent::TravelingState()
@@ -207,17 +228,20 @@ void UPhysicsGrapplingComponent::TravelingState()
     
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity(), CarPawn->SphereComp->GetUpVector());
 	CarPawn->GrappleSensor->SetWorldRotation(NewRot);
-
+	
+	CarPawn->NeckComponent->UpdateSplinePoints();
+	CarPawn->NeckComponent->UpdateSplineMesh();
+	
 	if (!IsGrappleInsideOfRange())
 	{
 		EnterState(EGrappleStates::Returning);
 	}
 	
-	if (bHoming && HomingTargetComponent)
+	if (bHoming && TargetGrappableComponent)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("2"))
 		FVector Vel = CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity();
-		FVector ToTarget = HomingTargetComponent->GetComponentLocation() - CarPawn->GrappleHookSphereComponent->GetComponentLocation();
+		FVector ToTarget = TargetGrappableComponent->GetComponentLocation() - CarPawn->GrappleHookSphereComponent->GetComponentLocation();
 		FVector Cross = FVector::CrossProduct(Vel, ToTarget);
 		Cross = Cross.GetSafeNormal();
 		//UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), Cross.X, Cross.Y, Cross.Z);
@@ -252,29 +276,82 @@ void UPhysicsGrapplingComponent::HookedState()
 		OnHookedDirection = (CarPawn->GrappleHookSphereComponent->GetComponentLocation() - CarPawn->GetActorLocation()).GetSafeNormal();
 		OnHookedVehicleTransfrom = CarPawn->GetTransform();
 		CarPawn->CameraEffectComponent->PlayCameraEffect();
-
-
 		
 		
 		bEnterState = false;
 	}
+
+	
+	CarPawn->NeckComponent->UpdateSplinePoints();
+	CarPawn->NeckComponent->UpdateSplineMesh();
 	MoveTowardsGrapple();
 	FVector Direction = CarPawn->GrappleHookSphereComponent->GetComponentLocation() - CarPawn->GetActorLocation();
 	Direction = Direction.GetSafeNormal();
 	TravelingDirection = Direction;
+
+	//updates grapplehookcomponent location
+	if (TargetGrappableComponent)
+	{
+		CarPawn->GrappleHookSphereComponent->SetWorldLocation(TargetGrappableComponent->GetComponentLocation());
+	}
+	
 	
 	//cheks if we are close enough (on exit)
 	if ((CarPawn->GrappleHookSphereComponent->GetComponentLocation() - CarPawn->SphereComp->GetComponentLocation()).SizeSquared() < 400.f*400.f)
 	{
 		// handlig grappleSphere and its events
-		if (TempGrappleSphereComponent != nullptr)
+		if (TargetGrappableComponent != nullptr)
 		{
-			TempGrappleSphereComponent->OnReached();
-			TempGrappleSphereComponent = nullptr;
+			TargetGrappableComponent->OnReached();
+			TargetGrappableComponent = nullptr;
 		}
 		
 		EnterState(EGrappleStates::Returning);
 	}
+}
+
+void UPhysicsGrapplingComponent::HookedEatableState()
+{
+	if (bEnterState)
+	{
+		bEnterState = false;
+		CarPawn->GrappleHookSphereComponent->SetSimulatePhysics(false);
+		CarPawn->GrappleHookSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	
+	CurrentReturnTime += GetWorld()->GetDeltaSeconds();
+	float lerp = CurrentReturnTime / ReturnTime; // a lerp from 0 -> 1
+	float invertedLerp = 1.f - lerp;
+	float length = CarPawn->NeckSpline->GetSplineLength();
+
+	length = length * invertedLerp;
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), invertedLerp)
+	
+	FVector NewPos = CarPawn->NeckSpline->GetLocationAtDistanceAlongSpline(length, ESplineCoordinateSpace::World);
+	CarPawn->GrappleHookSphereComponent->SetWorldLocation(NewPos);
+
+	
+	//CarPawn->NeckComponent->UpdateSplinePoints();
+	CarPawn->NeckComponent->UpdateSplineMesh(0.f, length);
+
+	// sets the eatable components location and rotation
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *TargetGrappableComponent->GetOwner()->GetName())
+	TargetGrappableComponent->GetOwner()->SetActorLocation(CarPawn->GrappleHookSphereComponent->GetComponentLocation());
+	TargetGrappableComponent->GetOwner()->SetActorRotation(CarPawn->GrappleHookSphereComponent->GetComponentRotation());
+
+	//are we close to home
+	float distanceSqr = (CarPawn->SphereComp->GetComponentLocation() -
+		CarPawn->GrappleHookSphereComponent->GetComponentLocation()).SizeSquared();
+
+	if (distanceSqr < 1000.f* 1000.f) // when its at us!
+	{
+		CarPawn->HandleBoost();
+		TargetGrappableComponent->OnReached();
+		
+		
+		EnterState(EGrappleStates::InActive);
+	}
+	
 }
 
 void UPhysicsGrapplingComponent::ReturningState()
@@ -284,11 +361,23 @@ void UPhysicsGrapplingComponent::ReturningState()
 		CarPawn->GrappleHookSphereComponent->SetSimulatePhysics(false);
 		CarPawn->GrappleHookSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	
+	CurrentReturnTime += GetWorld()->GetDeltaSeconds();
+	float lerp = CurrentReturnTime / ReturnTime; // a lerp from 0 -> 1
+	float invertedLerp = 1.f - lerp;
 	float length = CarPawn->NeckSpline->GetSplineLength();
-	length = length - 10000.f * UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	length = length * invertedLerp;
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), invertedLerp)
+	
 	FVector NewPos = CarPawn->NeckSpline->GetLocationAtDistanceAlongSpline(length, ESplineCoordinateSpace::World);
 	CarPawn->GrappleHookSphereComponent->SetWorldLocation(NewPos);
 
+	
+	//CarPawn->NeckComponent->UpdateSplinePoints();
+	CarPawn->NeckComponent->UpdateSplineMesh(0.f, length);
+
+	//are we close to home
 	float distanceSqr = (CarPawn->SphereComp->GetComponentLocation() -
 		CarPawn->GrappleHookSphereComponent->GetComponentLocation()).SizeSquared();
 

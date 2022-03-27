@@ -72,10 +72,7 @@ ACarPawn::ACarPawn()
 
 	// neck
 	NeckSpline = CreateDefaultSubobject<USplineComponent>(TEXT("NeckSpline"));
-	NeckSpline->SetupAttachment(CarMesh);
-	
-	NeckSplineMesh = CreateDefaultSubobject<USplineMeshComponent>(TEXT("NeckSplineMesh"));
-	NeckSplineMesh->SetupAttachment(CarMesh);
+	NeckSpline->SetupAttachment(SphereComp);
 
 	// actor componentns
     PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
@@ -103,7 +100,9 @@ void ACarPawn::BeginPlay()
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
 		BoostComponent->PhysComp = PrimitiveComponents[0];
 	//UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
-	StartPlayerLocation = SphereComp->GetComponentLocation();
+
+	//deathzone variables
+	StartPlayerLocation = GetActorLocation();
 	
 	//setting camera lag
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
@@ -284,7 +283,6 @@ void ACarPawn::StateGrappling()
 	{
 		bEnterState = false;
 		SphereComp->SetSimulatePhysics(false);
-
 		
 		CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
 		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
@@ -298,15 +296,17 @@ void ACarPawn::StateGrappling()
 	float CurrentDistance = (SphereComp->GetComponentLocation() -  GrappleHookMesh->GetComponentLocation()).Size();
 	float lerpFactor = CurrentDistance / StartDistance; // at start will be 1, and will progress towards 0
 	lerpFactor = 1.f -lerpFactor; // at start will be 0, will progress towards 1
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), lerpFactor)
-	FRotator NewRot = UKismetMathLibrary::RLerp(
-		PhysicsGrappleComponent->GetOnHookedVehicleTransform().Rotator(),
-		PhysicsGrappleComponent->GetTargetComponentTransfrom().Rotator(),
-		lerpFactor,
-		true);
-	SphereComp->SetWorldRotation(NewRot);
+
+	if (PhysicsGrappleComponent->GetTargetComponent())
+	{
+		FRotator NewRot = UKismetMathLibrary::RLerp(
+			PhysicsGrappleComponent->GetOnHookedVehicleTransform().Rotator(),
+			PhysicsGrappleComponent->GetTargetComponent()->GetComponentRotation(),
+			lerpFactor,
+			true);
+		SphereComp->SetWorldRotation(NewRot);
+	}
 	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
-	NeckComponent->UpdateSplinePoints();
 	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
@@ -343,7 +343,12 @@ void ACarPawn::StateAirBorne()
 		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
 		EnterState(EVehicleState::Driving);
 	}
-	NeckComponent->UpdateSplinePoints();
+
+	if (IsOutOfBounds())
+	{
+		SetActorLocation(StartPlayerLocation);
+		SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	}
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())
 	{
@@ -684,10 +689,9 @@ bool ACarPawn::IsOutOfBounds()
 		float dist = (test - SphereComp->GetComponentLocation()).Size();
 		//UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
 		
-		if (dist > 10000.f)
+		if (dist > MaxOutOfBoundsDistance)
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Resetting"))
-			//SphereComp->SetWorldLocation(StartPlayerLocation);
+			return true;
 		}
 	}
 	return false;

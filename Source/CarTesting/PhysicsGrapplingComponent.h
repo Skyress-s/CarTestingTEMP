@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CarPawn.h"
+#include "GrappleSphereComponent.h"
 #include "Components/ActorComponent.h"
 
 #include "Enums/Enums.h"
@@ -51,12 +52,13 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
 		float MoveToTargetAcceleration = 2.f;
 
-	//caps how slow or fast 
+	//caps how slow or fast Player shoudl move
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
 		float LowestOnHookedSpeed = 2000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
 		float HighestOnHookedSpeed = 9000.f;
 
+	//on hooked
 	UPROPERTY(/*meta = (AllowPrivateAccess = "true"),  EditAnywhere, Category = "Grapple"*/)
 		float OnHookedSpeed = 0.f;
 	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple"*/)
@@ -66,20 +68,21 @@ private:
 	UPROPERTY()
 		FVector TravelingDirection = FVector::ZeroVector;
 
-	// homing
 	UPROPERTY()
-		USceneComponent* HomingTargetComponent = nullptr;
+		UGrappleSphereComponent* TargetGrappableComponent = nullptr;
+	// homing
 	UPROPERTY()
 		bool bHoming = false;
 
-	UPROPERTY(meta = (ToolTip = "Will be used to orient the sphere component mesh, gets set via on hooked event"))
-		FTransform TargetComponentTransfrom = FTransform::Identity;
+	// OnHooked eatable
 	UPROPERTY()
-		FVector TargetComponentForwardVector = FVector::ZeroVector;
+		class UGrappleSphereComponent* EatableGrappleSphereComponent = nullptr;
+
+	//returning
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|Returning")
+		float ReturnTime = 1.f;
 	UPROPERTY()
-		FVector TargetComponentUpVector = FVector::ZeroVector;
-	
-	
+		float  CurrentReturnTime = 0.f;
 public:
 	UFUNCTION()
 		EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
@@ -92,9 +95,7 @@ public:
 	UFUNCTION()
 		FVector GetTravelingDirection(){ return TravelingDirection; }
 	UFUNCTION()
-		FRotator GetTargetComponentRotator();
-	UFUNCTION()
-		FTransform GetTargetComponentTransfrom(){return TargetComponentTransfrom; }
+		UGrappleSphereComponent* GetTargetComponent(){return TargetGrappableComponent; }
 	UFUNCTION()
 		bool IsGrappleInsideOfRange();
 	
@@ -105,9 +106,6 @@ public:
 
 	UFUNCTION()
 		void ResetTemporalVariables();
-
-	UPROPERTY()
-		class UGrappleSphereComponent* TempGrappleSphereComponent = nullptr;
 	UFUNCTION()
 		void OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
@@ -125,6 +123,8 @@ public:
 		void TravelingState();
 	UFUNCTION()
 		void HookedState();
+	UFUNCTION()
+		void HookedEatableState();
 	UFUNCTION()
 		void ReturningState();
 

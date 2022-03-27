@@ -25,8 +25,6 @@ public:
 	UPROPERTY(BlueprintAssignable ,Category = "Event")
 		FOnReachedEvent OnReachedEvent;
 
-	UPROPERTY(EditAnywhere, Category = "Eatable")
-		bool Eatable = false;
 	
 	UFUNCTION()
 		void OnGrapple();
@@ -35,8 +33,15 @@ public:
 
 	UFUNCTION()
 		float GetAddSpeed() const {return AddSpeed; }
+	UFUNCTION()
+		bool IsEatable() const {return bEatable; }
+
+	UFUNCTION()
+		void SetIsEatable(bool bEnable) {bEatable = bEnable; }
+protected:
 	UPROPERTY()
 		float AddSpeed = 550.f;
-protected:
+	UPROPERTY(EditAnywhere, Category = "Eatable")
+		bool bEatable = false;
 	
 };

@@ -16,5 +16,6 @@ enum class EGrappleStates : uint8{
 	InActive				UMETA(DisplayName = "EInActive"),
 	Traveling				UMETA(DisplayName = "ETraveling"),
 	Hooked					UMETA(DisplayName = "EHooked"),
+	HookedEatable			UMETA(DisplayName = "EHookedEatable"),
 	Returning				UMETA(DisplayName = "EReturning")
 	};

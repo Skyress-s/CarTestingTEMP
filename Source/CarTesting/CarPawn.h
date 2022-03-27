@@ -61,8 +61,6 @@ public:
 	// spline neck
 	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
 		class USplineComponent* NeckSpline = nullptr;
-	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
-		class USplineMeshComponent* NeckSplineMesh = nullptr;
 	
 	//spline gravity
 	UPROPERTY(EditAnywhere, Category = "Car|spline")
@@ -98,6 +96,8 @@ public:
 	
 
 private:
+
+	//movement
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float AccelerationForce = 90000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -108,8 +108,6 @@ private:
 		float TurnSpeed = 50.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxGroundAngle = 75.f;
-	UPROPERTY()
-		FVector StartPlayerLocation = FVector::ZeroVector;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxCar_SplineAngle = 85.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
@@ -129,6 +127,12 @@ private:
 	float MaxYawLookAngle = 90.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
 	float MaxPichLookAngle = 45.f;
+
+	//Deathzone
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Deathzone")
+		float MaxOutOfBoundsDistance = 10000.f;
+	UPROPERTY()
+		FVector StartPlayerLocation = FVector::ZeroVector;
 	
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")
@@ -165,8 +169,7 @@ private:
 	void MoveYAxis(float Value);
 	void LookXAxis(float Value);
 	void LookYAxis(float Value);
-	UFUNCTION()
-	void HandleBoost();
+	
 	UFUNCTION(BlueprintCallable)
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	float UnsignedAngle(FVector v1, FVector v2);
@@ -189,6 +192,8 @@ private:
 	
 
 public:
+	UFUNCTION()
+	void HandleBoost();
 	bool IsUnderMaxSpeed(bool bBuffer);
 
 
