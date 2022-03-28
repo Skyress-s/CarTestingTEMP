@@ -47,26 +47,30 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple")
 		float MaxGrappleDistance = 15000.f; 
 	
-	UPROPERTY()
-		float MoveToTargetModifier = 1.f;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
-		float MoveToTargetAcceleration = 2.f;
+	//hooked
 
 	//caps how slow or fast Player shoudl move
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapp|OnHooked")
 		float LowestOnHookedSpeed = 2000.f;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple|OnHooked")
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapp|OnHooked")
 		float HighestOnHookedSpeed = 9000.f;
 
-	//on hooked
-	UPROPERTY(/*meta = (AllowPrivateAccess = "true"),  EditAnywhere, Category = "Grapple"*/)
+	UPROPERTY()
 		float OnHookedSpeed = 0.f;
-	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple"*/)
+	UPROPERTY()
 		FVector OnHookedDirection = FVector::ZeroVector;
 	UPROPERTY()
 		FTransform OnHookedVehicleTransfrom = FTransform::Identity;
 	UPROPERTY()
 		FVector TravelingDirection = FVector::ZeroVector;
+	UPROPERTY()
+		float MoveToTargetModifier = 1.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
+		float MoveToTargetAcceleration = 10.f;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple|Hooked")
+		UCurveFloat* HookedMovementCurve = nullptr;
+	UPROPERTY()
+		float CurrentHookedTime = 0.f; 
 
 	UPROPERTY()
 		UGrappleSphereComponent* TargetGrappableComponent = nullptr;
@@ -130,7 +134,7 @@ public:
 		void ReturningState();
 
 	UFUNCTION()
-		void MoveTowardsGrapple();
+		void MoveTowardsGrapple(float LengthAtSpline);
 	UFUNCTION()
 		bool ValidGrappleState();
 };

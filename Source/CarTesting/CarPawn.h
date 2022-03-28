@@ -188,6 +188,12 @@ private:
 	bool IsOutOfBounds();
 	
 
+	//TODO debug remove!
+	
+	UFUNCTION()
+	void SetGameSpeedUp();
+	UFUNCTION()
+	void SetGameSpeedDown();
 public:
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	static float UnsignedAngle(FVector v1, FVector v2);
@@ -196,6 +202,8 @@ public:
 	
 	
 	bool IsUnderMaxSpeed(bool bBuffer);
+
+	
 
 
 };

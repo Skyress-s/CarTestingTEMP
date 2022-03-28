@@ -73,6 +73,7 @@ ACarPawn::ACarPawn()
 	// neck
 	NeckSpline = CreateDefaultSubobject<USplineComponent>(TEXT("NeckSpline"));
 	NeckSpline->SetupAttachment(SphereComp);
+	
 
 	// actor componentns
     PhysicsGrappleComponent = CreateDefaultSubobject<UPhysicsGrapplingComponent>(TEXT("PhysicsGrappleComponent"));
@@ -106,6 +107,10 @@ void ACarPawn::BeginPlay()
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
 	StartCameraBoomLength = CameraBoom->TargetArmLength;
 
+	//neck
+	//detaches the neck spline so it dosent follow
+	
+	
 	//UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4f);
 }
 
@@ -235,6 +240,8 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, this, &ACarPawn::HandleBoost);
 	//action.bConsumeInput = false;
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::ToggleGrappleHook);
+	PlayerInputComponent->BindAction("Up", EInputEvent::IE_Pressed, this, &ACarPawn::SetGameSpeedUp);
+	PlayerInputComponent->BindAction("Down", EInputEvent::IE_Pressed, this, &ACarPawn::SetGameSpeedDown);
 }
 
 void ACarPawn::EnterState(EVehicleState NewState)
@@ -307,7 +314,7 @@ void ACarPawn::StateGrappling()
 			true);
 		SphereComp->SetWorldRotation(NewRot);
 	}
-	CameraBoom->SetRelativeRotation(FRotator(-24.f, 0.f, 0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-5.f, 0.f, 0.f));
 	
 	//psudo on exit
 	if (PhysicsGrappleComponent->ValidGrappleState() == false)
@@ -696,6 +703,27 @@ bool ACarPawn::IsOutOfBounds()
 		}
 	}
 	return false;
+}
+
+void ACarPawn::SetGameSpeedUp()
+{
+	float timedil = UGameplayStatics::GetGlobalTimeDilation(this);
+	
+		UGameplayStatics::SetGlobalTimeDilation( GetWorld(),timedil + 0.1f);
+}
+
+void ACarPawn::SetGameSpeedDown()
+{
+	float timedil = UGameplayStatics::GetGlobalTimeDilation(this);
+	if (timedil - 0.1f > 0.05f)
+	{
+		UGameplayStatics::SetGlobalTimeDilation( GetWorld(),timedil - 0.1f);
+	}
+	else
+	{
+		UGameplayStatics::SetGlobalTimeDilation( GetWorld(),0.04f);
+	}
+	
 }
 
 bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)

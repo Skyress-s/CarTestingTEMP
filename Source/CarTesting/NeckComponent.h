@@ -55,7 +55,13 @@ protected:
 	// Neck handling
 	UFUNCTION()
 	void UpdateSplinePoints();
+	void UpdateSplinePointsLocations(FVector Start, FVector End);
+	void UpdateSplinePointsTangents(FVector StartTangent, FVector EndTangent);
+	void UpdateSplineStartPosition(FVector Start);
+	void UpdateSplineEndPosition(FVector End);
 	UFUNCTION()
 	void UpdateSplineMesh();
 	void UpdateSplineMesh(float StartLength, float EndLength);
 };
+
+
