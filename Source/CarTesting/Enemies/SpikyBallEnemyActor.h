@@ -41,8 +41,26 @@ protected:
 
 	void ChangeState(EBallState NewState);
 
-	FTimerHandle SpikeTimer;
+	FTimerHandle SpikeTimerHandle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attack")
+		float SpikeTimer{1.f};
 	void TriggerSpikes();
+
+	void AirborneState();
+	void GroundedState();
+	void SpikedState();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rolling")
+		float Acceleration{1500};
+
+	void LookAtPlayer();
+	void Move();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rolling")
+		float MaxSpeed{2000.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rolling")
+		float TargetDistance{10000.f};
 };
 
 inline void ASpikyBallEnemyActor::TriggerSpikes()

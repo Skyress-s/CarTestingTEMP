@@ -41,6 +41,19 @@ void ABaseEnemyActor::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
+FVector ABaseEnemyActor::GetToPlayerVector(bool bNormalized)
+{
+	FVector ToPlayer{PlayerPawn->GetActorLocation() - GetActorLocation()};
+	if (bNormalized)
+	{
+		return ToPlayer.GetSafeNormal();
+	}
+	else
+	{
+		return ToPlayer;
+	}
+}
+
 // Called when the game starts or when spawned
 void ABaseEnemyActor::BeginPlay()
 {
@@ -80,7 +93,7 @@ bool ABaseEnemyActor::IsGrounded()
 		GetWorld()->LineTraceSingleByObjectType(
 			hit,
 			ArrowRayCastStart->GetComponentLocation(),
-			ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() * SphereComp->GetUnscaledSphereRadius(),
+			ArrowRayCastStart->GetComponentLocation() - GetActorUpVector() *1.05* SphereComp->GetScaledSphereRadius(),
 			FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 			TraceParams
 		);
