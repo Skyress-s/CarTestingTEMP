@@ -5,9 +5,7 @@
 
 #include "CarTesting/GrappleSphereComponent.h"
 #include "Components/ArrowComponent.h"
-#include "Components/BillboardComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h" 
 
 // Sets default values
@@ -26,6 +24,7 @@ AGrappleTarget::AGrappleTarget()
 
 	GrappleSphereComponent = CreateDefaultSubobject<UGrappleSphereComponent>(TEXT("GrappleSphereComponent"));
 	GrappleSphereComponent->SetupAttachment(MainMesh, FName("Grapple"));
+	GrappleSphereComponent->SetIsEnabled(false);
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box Component"));
 	Trigger->SetupAttachment(GetRootComponent());
@@ -62,7 +61,7 @@ void AGrappleTarget::SetVisbility(bool bVisible)
 
 void AGrappleTarget::OnReachedTarget(float AddSpeedAmount)
 {
-	Destroy();
+	//Destroy();
 	UE_LOG(LogTemp, Warning, TEXT("Reached Grapple Target"))
 }
 
@@ -75,6 +74,7 @@ void AGrappleTarget::OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AA
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	MainMesh->Play(false);
+	GrappleSphereComponent->SetIsEnabled(true);
 	UE_LOG(LogTemp, Warning, TEXT("(GrappleTarget)Activated GrappleTarget"))
 }
 

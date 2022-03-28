@@ -97,9 +97,7 @@ void ACarPawn::BeginPlay()
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
 	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
-	//UE_LOG(LogTemp, Warning, TEXT("%d"), PrimitiveComponents.Num())
 		BoostComponent->PhysComp = PrimitiveComponents[0];
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *PrimitiveComponents[0]->GetName())
 
 	//deathzone variables
 	StartPlayerLocation = GetActorLocation();
@@ -107,6 +105,8 @@ void ACarPawn::BeginPlay()
 	//setting camera lag
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
 	StartCameraBoomLength = CameraBoom->TargetArmLength;
+
+	//UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4f);
 }
 
 void ACarPawn::RotateSphereCompToLocalUpVector()
@@ -251,7 +251,7 @@ void ACarPawn::StateDriving()
 	}
 	ApplyGravity();
 	SetUpVectorAsSplineUpAxis();
-	//SpeedHandleCameraBoomEffect(true);
+	
 	if (IsGrounded())
 	{
 		
@@ -285,11 +285,11 @@ void ACarPawn::StateGrappling()
 		bEnterState = false;
 		SphereComp->SetSimulatePhysics(false);
 		
-		CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
-		CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
+		// CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
+		// CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
 	}
 
-	//SpeedHandleCameraBoomEffect(false);
+	
 	
 	//orients the sphere comp
 	
@@ -315,12 +315,12 @@ void ACarPawn::StateGrappling()
 		// sets velocity
 		SphereComp->SetSimulatePhysics(true);
 		FVector NewVel = PhysicsGrappleComponent->GetOnHookedDirection() * PhysicsGrappleComponent->GetOnHookedVelocitySize();
+		//CameraEffectComponent->PlayCameraEffect();
 		SphereComp->SetPhysicsLinearVelocity(NewVel);
 
 		//sets rotation speed
-		CameraBoom->CameraLagSpeed = OnStartCameraLag.X;
-		CameraBoom->CameraRotationLagSpeed = OnStartCameraLag.Y;
-		
+		// CameraBoom->CameraLagSpeed = OnStartCameraLag.X;
+		// CameraBoom->CameraRotationLagSpeed = OnStartCameraLag.Y;
 		
 		EnterState(EVehicleState::AirBorne);
 	}
@@ -338,10 +338,10 @@ void ACarPawn::StateAirBorne()
 	RotateSphereCompToLocalUpVector();
 	IsOutOfBounds();
 	ApplyGravity();
-	//SpeedHandleCameraBoomEffect(true);
+	
 	if (IsGrounded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("wohoo"))
+		//UE_LOG(LogTemp, Warning, TEXT("Grounded"))
 		EnterState(EVehicleState::Driving);
 	}
 
@@ -644,7 +644,7 @@ float ACarPawn::GetSplineCarForwardAngle()
 	FVector SplineForward = GravitySplineActive->SplineComp->FindDirectionClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 	FVector CarForward = SphereComp->GetForwardVector();
 	float Angle = SignedAngleAxis(SplineForward, CarForward, LocalUpVector);
-	UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
+	//UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
 
 	return Angle;
 }

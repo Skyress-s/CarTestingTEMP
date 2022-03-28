@@ -136,7 +136,7 @@ void UNeckComponent::UpdateSplineMesh(float StartLength, float EndLength)
 	//int32 segments = CalculateNumberOfSegments();
 	float Length = EndLength - StartLength;
 	float segmentsf = Length / TargetSegmentsLength;
-	int32 segments = truncf(segmentsf);
+	int32 segments = (int)truncf(segmentsf);
 	int32 SegmentsToCreate = segments - SplineMeshComponents.Num();
 	
 	
@@ -190,7 +190,7 @@ int32 UNeckComponent::CalculateNumberOfSegments()
 	float Length = Spline->GetSplineLength();
 
 	float segmentsf = Length/TargetSegmentsLength;
-	int32 segments = truncf(segmentsf);
+	int32 segments = (int)truncf(segmentsf);
 
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), segments)
 

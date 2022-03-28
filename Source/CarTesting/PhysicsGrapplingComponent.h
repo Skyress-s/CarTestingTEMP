@@ -70,9 +70,6 @@ private:
 
 	UPROPERTY()
 		UGrappleSphereComponent* TargetGrappableComponent = nullptr;
-	// homing
-	UPROPERTY()
-		bool bHoming = false;
 
 	// OnHooked eatable
 	UPROPERTY()
@@ -83,6 +80,10 @@ private:
 		float ReturnTime = 1.f;
 	UPROPERTY()
 		float  CurrentReturnTime = 0.f;
+
+	// returning with eatable
+	UPROPERTY(meta = (AllowPrivateAccess = "ture"), EditAnywhere, Category = "Grapple|Eatable")
+		float ReturnEatableTime = 0.4f;
 public:
 	UFUNCTION()
 		EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
@@ -132,5 +133,4 @@ public:
 		void MoveTowardsGrapple();
 	UFUNCTION()
 		bool ValidGrappleState();
-		
 };
