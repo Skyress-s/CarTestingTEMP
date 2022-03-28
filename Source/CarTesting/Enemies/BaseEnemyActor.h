@@ -28,6 +28,8 @@ public:
 	virtual void OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	FVector GetToPlayerVector(bool bNormalized = true);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

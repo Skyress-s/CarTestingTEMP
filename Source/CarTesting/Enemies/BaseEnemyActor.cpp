@@ -41,6 +41,19 @@ void ABaseEnemyActor::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
+FVector ABaseEnemyActor::GetToPlayerVector(bool bNormalized)
+{
+	FVector ToPlayer{PlayerPawn->GetActorLocation() - GetActorLocation()};
+	if (bNormalized)
+	{
+		return ToPlayer.GetSafeNormal();
+	}
+	else
+	{
+		return ToPlayer;
+	}
+}
+
 // Called when the game starts or when spawned
 void ABaseEnemyActor::BeginPlay()
 {
