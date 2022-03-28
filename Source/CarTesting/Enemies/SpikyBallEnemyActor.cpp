@@ -33,6 +33,9 @@ void ASpikyBallEnemyActor::BeginPlay()
 void ASpikyBallEnemyActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (CurrentState == EBallState::Spiked && GetToPlayerVector(false).Size() > TargetDistance) { Destroy(); }
+	else if (GetToPlayerVector(false).Size() > TargetDistance) { return; }
+	
 	SphereComp->AddForce(-LocalUpVector*Acceleration, NAME_None, true);
 	switch (CurrentState)
 	{
@@ -60,6 +63,8 @@ void ASpikyBallEnemyActor::SetUpVectorAsSplineUpAxis()
 	if (GravitySplineActive)
 	{
 		LocalUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation());
+		FRotator NewRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
+		SetActorRotation(NewRot);
 	}
 }
 

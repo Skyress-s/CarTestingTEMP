@@ -43,7 +43,7 @@ protected:
 
 	FTimerHandle SpikeTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attack")
-		float SpikeTimer{2.f};
+		float SpikeTimer{1.f};
 	void TriggerSpikes();
 
 	void AirborneState();
@@ -58,6 +58,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rolling")
 		float MaxSpeed{2000.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rolling")
+		float TargetDistance{10000.f};
 };
 
 inline void ASpikyBallEnemyActor::TriggerSpikes()
