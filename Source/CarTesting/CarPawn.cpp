@@ -121,7 +121,7 @@ void ACarPawn::RotateSphereCompToLocalUpVector()
 	SphereComp->SetWorldRotation(NewSphereRot);*/
 
 	FRotator TargetRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
-	FRotator NewRotation = FMath::RInterpTo(SphereComp->GetComponentRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 6.f);
+	FRotator NewRotation = FMath::RInterpTo(SphereComp->GetComponentRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.f);
 	SphereComp->SetWorldRotation(NewRotation);
 }
 
@@ -359,7 +359,8 @@ void ACarPawn::StateAirBorne()
 	if (IsOutOfBounds())
 	{
 		SetActorLocation(StartPlayerLocation);
-		SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		EnterState(EVehicleState::AirBorne);
+		// SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
 	}
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())

@@ -207,7 +207,10 @@ void UPhysicsGrapplingComponent::InActiveState()
 		CarPawn->GrappleSensor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 	}
-	CarPawn->NeckComponent->UpdateSplinePoints();
+	FVector BaseSplineLocation = CarPawn->SphereComp->GetComponentLocation();
+	CarPawn->NeckComponent->UpdateSplinePointsLocations(BaseSplineLocation, BaseSplineLocation, false);
+	CarPawn->NeckComponent->UpdateSplinePointsTangents(FVector::ZeroVector, FVector::ZeroVector, false);
+	
 	CarPawn->NeckComponent->UpdateSplineMesh();
 }
 
@@ -227,11 +230,31 @@ void UPhysicsGrapplingComponent::TravelingState()
 	}
 	UE_LOG(LogTemp, Warning, TEXT("current GrappleSphereSpeed %f"), CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity().Size())
 
-	
+	//updates the sensor to match grappleSphere velocity
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity(), CarPawn->SphereComp->GetUpVector());
 	CarPawn->GrappleSensor->SetWorldRotation(NewRot);
+
+	//updates spline
+	FVector StartLocation, EndLocation = FVector::ZeroVector;
 	
-	CarPawn->NeckComponent->UpdateSplinePoints();
+	StartLocation = CarPawn->CarMesh->GetComponentLocation();
+	EndLocation = CarPawn->GrappleHookMesh->GetComponentLocation();
+
+	float Distance = (StartLocation - EndLocation).Size();
+	
+	FVector StartTangent = CarPawn->CarMesh->GetForwardVector() * Distance;
+	FVector EndTangent = CarPawn->GrappleHookMesh->GetForwardVector() * Distance;
+
+	//new method for end tangent
+	EndTangent = FVector::CrossProduct( CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity(),
+		CarPawn->SphereComp->GetForwardVector());
+	EndTangent = EndTangent.GetSafeNormal();
+	EndTangent *= Distance;
+	
+	CarPawn->NeckComponent->UpdateSplinePointsLocations(StartLocation, EndLocation, false);
+	CarPawn->NeckComponent->UpdateSplinePointsTangents(StartTangent, EndTangent, true);
+	
+	//updates spline mesh
 	CarPawn->NeckComponent->UpdateSplineMesh();
 	
 	if (!IsGrappleInsideOfRange())
@@ -290,11 +313,11 @@ void UPhysicsGrapplingComponent::HookedState()
 		//detaches spline so is wont move
 		CarPawn->NeckSpline->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		CarPawn->NeckComponent->UpdateSplinePointsLocations(CarPawn->SphereComp->GetComponentLocation(),
-			CarPawn->GrappleHookSphereComponent->GetComponentLocation());
+			CarPawn->GrappleHookSphereComponent->GetComponentLocation(), false);
 		
 		TargetReturningTime = CarPawn->NeckComponent->Spline->GetSplineLength() / GetOnHookedVelocitySize(); // v = s / t -> t = s / v
 		TargetReturningTime *= 0.6f; // 40% faster
-		TargetReturningTime = FMath::Clamp(TargetReturningTime, 0.3f, 4.f); // clamps
+		TargetReturningTime = FMath::Clamp(TargetReturningTime, 0.4f, 4.f); // clamps
 	}
 
 	
@@ -302,7 +325,7 @@ void UPhysicsGrapplingComponent::HookedState()
 	CarPawn->NeckComponent->UpdateSplineEndPosition(GetTargetComponent()->GetComponentLocation());
 	FVector StartTangent = GetOnHookedVelocitySize() * CarPawn->SphereComp->GetForwardVector();
 	FVector EndTangent = TargetGrappableComponent->GetForwardVector() * 10000.f;
-	CarPawn->NeckComponent->UpdateSplinePointsTangents(StartTangent, EndTangent);
+	CarPawn->NeckComponent->UpdateSplinePointsTangents(StartTangent, EndTangent, true);
 	
 	float Lerp = CurrentHookedTime / TargetReturningTime; // 0 to 1
 
