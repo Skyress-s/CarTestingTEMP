@@ -125,12 +125,8 @@ void UNeckComponent::UpdateSplineMesh()
 
 void UNeckComponent::UpdateSplinePointsLocations(FVector Start, FVector End)
 {
-}
-
-void UNeckComponent::UpdateSplinePointsTangents(FVector StartTangent, FVector EndTangent)
-{
-	Spline->SetTangentAtSplinePoint(0, StartTangent, ESplineCoordinateSpace::World, false);
-	Spline->SetTangentAtSplinePoint(1, EndTangent, ESplineCoordinateSpace::World, true);
+	Spline->SetLocationAtSplinePoint(0, Start, ESplineCoordinateSpace::World, false);
+	Spline->SetLocationAtSplinePoint(1, End, ESplineCoordinateSpace::World, true);
 }
 
 void UNeckComponent::UpdateSplineStartPosition(FVector Start)
@@ -141,6 +137,19 @@ void UNeckComponent::UpdateSplineStartPosition(FVector Start)
 void UNeckComponent::UpdateSplineEndPosition(FVector End)
 {
 	Spline->SetLocationAtSplinePoint(1, End, ESplineCoordinateSpace::World);
+}
+
+void UNeckComponent::UpdateSplinePointsTangents(FVector StartTangent, FVector EndTangent)
+{
+	float lerp = GetWorld()->GetDeltaSeconds();
+	FVector PrevStartTangent = Spline->GetTangentAtSplinePoint(0, ESplineCoordinateSpace::World);
+	FVector PrevEndTangent = Spline->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::World);
+
+	StartTangent = FMath::VInterpTo(PrevStartTangent, StartTangent, GetWorld()->GetDeltaSeconds(), 15.f);
+	EndTangent = FMath::VInterpTo(PrevEndTangent, EndTangent, GetWorld()->GetDeltaSeconds(), 15.f);
+	
+	Spline->SetTangentAtSplinePoint(0, StartTangent, ESplineCoordinateSpace::World, false);
+	Spline->SetTangentAtSplinePoint(1, EndTangent, ESplineCoordinateSpace::World, true);
 }
 
 void UNeckComponent::UpdateSplineMesh(float StartLength, float EndLength)

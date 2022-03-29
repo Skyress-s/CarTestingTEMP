@@ -117,8 +117,12 @@ void ACarPawn::BeginPlay()
 void ACarPawn::RotateSphereCompToLocalUpVector()
 {
 	//rotates sphere
-	FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
-	SphereComp->SetWorldRotation(NewSphereRot);
+	/*FRotator NewSphereRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
+	SphereComp->SetWorldRotation(NewSphereRot);*/
+
+	FRotator TargetRot = UKismetMathLibrary::MakeRotFromZX(LocalUpVector, GetActorForwardVector());
+	FRotator NewRotation = FMath::RInterpTo(SphereComp->GetComponentRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 6.f);
+	SphereComp->SetWorldRotation(NewRotation);
 }
 
 void ACarPawn::ApplyGravity()

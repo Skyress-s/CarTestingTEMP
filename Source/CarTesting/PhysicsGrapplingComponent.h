@@ -61,8 +61,7 @@ private:
 		FVector OnHookedDirection = FVector::ZeroVector;
 	UPROPERTY()
 		FTransform OnHookedVehicleTransfrom = FTransform::Identity;
-	UPROPERTY()
-		FVector TravelingDirection = FVector::ZeroVector;
+	
 	UPROPERTY()
 		float MoveToTargetModifier = 1.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapple")
@@ -97,8 +96,6 @@ public:
 		FVector GetOnHookedDirection(){ return OnHookedDirection; }
 	UFUNCTION()
 		FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
-	UFUNCTION()
-		FVector GetTravelingDirection(){ return TravelingDirection; }
 	UFUNCTION()
 		UGrappleSphereComponent* GetTargetComponent(){return TargetGrappableComponent; }
 	UFUNCTION()

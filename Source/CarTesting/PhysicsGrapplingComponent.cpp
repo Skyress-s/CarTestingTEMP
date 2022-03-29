@@ -265,6 +265,8 @@ void UPhysicsGrapplingComponent::HookedState()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HookedState"))
 	
+	CurrentHookedTime += GetWorld()->GetDeltaSeconds();
+	static float TargetReturningTime = 1.f;
 	if (bEnterState)
 	{
 		bEnterState = false;
@@ -290,31 +292,32 @@ void UPhysicsGrapplingComponent::HookedState()
 		CarPawn->NeckComponent->UpdateSplinePointsLocations(CarPawn->SphereComp->GetComponentLocation(),
 			CarPawn->GrappleHookSphereComponent->GetComponentLocation());
 		
+		TargetReturningTime = CarPawn->NeckComponent->Spline->GetSplineLength() / GetOnHookedVelocitySize(); // v = s / t -> t = s / v
+		TargetReturningTime *= 0.6f; // 40% faster
+		TargetReturningTime = FMath::Clamp(TargetReturningTime, 0.3f, 4.f); // clamps
 	}
 
 	
 	// updates spline
 	CarPawn->NeckComponent->UpdateSplineEndPosition(GetTargetComponent()->GetComponentLocation());
 	FVector StartTangent = GetOnHookedVelocitySize() * CarPawn->SphereComp->GetForwardVector();
-	//FVector StartTangent = (TargetGrappableComponent->GetComponentLocation() - CarPawn->SphereComp->GetComponentLocation()).GetSafeNormal() * 6000.f;
-	FVector EndTangent = TargetGrappableComponent->GetForwardVector() * 6000.f;
+	FVector EndTangent = TargetGrappableComponent->GetForwardVector() * 10000.f;
 	CarPawn->NeckComponent->UpdateSplinePointsTangents(StartTangent, EndTangent);
 	
+	float Lerp = CurrentHookedTime / TargetReturningTime; // 0 to 1
 
+	Lerp = HookedMovementCurve->GetFloatValue(Lerp); // places on curve
+
+	Lerp = Lerp * CarPawn->NeckSpline->GetSplineLength(); // mulitplies to get actual length
+	
 	// get corrent length along spline
-	CurrentHookedTime += GetWorld()->GetDeltaSeconds();
-	float LengthAtSpline = GetOnHookedVelocitySize() * CurrentHookedTime;
-	MoveTowardsGrapple(LengthAtSpline);
+	MoveTowardsGrapple(Lerp);
 
 	//updates spline mesh
 	float StartLength, EndLength = 0.f;
 	EndLength = CarPawn->NeckSpline->GetSplineLength();
-	StartLength = LengthAtSpline;
+	StartLength = Lerp;
 	CarPawn->NeckComponent->UpdateSplineMesh(StartLength, EndLength);
-	
-	FVector Direction = CarPawn->GrappleHookSphereComponent->GetComponentLocation() - CarPawn->GetActorLocation();
-	Direction = Direction.GetSafeNormal();
-	TravelingDirection = Direction;
 
 	//updates grapplehookcomponent location
 	if (TargetGrappableComponent)

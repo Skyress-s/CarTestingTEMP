@@ -56,9 +56,11 @@ protected:
 	UFUNCTION()
 	void UpdateSplinePoints();
 	void UpdateSplinePointsLocations(FVector Start, FVector End);
-	void UpdateSplinePointsTangents(FVector StartTangent, FVector EndTangent);
 	void UpdateSplineStartPosition(FVector Start);
 	void UpdateSplineEndPosition(FVector End);
+	
+	void UpdateSplinePointsTangents(FVector StartTangent, FVector EndTangent);
+	
 	UFUNCTION()
 	void UpdateSplineMesh();
 	void UpdateSplineMesh(float StartLength, float EndLength);
