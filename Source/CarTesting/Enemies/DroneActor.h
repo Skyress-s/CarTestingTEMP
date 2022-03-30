@@ -13,5 +13,10 @@ UCLASS()
 class CARTESTING_API ADroneActor : public ABaseEnemyActor
 {
 	GENERATED_BODY()
-	
+
+public:
+	ADroneActor();
+
+	void BeginPlay() override;
+	void Tick(float DeltaSeconds) override;
 };
