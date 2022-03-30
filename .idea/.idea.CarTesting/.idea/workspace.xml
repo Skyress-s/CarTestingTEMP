@@ -8,19 +8,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2dfb7753-9572-4579-baf0-2f09fe26b09d" name="Changes" comment="">
+    <list default="true" id="c60733e9-e115-408b-8423-32033ff3cbfa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.blend" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.blend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.blend1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/Blends/Advanced Lap.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_BasicEatableActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_BasicEatableActor.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Meshes/Advanced_Lap.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/HookedCurve.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/HookedCurve.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/GrappleSphereComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/Grappling/GrappleTarget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,24 +25,24 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="26yq3eH79xDsEJInlReEyO4vHP4" />
+  <component name="ProjectId" id="271OK7jooVpiSGLlCJCVz59pTWD" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C++ Project.CarTesting">
     <configuration name="CarTesting" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -366,12 +360,14 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2dfb7753-9572-4579-baf0-2f09fe26b09d" name="Changes" comment="" />
-      <created>1648405978740</created>
+      <changelist id="c60733e9-e115-408b-8423-32033ff3cbfa" name="Changes" comment="" />
+      <created>1648484062050</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1648405978740</updated>
-      <workItem from="1648406063613" duration="4045000" />
+      <updated>1648484062050</updated>
+      <workItem from="1648484140501" duration="9512000" />
+      <workItem from="1648571037946" duration="4067000" />
+      <workItem from="1648575160790" duration="1800000" />
     </task>
     <servers />
   </component>

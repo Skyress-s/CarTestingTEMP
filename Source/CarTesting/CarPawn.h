@@ -174,8 +174,6 @@ private:
 	void LookYAxis(float Value);
 	
 	UFUNCTION(BlueprintCallable)
-	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
-	float UnsignedAngle(FVector v1, FVector v2);
 	bool IsGrounded();
 	float DistanceToGround();
 	FVector VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target);
@@ -185,7 +183,6 @@ private:
 
 	float GetSplineCarForwardAngle();
 	void HandleMaxTurnWithSpline();
-
 	
 	UFUNCTION()
 	void SpeedHandleCameraBoomEffect(bool bSoft);
@@ -194,10 +191,22 @@ private:
 	bool IsOutOfBounds();
 	
 
+	//TODO debug remove!
+	
+	UFUNCTION()
+	void SetGameSpeedUp();
+	UFUNCTION()
+	void SetGameSpeedDown();
 public:
+	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
+	static float UnsignedAngle(FVector v1, FVector v2);
 	UFUNCTION()
 	void HandleBoost();
+	
+	
 	bool IsUnderMaxSpeed(bool bBuffer);
+
+	
 
 
 };
