@@ -94,7 +94,7 @@ void ACarPawn::BeginPlay()
 	GrappleHookSphereComponent->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
 	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
 	GrappleSensor->OnComponentEndOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorEndOverlap);
-	CameraEffectComponent->SetCameraCurrent(MainCamera);
+	// CameraEffectComponent->SetCameraCurrent(MainCamera);
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;
 	GetComponents<UPrimitiveComponent>(PrimitiveComponents, false /*or true*/);
@@ -242,7 +242,6 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("LookUp", this, &ACarPawn::LookYAxis);
 	
 	// Action binding
-	FInputActionBinding& action = PlayerInputComponent->BindAction("Boost", EInputEvent::IE_Pressed, this, &ACarPawn::HandleBoost);
 	//action.bConsumeInput = false;
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ACarPawn::ToggleGrappleHook);
 	PlayerInputComponent->BindAction("Up", EInputEvent::IE_Pressed, this, &ACarPawn::SetGameSpeedUp);
@@ -498,15 +497,6 @@ void ACarPawn::LookYAxis(float Value)
 	CameraBoom->SetRelativeRotation(OldRotation);
 }
 
-void ACarPawn::HandleBoost()
-{
-	if (IsUnderMaxSpeed(true) && SphereComp->IsSimulatingPhysics())
-	{
-		BoostComponent->Boost();
-		CameraEffectComponent->PlayCameraEffect();
-	}
-}
-
 /// <summary>
 /// Returns angle in radians
 /// </summary>
@@ -675,21 +665,6 @@ void ACarPawn::HandleMaxTurnWithSpline()
 	else if (Angle < -MaxCar_SplineAngle)
 	{
 		AddActorLocalRotation(FRotator(0.f,MaxCar_SplineAngleCorrectionSpeed * UGameplayStatics::GetWorldDeltaSeconds(this),0.f));
-	}
-}
-
-void ACarPawn::SpeedHandleCameraBoomEffect(bool bSoft)
-{
-	float speed = SphereComp->GetPhysicsLinearVelocity().Size();
-
-	
-	if (bSoft)
-	{
-		CameraBoom->TargetArmLength = StartCameraBoomLength + speed/30.f;
-	}
-	else
-	{
-		CameraBoom->TargetArmLength = StartCameraBoomLength + speed/90.f;
 	}
 }
 

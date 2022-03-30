@@ -40,8 +40,6 @@ void UPhysicsGrapplingComponent::BeginPlay()
 		CarPawn = Cast<ACarPawn>(GetOwner());
 		StartLocationGrappleMesh = CarPawn->GrappleHookSphereComponent->GetRelativeLocation();
 	}
-	// ...
-	
 }
 
 
@@ -306,7 +304,6 @@ void UPhysicsGrapplingComponent::HookedState()
 		
 		OnHookedDirection = (CarPawn->GrappleHookSphereComponent->GetComponentLocation() - CarPawn->GetActorLocation()).GetSafeNormal();
 		OnHookedVehicleTransfrom = CarPawn->GetTransform();
-		CarPawn->CameraEffectComponent->PlayCameraEffect();
 
 		//neck spline
 
@@ -405,9 +402,8 @@ void UPhysicsGrapplingComponent::HookedEatableState()
 
 	if (distanceSqr < 1000.f* 1000.f) // when its at us!
 	{
-		CarPawn->HandleBoost();
 		TargetGrappableComponent->OnReached();
-		
+		CarPawn->SphereComp->AddImpulse(CarPawn->SphereComp->GetPhysicsLinearVelocity().GetSafeNormal() * TargetGrappableComponent->GetAddSpeed(), NAME_None, true);
 		
 		EnterState(EGrappleStates::InActive);
 	}
