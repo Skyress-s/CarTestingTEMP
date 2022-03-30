@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
 		float HoverDampingFactor{4};
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Car|Hover")
+		float HoverForceReduction{20};
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Car|Hover")
 		float GravityForce{2720};
 	
