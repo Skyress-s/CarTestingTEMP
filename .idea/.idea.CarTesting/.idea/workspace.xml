@@ -8,14 +8,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c60733e9-e115-408b-8423-32033ff3cbfa" name="Changes" comment="">
+    <list default="true" id="39de2ea8-7411-4fbe-b380-e45f685b8556" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/HookedCurve.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/HookedCurve.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/NeckComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,29 +20,29 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="271OK7jooVpiSGLlCJCVz59pTWD" />
+  <component name="ProjectId" id="276MEkWiP5VDLvVJMjUReKzHm2f" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ Project.CarTesting">
     <configuration name="CarTesting" type="CppProject" factoryName="C++ Project">
       <configuration_1>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame Editor" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -67,7 +62,7 @@
       </configuration_2>
       <configuration_3>
         <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -96,8 +91,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_5>
       <configuration_6>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -106,8 +101,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_6>
       <configuration_7>
-        <option name="CONFIGURATION" value="Shipping" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -116,8 +111,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_7>
       <configuration_8>
-        <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="Win64" />
+        <option name="CONFIGURATION" value="Development Editor" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -126,8 +121,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_8>
       <configuration_9>
-        <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="Win32" />
+        <option name="CONFIGURATION" value="Development Editor" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -136,8 +131,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_9>
       <configuration_10>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="Win32" />
+        <option name="CONFIGURATION" value="Development" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -145,56 +140,6 @@
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_10>
-      <configuration_11>
-        <option name="CONFIGURATION" value="Development" />
-        <option name="PLATFORM" value="IOS" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_11>
-      <configuration_12>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_12>
-      <configuration_13>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="Win32" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_13>
-      <configuration_14>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_14>
-      <configuration_15>
-        <option name="CONFIGURATION" value="Development" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_15>
       <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/CarTesting.vcxproj" />
       <method v="2">
         <option name="Build" />
@@ -202,8 +147,8 @@
     </configuration>
     <configuration name="UE4" type="CppProject" factoryName="C++ Project">
       <configuration_1>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame Editor" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -223,7 +168,7 @@
       </configuration_2>
       <configuration_3>
         <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -252,8 +197,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_5>
       <configuration_6>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -262,8 +207,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_6>
       <configuration_7>
-        <option name="CONFIGURATION" value="Shipping" />
-        <option name="PLATFORM" value="IOS" />
+        <option name="CONFIGURATION" value="DebugGame" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -272,8 +217,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_7>
       <configuration_8>
-        <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="Win64" />
+        <option name="CONFIGURATION" value="Development Editor" />
+        <option name="PLATFORM" value="Win32" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -282,8 +227,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_8>
       <configuration_9>
-        <option name="CONFIGURATION" value="DebugGame Editor" />
-        <option name="PLATFORM" value="Win32" />
+        <option name="CONFIGURATION" value="Development Editor" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -292,8 +237,8 @@
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_9>
       <configuration_10>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="Win32" />
+        <option name="CONFIGURATION" value="Development" />
+        <option name="PLATFORM" value="Win64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -301,56 +246,6 @@
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_10>
-      <configuration_11>
-        <option name="CONFIGURATION" value="Development" />
-        <option name="PLATFORM" value="IOS" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_11>
-      <configuration_12>
-        <option name="CONFIGURATION" value="DebugGame" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_12>
-      <configuration_13>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="Win32" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_13>
-      <configuration_14>
-        <option name="CONFIGURATION" value="Development Editor" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_14>
-      <configuration_15>
-        <option name="CONFIGURATION" value="Development" />
-        <option name="PLATFORM" value="Win64" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
-        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
-        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
-        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
-        <option name="PASS_PARENT_ENVS" value="1" />
-        <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      </configuration_15>
       <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE4.vcxproj" />
       <method v="2">
         <option name="Build" />
@@ -360,14 +255,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c60733e9-e115-408b-8423-32033ff3cbfa" name="Changes" comment="" />
-      <created>1648484062050</created>
+      <changelist id="39de2ea8-7411-4fbe-b380-e45f685b8556" name="Changes" comment="" />
+      <created>1648635976447</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1648484062050</updated>
-      <workItem from="1648484140501" duration="9512000" />
-      <workItem from="1648571037946" duration="4067000" />
-      <workItem from="1648575160790" duration="1800000" />
+      <updated>1648635976447</updated>
+      <workItem from="1648636030639" duration="696000" />
     </task>
     <servers />
   </component>
