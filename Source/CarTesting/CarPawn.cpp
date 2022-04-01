@@ -106,6 +106,7 @@ void ACarPawn::BeginPlay()
 	//setting camera lag
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
 	StartCameraBoomLength = CameraBoom->TargetArmLength;
+	TargetCameraBoomLength = StartCameraBoomLength;
 
 	//neck
 	//detaches the neck spline so it dosent follow
@@ -245,6 +246,13 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Down", EInputEvent::IE_Pressed, this, &ACarPawn::SetGameSpeedDown);
 }
 
+void ACarPawn::UpdateCameraBoomLength()
+{
+	float newVal = FMath::FInterpTo(CameraBoom->TargetArmLength, TargetCameraBoomLength, GetWorld()->GetDeltaSeconds(), 5.f);
+	CameraBoom->TargetArmLength = newVal;
+	return;
+}
+
 void ACarPawn::EnterState(EVehicleState NewState)
 {
 	bEnterState = true;
@@ -276,6 +284,7 @@ void ACarPawn::StateDriving()
 		EnterState(EVehicleState::AirBorne);
 	}
 
+	UpdateCameraBoomLength();
 	HandleMaxTurnWithSpline();
 	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + LocalUpVector * 10000.f, FColor::Red, false);
 	

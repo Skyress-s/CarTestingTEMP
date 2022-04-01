@@ -8,25 +8,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2ac613c-7d4a-43e7-86a3-694f7a5d7c17" name="Changes" comment="">
+    <list default="true" id="b76a55b6-565e-4b49-9396-f435d254a730" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CarTesting/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_CarPawn2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_CarPawn2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VehicleCPP/Maps/VehicleExampleMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CameraEffecttComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/CarPawn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CarTesting/PhysicsGrapplingComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Source/CarTesting/ModifyCameraZone.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="277BkU0i4HuPxRlkLZmGCZrDQcd" />
+  <component name="ProjectId" id="27CKY05P1tDqcwSQDlHr9IQF1Hu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -362,12 +361,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d2ac613c-7d4a-43e7-86a3-694f7a5d7c17" name="Changes" comment="" />
-      <created>1648661390024</created>
+      <changelist id="b76a55b6-565e-4b49-9396-f435d254a730" name="Changes" comment="" />
+      <created>1648818675597</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1648661390024</updated>
-      <workItem from="1648661483199" duration="2504000" />
+      <updated>1648818675597</updated>
+      <workItem from="1648818752876" duration="2247000" />
     </task>
     <servers />
   </component>
