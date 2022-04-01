@@ -3,7 +3,9 @@
 
 #include "CameraEffecttComponent.h"
 
+#include "CarPawn.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -22,12 +24,15 @@ void UCameraEffecttComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	
+	
+	if (GetOwner()->IsA(ACarPawn::StaticClass()))
+		CarPawn = Cast<ACarPawn>(GetOwner());
+
+	CameraCurrent = CarPawn->MainCamera;
 	if (CameraCurrent)
-	{
-		
 		StartFOV = CameraCurrent->FieldOfView;
-	}
+	
 }
 
 
@@ -36,26 +41,19 @@ void UCameraEffecttComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (bPlaying)
+	float Speed = 0.f;
+	if (CarPawn->SphereComp->IsSimulatingPhysics())
 	{
-		Time += UGameplayStatics::GetWorldDeltaSeconds(this);
-
-		CameraCurrent->PostProcessSettings.SceneFringeIntensity = SpeedBoostCurve->GetFloatValue(Time) * 10.f;
-		CameraCurrent->FieldOfView = StartFOV + SpeedBoostCurve->GetFloatValue(Time) * 25.f;
-		
-		
-
-		if (Time > 3.f)
-		{
-			Time = 0.f;
-			bPlaying = false;
-		}
+		Speed = CarPawn->SphereComp->GetPhysicsLinearVelocity().Size();
 	}
+	else
+	{
+		Speed = 1000.f;
+	}
+	float NewFOV = Speed / 300.f + StartFOV;
+	NewFOV = FMath::Clamp(NewFOV, StartFOV, StartFOV * 2.f);
+
+	CameraCurrent->SetFieldOfView(NewFOV);
 }
 
-void UCameraEffecttComponent::PlayCameraEffect()
-{
-	bPlaying = true;
-	Time = 0.f;
-}
 

@@ -28,21 +28,17 @@ public:
 	//My deseg ---------------
 private:
 	UPROPERTY()
-	class UCameraComponent* CameraCurrent = nullptr;
+		class UCameraComponent* CameraCurrent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "Should NOT be longer than 3 seconds") , EditAnywhere, Category = "CameraEffect")
-	class UCurveFloat* SpeedBoostCurve;
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "CameraEffect")
-	bool bPlaying = false;
+		class UCurveFloat* SpeedBoostCurve;
 	UPROPERTY()
-	float Time = 0.f;
+		float StartFOV = 0.f;
 	UPROPERTY()
-	float StartFOV = 90.f;
-	
+		class ACarPawn* CarPawn = nullptr;
 	
 public:
 	UFUNCTION()
 	void SetCameraCurrent(class UCameraComponent* NewCamera){CameraCurrent = NewCamera; }
-	UFUNCTION()
-	void PlayCameraEffect();
+	
 
 };

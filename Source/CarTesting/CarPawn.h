@@ -185,9 +185,6 @@ private:
 	void HandleMaxTurnWithSpline();
 	
 	UFUNCTION()
-	void SpeedHandleCameraBoomEffect(bool bSoft);
-	
-	UFUNCTION()
 	bool IsOutOfBounds();
 	
 
@@ -200,8 +197,6 @@ private:
 public:
 	static float SignedAngleAxis(FVector v1, FVector v2, FVector axis);
 	static float UnsignedAngle(FVector v1, FVector v2);
-	UFUNCTION()
-	void HandleBoost();
 	
 	
 	bool IsUnderMaxSpeed(bool bBuffer);
