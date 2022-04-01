@@ -130,18 +130,15 @@ void ACarPawn::ApplyGravity()
 	//gravity
 	if (GravitySplineActive != nullptr)
 	{
-		FVector GravityUpVector = GravitySplineActive->GetAdjustedUpVectorFromLocation(
-			SphereComp->GetComponentLocation());
-		GravityUpVector.Normalize();
 		FVector HoverForce(0.f);
 		if (SphereComp->IsSimulatingPhysics())
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
 			float ScaleHeight{(HoverHeight - DistanceToGround())/HoverForceReduction};
 			FVector HeightVelocity{
-				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),GravityUpVector)*GravityUpVector
+				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),LocalUpVector)*LocalUpVector
 			};
-			FVector GravityForceVector{-GravityUpVector * GravityForce * GravityMod};
+			FVector GravityForceVector{-LocalUpVector * GravityForce * GravityMod};
 			if (IsGrounded())
 			{
 				HoverForce = (-GravityForceVector * UKismetMathLibrary::Exp(ScaleHeight) -
