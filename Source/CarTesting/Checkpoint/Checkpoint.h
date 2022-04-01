@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CarTesting/CarTestingGameMode.h"
 #include "GameFramework/Actor.h"
 #include "Checkpoint.generated.h"
 
@@ -22,5 +23,35 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	//my deseg
+private:
+	//components
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Checkpoint")
+		class UArrowComponent* BaseArrow{};
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Checkpoint")
+		class UStaticMeshComponent* MainMesh{};
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Checkpoint")
+		class UBoxComponent* BoxComponent{};
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Checkpoint")
+		class UArrowComponent* SpawnArrow{};
+
+	//variables
+	UPROPERTY()
+		class ACarTestingGameMode* GameModee{};
+	UPROPERTY(meta = (AllowPrivateAccess = "ture"), EditAnywhere, Category = "Checkpoint")
+		class AGravitySplineActor* GravitySplineActor{};
+
+	//funcs
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	// public funcs
+	UFUNCTION()
+		UArrowComponent* GetSpawnArrow() const {return SpawnArrow; }
+	UFUNCTION()
+		AGravitySplineActor* GetCheckpointGravitySpline() const {return GravitySplineActor; }
 
 };

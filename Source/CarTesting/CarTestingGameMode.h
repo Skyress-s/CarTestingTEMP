@@ -10,6 +10,22 @@ class ACarTestingGameMode : public AGameModeBase
 
 public:
 	ACarTestingGameMode();
+
+	// my deseg ---------
+private:
+	//this is for if we need to use it!
+	// UPROPERTY()
+	// 	TArray<ACheckpoint*> CheckpointOrder{};
+
+	//checkpoints tells the gamemode what was the last checkpoint the player touched
+	UPROPERTY()
+		class ACheckpoint* LastCheckpoint{};
+public:
+	UFUNCTION()
+		class ACheckpoint* GetLastCheckpoint() const {return LastCheckpoint; }
+	UFUNCTION()
+		void SetLastCheckpoint(class ACheckpoint* NewLastCheckpoint) {LastCheckpoint = NewLastCheckpoint; }
+	
 };
 
 

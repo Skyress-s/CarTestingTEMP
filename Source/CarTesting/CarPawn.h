@@ -144,7 +144,7 @@ public:
 	//Deathzone
 private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Deathzone")
-		float MaxOutOfBoundsDistance = 10000.f;
+		float MaxOutOfBoundsDistance = 9000.f;
 	UPROPERTY()
 		FVector StartPlayerLocation = FVector::ZeroVector;
 

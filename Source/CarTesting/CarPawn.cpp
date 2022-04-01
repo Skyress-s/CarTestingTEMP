@@ -12,11 +12,13 @@
 #include "Components/ArrowComponent.h"
 #include "BoostComponent.h"
 #include "CameraEffecttComponent.h"
+#include "CarTestingGameMode.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
 #include "NeckComponent.h"
 #include "PhysicsGrapplingComponent.h"
 #include "Chaos/KinematicTargets.h"
+#include "Checkpoint/Checkpoint.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
@@ -353,7 +355,6 @@ void ACarPawn::StateAirBorne()
 	}
 	SetUpVectorAsSplineUpAxis();
 	RotateSphereCompToLocalUpVector();
-	IsOutOfBounds();
 	ApplyGravity();
 	
 	if (IsGrounded())
@@ -364,9 +365,22 @@ void ACarPawn::StateAirBorne()
 
 	if (IsOutOfBounds())
 	{
-		SetActorLocation(StartPlayerLocation);
-		EnterState(EVehicleState::AirBorne);
-		// SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		ACarTestingGameMode* GameMode = Cast<ACarTestingGameMode>(GetWorld()->GetAuthGameMode());
+		if (GameMode && GameMode->GetLastCheckpoint())
+		{
+			ACheckpoint* CP = GameMode->GetLastCheckpoint();
+			SetActorLocation(CP->GetSpawnArrow()->GetComponentLocation());
+			SetActorRotation(CP->GetSpawnArrow()->GetComponentRotation());
+			
+			if (CP->GetCheckpointGravitySpline())
+				GravitySplineActive = CP->GetCheckpointGravitySpline();
+			else
+				UE_LOG(LogTemp, Error, TEXT("(%s) no gravity spline is selected"), *CP->GetName())
+			
+			EnterState(EVehicleState::AirBorne);
+			SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		}
+		
 	}
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())
@@ -678,10 +692,10 @@ bool ACarPawn::IsOutOfBounds()
 {
 	if (GravitySplineActive != nullptr)
 	{
-		FVector test = GravitySplineActive->SplineComp->
+		FVector ClosestSplineLocation = GravitySplineActive->SplineComp->
 		FindLocationClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 
-		float dist = (test - SphereComp->GetComponentLocation()).Size();
+		float dist = (ClosestSplineLocation - SphereComp->GetComponentLocation()).Size();
 		//UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
 		
 		if (dist > MaxOutOfBoundsDistance)
