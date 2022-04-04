@@ -22,7 +22,7 @@
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
-#include "Grappling/GrappleComponent.h"
+#include "Grappling/GrappableWidgetComponent.h"
 #include "Grappling/GrappleTarget.h"
 
 
@@ -82,6 +82,8 @@ ACarPawn::ACarPawn()
 	BoostComponent = CreateDefaultSubobject<UBoostComponent>(TEXT("Boost Component"));
 	CameraEffectComponent = CreateDefaultSubobject<UCameraEffecttComponent>(TEXT("CameraEffectComponent"));
 	NeckComponent = CreateDefaultSubobject<UNeckComponent>(TEXT("NeckSplineComponent"));
+	GrappableWidgetComponent = CreateDefaultSubobject<UGrappableWidgetComponent>(TEXT("GrappableWidgetComponent"));
+	
 }
 
 // Called when the game starts or when spawned

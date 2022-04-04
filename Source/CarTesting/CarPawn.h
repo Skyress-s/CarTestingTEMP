@@ -58,6 +58,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Car")
 		class UNeckComponent* NeckComponent = nullptr;
 
+	//Grapple widget comp
+	UPROPERTY(EditDefaultsOnly, Category = "Car|Widget")
+		class UGrappableWidgetComponent* GrappableWidgetComponent = nullptr;
+	
 	// spline neck
 	UPROPERTY(EditDefaultsOnly, Category = "Car|Neck")
 		class USplineComponent* NeckSpline = nullptr;
