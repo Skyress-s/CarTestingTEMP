@@ -116,12 +116,14 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Movment")
 		float MaxCar_SplineAngleCorrectionSpeed = 100.f;
 
-	//Camera variables
-	
+	//Camera
+private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Car|Camera")
 	float CameraLookSpeed = 70.f; //gets set at begin play
 	UPROPERTY()
 	float StartCameraBoomLength = 0.f; //gets set at begin play
+	UPROPERTY()
+	float TargetCameraBoomLength = 0.f;
 	UPROPERTY() 
 	FVector2D OnStartCameraLag = FVector2D::ZeroVector;
 	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "X is CameraLag,  Y is CameraRotationLag"), EditDefaultsOnly, Category = "Car|Camera")
@@ -130,12 +132,23 @@ private:
 	float MaxYawLookAngle = 90.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Camera")
 	float MaxPichLookAngle = 45.f;
-
+public:
+	UFUNCTION()
+		float GetStartCameraBoomLength() const {return StartCameraBoomLength; }
+	UFUNCTION()
+		void SetTargetCameraBoomLength(float NewCameraBoomLength){TargetCameraBoomLength = NewCameraBoomLength; }
+	UFUNCTION()
+		void UpdateCameraBoomLength();
+	
+	
 	//Deathzone
+private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|Deathzone")
-		float MaxOutOfBoundsDistance = 10000.f;
+		float MaxOutOfBoundsDistance = 9000.f;
 	UPROPERTY()
 		FVector StartPlayerLocation = FVector::ZeroVector;
+
+	
 	
 	//state machince
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Car|State")

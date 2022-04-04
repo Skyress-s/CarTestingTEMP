@@ -12,11 +12,13 @@
 #include "Components/ArrowComponent.h"
 #include "BoostComponent.h"
 #include "CameraEffecttComponent.h"
+#include "CarTestingGameMode.h"
 #include "GravitySplineActor.h"
 #include "HighGravityZone.h"
 #include "NeckComponent.h"
 #include "PhysicsGrapplingComponent.h"
 #include "Chaos/KinematicTargets.h"
+#include "Checkpoint/Checkpoint.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
@@ -106,6 +108,7 @@ void ACarPawn::BeginPlay()
 	//setting camera lag
 	OnStartCameraLag = FVector2D(CameraBoom->CameraLagSpeed, CameraBoom->CameraRotationLagSpeed);
 	StartCameraBoomLength = CameraBoom->TargetArmLength;
+	TargetCameraBoomLength = StartCameraBoomLength;
 
 	//neck
 	//detaches the neck spline so it dosent follow
@@ -245,6 +248,13 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Down", EInputEvent::IE_Pressed, this, &ACarPawn::SetGameSpeedDown);
 }
 
+void ACarPawn::UpdateCameraBoomLength()
+{
+	float newVal = FMath::FInterpTo(CameraBoom->TargetArmLength, TargetCameraBoomLength, GetWorld()->GetDeltaSeconds(), 5.f);
+	CameraBoom->TargetArmLength = newVal;
+	return;
+}
+
 void ACarPawn::EnterState(EVehicleState NewState)
 {
 	bEnterState = true;
@@ -276,6 +286,7 @@ void ACarPawn::StateDriving()
 		EnterState(EVehicleState::AirBorne);
 	}
 
+	UpdateCameraBoomLength();
 	HandleMaxTurnWithSpline();
 	DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), SphereComp->GetComponentLocation() + LocalUpVector * 10000.f, FColor::Red, false);
 	
@@ -344,7 +355,6 @@ void ACarPawn::StateAirBorne()
 	}
 	SetUpVectorAsSplineUpAxis();
 	RotateSphereCompToLocalUpVector();
-	IsOutOfBounds();
 	ApplyGravity();
 	
 	if (IsGrounded())
@@ -355,9 +365,22 @@ void ACarPawn::StateAirBorne()
 
 	if (IsOutOfBounds())
 	{
-		SetActorLocation(StartPlayerLocation);
-		EnterState(EVehicleState::AirBorne);
-		// SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		ACarTestingGameMode* GameMode = Cast<ACarTestingGameMode>(GetWorld()->GetAuthGameMode());
+		if (GameMode && GameMode->GetLastCheckpoint())
+		{
+			ACheckpoint* CP = GameMode->GetLastCheckpoint();
+			SetActorLocation(CP->GetSpawnArrow()->GetComponentLocation());
+			SetActorRotation(CP->GetSpawnArrow()->GetComponentRotation());
+			
+			if (CP->GetCheckpointGravitySpline())
+				GravitySplineActive = CP->GetCheckpointGravitySpline();
+			else
+				UE_LOG(LogTemp, Error, TEXT("(%s) no gravity spline is selected"), *CP->GetName())
+			
+			EnterState(EVehicleState::AirBorne);
+			SphereComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		}
+		
 	}
 	//shoud we be in grapple state
 	if (PhysicsGrappleComponent->ValidGrappleState())
@@ -669,10 +692,10 @@ bool ACarPawn::IsOutOfBounds()
 {
 	if (GravitySplineActive != nullptr)
 	{
-		FVector test = GravitySplineActive->SplineComp->
+		FVector ClosestSplineLocation = GravitySplineActive->SplineComp->
 		FindLocationClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 
-		float dist = (test - SphereComp->GetComponentLocation()).Size();
+		float dist = (ClosestSplineLocation - SphereComp->GetComponentLocation()).Size();
 		//UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
 		
 		if (dist > MaxOutOfBoundsDistance)
