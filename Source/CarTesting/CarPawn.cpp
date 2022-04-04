@@ -143,10 +143,10 @@ void ACarPawn::ApplyGravity()
 			if (IsGrounded())
 			{
 				HoverForce = (-GravityForceVector * UKismetMathLibrary::Exp(ScaleHeight) -
-					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(ScaleHeight));
+					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(ScaleHeight)).GetClampedToMaxSize(10000.f);
 			}
 			SphereComp->AddForce(GravityForceVector+HoverForce, FName(), true);
-			//UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
+			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }
@@ -168,7 +168,7 @@ void ACarPawn::TiltCarMesh(FVector AsymVector)
 	                                            NewRot,
 	                                            UGameplayStatics::GetWorldDeltaSeconds(this),
 	                                            5.f
-	) );
+	));
 
 	//clamps the roll rotation
 	float ClampValue = 45.f;
