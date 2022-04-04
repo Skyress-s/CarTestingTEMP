@@ -139,7 +139,7 @@ void ACarPawn::ApplyGravity()
 		FVector HoverForce(0.f);
 		if (SphereComp->IsSimulatingPhysics())
 		{
-			// UE_LOG(LogTemp, Warning, TEXT("Is simulating physics"))
+			
 			float ScaleHeight{(HoverHeight - DistanceToGround())/HoverForceReduction};
 			FVector HeightVelocity{
 				FVector::DotProduct(SphereComp->GetPhysicsLinearVelocity(),LocalUpVector)*LocalUpVector
@@ -151,7 +151,7 @@ void ACarPawn::ApplyGravity()
 					HoverDampingFactor * HeightVelocity * UKismetMathLibrary::Exp(ScaleHeight)).GetClampedToMaxSize(10000.f);
 			}
 			SphereComp->AddForce(GravityForceVector+HoverForce, FName(), true);
-			UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
+			//UE_LOG(LogTemp, Warning, TEXT("Forecs G = %f, H = %f, %f"), GravityForceVector.Z, HoverForce.Z, ScaleHeight);
 		}
 	}
 }
@@ -361,7 +361,7 @@ void ACarPawn::StateAirBorne()
 	
 	if (IsGrounded())
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Grounded"))
+		
 		EnterState(EVehicleState::Driving);
 	}
 
@@ -425,7 +425,6 @@ FVector ACarPawn::CalcAsymVector()
 
 	if (abs(Angle) > 90.f)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Did round down"));
 		Angle = 0.f;
 	}
 	
@@ -478,7 +477,7 @@ void ACarPawn::MoveXAxis(float Value)
 			
 		}
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("move!"));
+	
 }
 
 void ACarPawn::MoveYAxis(float Value)
@@ -533,7 +532,7 @@ float ACarPawn::SignedAngleAxis(FVector v1, FVector v2, FVector axis)
 	float DotProduct = FVector::DotProduct(v1, v2);
 	float LengthCombined = (v1.Size() * v2.Size());
 	float Angle = UKismetMathLibrary::Acos(DotProduct/ LengthCombined);
-	//UE_LOG(LogTemp, Warning, TEXT("%f"),  FMath::RadiansToDegrees(Angle))
+	
 	
 	FVector CrossProduct = FVector::CrossProduct(v1, v2);
 	CrossProduct = CrossProduct.GetSafeNormal();
@@ -570,14 +569,14 @@ bool ACarPawn::IsGrounded()
 		TraceParams
 	);
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxGroundAngle) {
-		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		
 	
 		
 		return true;
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("NO HIT"))
+		
 		return false;
 	}
 
@@ -599,7 +598,7 @@ float ACarPawn::DistanceToGround()
 	);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true);
 	if (hit.IsValidBlockingHit() && UnsignedAngle(GravitySplineActive->GetAdjustedUpVectorFromLocation(SphereComp->GetComponentLocation()), hit.Normal) < MaxGroundAngle) {
-		//UE_LOG(LogTemp, Warning, TEXT("HIT"))
+		
 		return hit.Distance;
 	}
 	else
@@ -611,7 +610,7 @@ float ACarPawn::DistanceToGround()
 FVector ACarPawn::VelocityTowardsTarget(FVector StartLocation, FVector Velocity, FVector Target)
 {
 	float Speed = UKismetMathLibrary::Cos(UnsignedAngle(Velocity, Target - StartLocation)) * Velocity.Size();
-	//UE_LOG(LogTemp, Warning, TEXT("Angle - %f"), UnsignedAngle(Velocity, Target - StartLocation))
+	
 	FVector VelocityTowards = (Target - StartLocation).GetSafeNormal() * Speed;
 	return VelocityTowards;
 }
@@ -632,11 +631,6 @@ FHitResult ACarPawn::ShootRayFromCenterOfScreen()
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
 		TraceParams
 	);
-
-	// draw debug line
-	//DrawDebugLine(GetWorld(), SphereComp->GetComponentLocation(), hit.Location, FColor::Emerald, false, -1.f, (uint8)0U, 30.f);
-	//if(hit.GetActor())
-		//UE_LOG(LogTemp, Warning, TEXT("Hitting: %s"), *hit.GetActor()->GetName());
 	return FHitResult();
 }
 
@@ -658,7 +652,7 @@ bool ACarPawn::IsMovingForward()
 	
 	if (Angle <= 90.f)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Moving fowards!"))
+		
 		return true;
 	}
 	return false;
@@ -669,7 +663,7 @@ float ACarPawn::GetSplineCarForwardAngle()
 	FVector SplineForward = GravitySplineActive->SplineComp->FindDirectionClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 	FVector CarForward = SphereComp->GetForwardVector();
 	float Angle = SignedAngleAxis(SplineForward, CarForward, LocalUpVector);
-	//UE_LOG(LogTemp, Warning, TEXT("current driving angle is %f"), Angle);
+	
 
 	return Angle;
 }
@@ -698,7 +692,7 @@ bool ACarPawn::IsOutOfBounds()
 		FindLocationClosestToWorldLocation(SphereComp->GetComponentLocation(), ESplineCoordinateSpace::World);
 
 		float dist = (ClosestSplineLocation - SphereComp->GetComponentLocation()).Size();
-		//UE_LOG(LogTemp, Warning, TEXT("Testing out of bounds%f"), dist)
+		
 		
 		if (dist > MaxOutOfBoundsDistance)
 		{
@@ -739,7 +733,7 @@ bool ACarPawn::IsUnderMaxSpeed(bool bBuffer)
 	if (BufferMaxSpeed + buffer > SphereComp->GetPhysicsLinearVelocity().SizeSquared())
 	{
 		
-		//UE_LOG(LogTemp, Warning, TEXT(" awd %f Is under max speed"), GetWorld()->RealTimeSeconds)
+		
 		return true;
 	}
 	return false;
@@ -751,7 +745,7 @@ void ACarPawn::OnHitt(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	LocalUpVector.Normalize();*/
 	//LocalUpVector = Hit.Normal;
 	//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() +  LocalUpVector * 14.f, FColor::Red, false, 1.f);
-	//UE_LOG(LogTemp, Warning, TEXT("HITTTT! %s"), *OtherComp->GetName());
+	
 }
 
 void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -763,7 +757,7 @@ void ACarPawn::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	else if (OtherActor->IsA<AHighGravityZone>())
 	{
 		GravityMod = Cast<AHighGravityZone>(OtherActor)->GetGravityModifier();
-		UE_LOG(LogTemp, Warning, TEXT("HIGH GRAV BABY"))
+		
 	}
 }
 

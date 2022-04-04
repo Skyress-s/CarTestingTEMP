@@ -25,12 +25,7 @@ void UGrappableWidgetComponent::BeginPlay()
 
 	CarPawn = Cast<ACarPawn>(GetOwner());
 	
-	WidgetComponent = NewObject<UWidgetComponent>(this);
-	WidgetComponent->RegisterComponent();
-	WidgetComponent->SetWidgetClass(GrappableWidget);
-	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	WidgetComponent->AttachToComponent(CarPawn->SphereComp, FAttachmentTransformRules::KeepWorldTransform);
-	WidgetComponent->SetRelativeLocation(FVector::ZeroVector);
+	SetupWidget();
 }
 
 
@@ -38,40 +33,45 @@ void UGrappableWidgetComponent::BeginPlay()
 void UGrappableWidgetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (CurrentAttachComponent)
+	if (CurrentAttachComponent && WidgetComponent)
 	{
 		WidgetComponent->SetWorldLocation(CurrentAttachComponent->GetComponentLocation());
 		
 	}
 }
 
-void UGrappableWidgetComponent::Attach(USceneComponent* NewSceneComponent)
-{
-	CurrentAttachComponent = NewSceneComponent;
-}
 
-void UGrappableWidgetComponent::SetVisibility(bool bVisible)
+
+void UGrappableWidgetComponent::PlayAnimation(USceneComponent* NewSceneComponent)
 {
-	if (WidgetComponent)
+	if (WidgetComponent == nullptr)
 	{
-		WidgetComponent->SetVisibility(bVisible, false);
+		SetupWidget();
 	}
-}
-
-void UGrappableWidgetComponent::Reset()
-{
-	SetVisibility(false);
-	CurrentAttachComponent = nullptr;
-}
-
-void UGrappableWidgetComponent::PlayAnimation()
-{
-	// not saving in permanent variable to keeo it simple
 	UGrappableWidget* GWidget = Cast<UGrappableWidget>(WidgetComponent->GetWidget());
 	if (GWidget)
 	{
-		GWidget->PlayCloseAnimation();
-		
-		
+		CurrentAttachComponent = NewSceneComponent;
+		GWidget->PlayCloseAnimationCpp();
+		FTimerHandle Handle;
+
+		FTimerDelegate Callback;
+		Callback.BindLambda([this]
+		{
+			WidgetComponent->DestroyComponent();
+			WidgetComponent = nullptr;
+		});
+		float Time = GWidget->WidgetAnim->GetEndTime();
+		GetWorld()->GetTimerManager().SetTimer(Handle, Callback, Time, false);
 	}
+}
+
+void UGrappableWidgetComponent::SetupWidget()
+{
+	WidgetComponent = NewObject<UWidgetComponent>(this);
+	WidgetComponent->RegisterComponent();
+	WidgetComponent->SetWidgetClass(GrappableWidget);
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	WidgetComponent->AttachToComponent(CarPawn->SphereComp, FAttachmentTransformRules::KeepWorldTransform);
+	WidgetComponent->SetRelativeLocation(FVector::ZeroVector);
 }

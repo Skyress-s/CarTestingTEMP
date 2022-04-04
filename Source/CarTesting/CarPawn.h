@@ -218,7 +218,9 @@ public:
 	
 	bool IsUnderMaxSpeed(bool bBuffer);
 
-	
-
+	//debug
+public:
+	UPROPERTY(EditAnywhere, Category = "Car|Debug")
+	bool bDebugCarState = false;
 
 };

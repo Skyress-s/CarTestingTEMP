@@ -168,9 +168,8 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
 		if (GrappleSphereComponent->IsEnabled()) // is it enabled
 		{
 			TargetGrappableComponent = GrappleSphereComponent;
-			CarPawn->GrappableWidgetComponent->Attach(OtherComp);
-			CarPawn->GrappableWidgetComponent->PlayAnimation();
-			
+
+			CarPawn->GrappableWidgetComponent->PlayAnimation(TargetGrappableComponent);
 		}
 	}
 }
@@ -195,7 +194,7 @@ void UPhysicsGrapplingComponent::EnterState(EGrappleStates NewState)
 
 void UPhysicsGrapplingComponent::InActiveState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("InaciveState"))
+	if (bDebugGrappleState) UE_LOG(LogTemp, Warning, TEXT("InaciveState"))
 	if (bEnterState){
 		bEnterState = false;
 		
@@ -218,7 +217,7 @@ void UPhysicsGrapplingComponent::InActiveState()
 
 void UPhysicsGrapplingComponent::TravelingState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Traveling state"))
+	if (bDebugGrappleState) UE_LOG(LogTemp, Warning, TEXT("Traveling state"))
 	if (bEnterState)
 	{
 		bEnterState = false;
@@ -230,7 +229,7 @@ void UPhysicsGrapplingComponent::TravelingState()
 		//CarPawn->GrappleHookSphereComponent->AddImpulse(CarPawn->MainCamera->GetForwardVector() * FireGrappleSpeed, NAME_None, true);
 		CarPawn->GrappleSensor->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("current GrappleSphereSpeed %f"), CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity().Size())
+	// UE_LOG(LogTemp, Warning, TEXT("current GrappleSphereSpeed %f"), CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity().Size())
 
 	//updates the sensor to match grappleSphere velocity
 	FRotator NewRot = UKismetMathLibrary::MakeRotFromXZ(CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity(), CarPawn->SphereComp->GetUpVector());
@@ -266,7 +265,7 @@ void UPhysicsGrapplingComponent::TravelingState()
 	
 	if (TargetGrappableComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Homing"))
+		// UE_LOG(LogTemp, Warning, TEXT("Homing"))
 		FVector Vel = CarPawn->GrappleHookSphereComponent->GetPhysicsLinearVelocity();
 		FVector ToTarget = TargetGrappableComponent->GetComponentLocation() - CarPawn->GrappleHookSphereComponent->GetComponentLocation();
 		FVector Cross = FVector::CrossProduct(Vel, ToTarget);
@@ -288,7 +287,7 @@ void UPhysicsGrapplingComponent::TravelingState()
 
 void UPhysicsGrapplingComponent::HookedState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HookedState"))
+	if (bDebugGrappleState) UE_LOG(LogTemp, Warning, TEXT("HookedState"))
 	
 	CurrentHookedTime += GetWorld()->GetDeltaSeconds();
 	static float TargetReturningTime = 1.f;
@@ -371,7 +370,7 @@ void UPhysicsGrapplingComponent::HookedState()
 
 void UPhysicsGrapplingComponent::HookedEatableState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HookedEatableState"))
+	if (bDebugGrappleState) UE_LOG(LogTemp, Warning, TEXT("HookedEatableState"))
 	if (bEnterState)
 	{
 		bEnterState = false;
@@ -416,7 +415,7 @@ void UPhysicsGrapplingComponent::HookedEatableState()
 
 void UPhysicsGrapplingComponent::ReturningState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("returning State"))
+	if (bDebugGrappleState) UE_LOG(LogTemp, Warning, TEXT("returning State"))
 	if (bEnterState){
 		bEnterState = false;
 		CarPawn->GrappleHookSphereComponent->SetSimulatePhysics(false);

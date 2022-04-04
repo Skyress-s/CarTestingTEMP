@@ -28,17 +28,15 @@ public:
 
 
 
+	
 	UFUNCTION()
-		void Attach(USceneComponent* NewSceneComponent);
-	UFUNCTION()
-		void SetVisibility(bool bVisible);
-	UFUNCTION()
-		void Reset();
-	UFUNCTION()
-		void PlayAnimation();
+		void PlayAnimation(USceneComponent* NewSceneComponent);
 	
 private:
-	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Widget")
+	UFUNCTION()
+		void SetupWidget();
+	
+	UPROPERTY()
 		class UWidgetComponent* WidgetComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Widget")
 		TSubclassOf<UGrappableWidget> GrappableWidget = nullptr;

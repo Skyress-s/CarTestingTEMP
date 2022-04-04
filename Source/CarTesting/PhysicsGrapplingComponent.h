@@ -134,4 +134,9 @@ public:
 		void MoveTowardsGrapple(float LengthAtSpline);
 	UFUNCTION()
 		bool ValidGrappleState();
+
+	//debug
+public:
+	UPROPERTY(EditAnywhere, Category = "Grapple|Debug")
+		bool bDebugGrappleState = false;
 };

@@ -15,13 +15,11 @@ class CARTESTING_API UGrappableWidget : public UUserWidget
 	GENERATED_BODY()
 	//my deseg ----------
 public:
-	/*UPROPERTY(meta = (BindWidget))
-		class UImage* UpperTeeth = nullptr;
-	UPROPERTY(meta = (BindWidget))
-		class UImage* LowerTeeth = nullptr;*/
+	UPROPERTY(Transient, meta = ( BindWidgetAnim ))
+		UWidgetAnimation* WidgetAnim;
 	
-	UFUNCTION(BlueprintImplementableEvent)
-		void PlayCloseAnimation();
+	UFUNCTION(BlueprintCallable)
+		void PlayCloseAnimationCpp();
 		
 
 private:
