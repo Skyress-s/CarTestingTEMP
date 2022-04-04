@@ -14,6 +14,7 @@
 #include "Chaos/GeometryParticlesfwd.h"
 #include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
+#include "Grappling/GrappableWidgetComponent.h"
 #include "Grappling/GrappleTarget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -167,6 +168,9 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
 		if (GrappleSphereComponent->IsEnabled()) // is it enabled
 		{
 			TargetGrappableComponent = GrappleSphereComponent;
+			CarPawn->GrappableWidgetComponent->Attach(OtherComp);
+			CarPawn->GrappableWidgetComponent->PlayAnimation();
+			
 		}
 	}
 }
@@ -403,7 +407,7 @@ void UPhysicsGrapplingComponent::HookedEatableState()
 	if (distanceSqr < 1000.f* 1000.f) // when its at us!
 	{
 		TargetGrappableComponent->OnReached();
-		CarPawn->SphereComp->AddImpulse(CarPawn->SphereComp->GetPhysicsLinearVelocity().GetSafeNormal() * TargetGrappableComponent->GetAddSpeed(), NAME_None, true);
+		CarPawn->SphereComp->AddImpulse(CarPawn->SphereComp->GetForwardVector() * TargetGrappableComponent->GetAddSpeed(), NAME_None, true);
 		
 		EnterState(EGrappleStates::InActive);
 	}
