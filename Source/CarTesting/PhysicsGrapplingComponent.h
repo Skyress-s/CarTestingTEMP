@@ -71,7 +71,7 @@ private:
 	UPROPERTY()
 		float CurrentHookedTime = 0.f; 
 
-	UPROPERTY()
+	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple"*/)
 		UGrappleSphereComponent* TargetGrappableComponent = nullptr;
 
 	// OnHooked eatable

@@ -158,9 +158,13 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
                                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// guard clusase -> if we are not in travveling OR if we alleready are homing, dont change values
-	if ((CurrentGrappleState != EGrappleStates::Traveling) || TargetGrappableComponent != nullptr)
-		return;
 	
+	// if ((CurrentGrappleState != EGrappleStates::Traveling)  || TargetGrappableComponent != nullptr)
+	// 	return;
+	if (TargetGrappableComponent)
+		return;
+	if (CurrentGrappleState != EGrappleStates::Traveling && CurrentGrappleState != EGrappleStates::InActive)
+		return;
 	
 	if (OtherComp->IsA(UGrappleSphereComponent::StaticClass()))
 	{
@@ -177,11 +181,13 @@ void UPhysicsGrapplingComponent::OnSensorOverlap(UPrimitiveComponent* Overlapped
 void UPhysicsGrapplingComponent::OnSensorEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	//does nothing currently
-	//TODO if no logic is needed, remove this func
-	if (CurrentGrappleState != EGrappleStates::Traveling)
+	if (CurrentGrappleState == EGrappleStates::InActive)
 	{
-		return;
+		if (OtherComp == TargetGrappableComponent)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AIODHIOANUWDIOAKDNWIAONWD"))
+		}
+		EnterState(EGrappleStates::InActive);
 	}
 	
 }
@@ -205,7 +211,7 @@ void UPhysicsGrapplingComponent::InActiveState()
 		ResetTemporalVariables();
 		CarPawn->GrappleHookMesh->SetRelativeRotation(FRotator::ZeroRotator);
 
-		CarPawn->GrappleSensor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//CarPawn->GrappleSensor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 	}
 	FVector BaseSplineLocation = CarPawn->SphereComp->GetComponentLocation();

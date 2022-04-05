@@ -48,12 +48,14 @@ void UCameraEffecttComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 	else
 	{
-		Speed = 1000.f;
+		Speed = 10000.f;
 	}
-	float NewFOV = Speed / 300.f + StartFOV;
-	NewFOV = FMath::Clamp(NewFOV, StartFOV, StartFOV * 2.f);
+	float TargetFOV = Speed / 300.f + StartFOV;
+	TargetFOV = FMath::Clamp(TargetFOV, StartFOV, StartFOV * 2.f);
 
-	CameraCurrent->SetFieldOfView(NewFOV);
+	TargetFOV = FMath::FInterpTo(CameraCurrent->FieldOfView, TargetFOV, GetWorld()->GetDeltaSeconds(), 5.f);
+	
+	CameraCurrent->SetFieldOfView(TargetFOV);
 }
 
 
