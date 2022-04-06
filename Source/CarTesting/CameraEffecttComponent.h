@@ -29,16 +29,19 @@ public:
 private:
 	UPROPERTY()
 		class UCameraComponent* CameraCurrent = nullptr;
-	UPROPERTY(meta = (AllowPrivateAccess = "true", ToolTip = "Should NOT be longer than 3 seconds") , EditAnywhere, Category = "CameraEffect")
-		class UCurveFloat* SpeedBoostCurve;
 	UPROPERTY()
 		float StartFOV = 0.f;
 	UPROPERTY()
 		class ACarPawn* CarPawn = nullptr;
-	
+
+	//single run cameraModifier
+	UPROPERTY(meta = (AllowPrivateAccess = "true"),EditAnywhere, Category = "Camera")
+		TSubclassOf<class UCameraModifier> BoostCameraModifierClass = nullptr;
 public:
+	UPROPERTY()
+		class UCameraModifier* BoostCameraModifier = nullptr;
 	UFUNCTION()
 	void SetCameraCurrent(class UCameraComponent* NewCamera){CameraCurrent = NewCamera; }
-	
+
 
 };

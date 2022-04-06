@@ -5,6 +5,7 @@
 
 #include "CarPawn.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraModifier.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -32,7 +33,11 @@ void UCameraEffecttComponent::BeginPlay()
 	CameraCurrent = CarPawn->MainCamera;
 	if (CameraCurrent)
 		StartFOV = CameraCurrent->FieldOfView;
-	
+
+
+	// this is all the setup you ned for the boost modifier, it will de activate itself when being enabled
+	BoostCameraModifier = UGameplayStatics::GetPlayerCameraManager(this, 0)->AddNewCameraModifier(BoostCameraModifierClass);
+	BoostCameraModifier->DisableModifier(true);
 }
 
 
@@ -45,6 +50,7 @@ void UCameraEffecttComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	if (CarPawn->SphereComp->IsSimulatingPhysics())
 	{
 		Speed = CarPawn->SphereComp->GetPhysicsLinearVelocity().Size();
+		
 	}
 	else
 	{

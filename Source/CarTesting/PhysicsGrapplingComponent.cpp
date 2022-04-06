@@ -57,7 +57,7 @@ void UPhysicsGrapplingComponent::HandleTargetHomingComp()
 			GrappableSphereComponents.Add(Cast<UGrappleSphereComponent>(OverlappingComponents[i]));		
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Overlapping comps %i"), OverlappingComponents.Num())
+	//UE_LOG(LogTemp, Warning, TEXT("Overlapping comps %i"), OverlappingComponents.Num())
 
 	if (GrappableSphereComponents.Num() > 0)
 	{

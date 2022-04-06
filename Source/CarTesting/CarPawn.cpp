@@ -17,6 +17,7 @@
 #include "HighGravityZone.h"
 #include "NeckComponent.h"
 #include "PhysicsGrapplingComponent.h"
+#include "Camera/CameraModifier.h"
 #include "Chaos/KinematicTargets.h"
 #include "Checkpoint/Checkpoint.h"
 #include "CollisionAnalyzer/Public/ICollisionAnalyzer.h"
@@ -90,6 +91,7 @@ ACarPawn::ACarPawn()
 void ACarPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	// Hit and phyus
 	SphereComp->OnComponentHit.AddDynamic(this, &ACarPawn::OnHitt);
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ACarPawn::OnBeginOverLap);
@@ -267,6 +269,7 @@ void ACarPawn::StateDriving()
 	if (bEnterState)
 	{
 		bEnterState = false;
+		//CameraEffectComponent->BoostCameraModifier->DisableModifier(false);
 	}
 	ApplyGravity();
 	SetUpVectorAsSplineUpAxis();
@@ -307,6 +310,8 @@ void ACarPawn::StateGrappling()
 		
 		// CameraBoom->CameraLagSpeed = GrapplingCameraLag.X;
 		// CameraBoom->CameraRotationLagSpeed = GrapplingCameraLag.Y;
+		UE_LOG(LogTemp, Warning, TEXT("BING!"))
+		CameraEffectComponent->BoostCameraModifier->EnableModifier();
 	}
 
 	

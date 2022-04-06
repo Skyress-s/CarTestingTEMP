@@ -222,5 +222,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere, Category = "Car|Debug")
 	bool bDebugCarState = false;
+	
+	
 
 };
