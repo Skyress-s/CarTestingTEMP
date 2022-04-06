@@ -30,8 +30,11 @@ public:
 
 	
 	UFUNCTION()
-		void PlayAnimation(USceneComponent* NewSceneComponent);
-	
+		void PlayAnimation();
+    UFUNCTION()
+        void PlaceWidget(USceneComponent* NewSceneComponent);
+	UFUNCTION()
+		void DeleteWidget();
 private:
 	UFUNCTION()
 		void SetupWidget();
@@ -40,6 +43,8 @@ private:
 		class UWidgetComponent* WidgetComponent = nullptr;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditDefaultsOnly, Category = "Widget")
 		TSubclassOf<UGrappableWidget> GrappableWidget = nullptr;
+	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Widget")
+		float WidgetSize = 0.4f;
 
 	
 	UPROPERTY()
@@ -47,3 +52,5 @@ private:
 	UPROPERTY()
 		USceneComponent* CurrentAttachComponent = nullptr;
 };
+
+

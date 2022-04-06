@@ -96,8 +96,7 @@ void ACarPawn::BeginPlay()
 	SphereComp->OnComponentEndOverlap.AddDynamic(this, &ACarPawn::OnEndOverLap);
 
 	GrappleHookSphereComponent->OnComponentHit.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnGrappleHit);
-	GrappleSensor->OnComponentBeginOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorOverlap);
-	GrappleSensor->OnComponentEndOverlap.AddDynamic(PhysicsGrappleComponent, &UPhysicsGrapplingComponent::OnSensorEndOverlap);
+	
 	// CameraEffectComponent->SetCameraCurrent(MainCamera);
 
 	TArray<UPrimitiveComponent*> PrimitiveComponents;

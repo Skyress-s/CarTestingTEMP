@@ -4,6 +4,7 @@
 #include "GrappableWidgetComponent.h"
 
 #include "CarTesting/CarPawn.h"
+#include "CarTesting/PhysicsGrapplingComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -15,6 +16,8 @@ UGrappableWidgetComponent::UGrappableWidgetComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	
+	
+	
 }
 
 
@@ -24,8 +27,12 @@ void UGrappableWidgetComponent::BeginPlay()
 	Super::BeginPlay();
 
 	CarPawn = Cast<ACarPawn>(GetOwner());
+
+	//binding events
+	CarPawn->PhysicsGrappleComponent->FoundHomingTargetEvent.AddDynamic(this, &UGrappableWidgetComponent::PlaceWidget);
+	CarPawn->PhysicsGrappleComponent->BeginHomingEvent.AddDynamic(this, &UGrappableWidgetComponent::PlayAnimation);
+	CarPawn->PhysicsGrappleComponent->LostHomingTargetEvent.AddDynamic(this, &UGrappableWidgetComponent::DeleteWidget);
 	
-	SetupWidget();
 }
 
 
@@ -42,27 +49,50 @@ void UGrappableWidgetComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 
 
-void UGrappableWidgetComponent::PlayAnimation(USceneComponent* NewSceneComponent)
+void UGrappableWidgetComponent::PlayAnimation()
 {
 	if (WidgetComponent == nullptr)
 	{
 		SetupWidget();
 	}
+	
 	UGrappableWidget* GWidget = Cast<UGrappableWidget>(WidgetComponent->GetWidget());
 	if (GWidget)
 	{
-		CurrentAttachComponent = NewSceneComponent;
+		
 		GWidget->PlayCloseAnimationCpp();
 		FTimerHandle Handle;
 
 		FTimerDelegate Callback;
 		Callback.BindLambda([this]
 		{
-			WidgetComponent->DestroyComponent();
-			WidgetComponent = nullptr;
+			if (WidgetComponent)
+			{
+				WidgetComponent->DestroyComponent();
+				WidgetComponent = nullptr;
+			}
 		});
 		float Time = GWidget->WidgetAnim->GetEndTime();
 		GetWorld()->GetTimerManager().SetTimer(Handle, Callback, Time, false);
+	}
+}
+
+void UGrappableWidgetComponent::PlaceWidget(USceneComponent* NewSceneComponent)
+{
+	if (WidgetComponent == nullptr)
+	{
+		SetupWidget();
+	}
+	
+	CurrentAttachComponent = NewSceneComponent;
+}
+
+void UGrappableWidgetComponent::DeleteWidget()
+{
+	if (WidgetComponent)
+	{
+		WidgetComponent->DestroyComponent();
+		WidgetComponent = nullptr;
 	}
 }
 
@@ -72,6 +102,9 @@ void UGrappableWidgetComponent::SetupWidget()
 	WidgetComponent->RegisterComponent();
 	WidgetComponent->SetWidgetClass(GrappableWidget);
 	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	//WidgetComponent->SetDrawSize(FVector2D(150, 150));
 	WidgetComponent->AttachToComponent(CarPawn->SphereComp, FAttachmentTransformRules::KeepWorldTransform);
 	WidgetComponent->SetRelativeLocation(FVector::ZeroVector);
+	// WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.1f, 0.1f));
+	WidgetComponent->GetWidget()->SetRenderScale(FVector2D(WidgetSize,WidgetSize));
 }
