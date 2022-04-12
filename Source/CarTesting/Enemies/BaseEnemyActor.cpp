@@ -24,10 +24,10 @@ ABaseEnemyActor::ABaseEnemyActor()
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	// cosmetic mesh:
-	CosmeticMest = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	CosmeticMest->SetupAttachment(GetRootComponent());
-	CosmeticMest->SetSimulatePhysics(false);
-	CosmeticMest->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CosmeticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	CosmeticMesh->SetupAttachment(GetRootComponent());
+	CosmeticMesh->SetSimulatePhysics(false);
+	CosmeticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// arrow
 	ArrowRayCastStart = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow RayCastStart"));

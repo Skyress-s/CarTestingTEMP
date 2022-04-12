@@ -18,7 +18,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collider")
 		class USphereComponent* SphereComp{nullptr};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-		class UStaticMeshComponent* CosmeticMest{nullptr};
+		class UStaticMeshComponent* CosmeticMesh{nullptr};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity|Spline")
 		class AGravitySplineActor* GravitySplineActive{nullptr};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Target|Player Pawn")
