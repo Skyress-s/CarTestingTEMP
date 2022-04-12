@@ -52,6 +52,7 @@ public:
 	
 	UFUNCTION()
 		void SetIsEnabled(bool _bEnable) {bEnabled = _bEnable; }
+	
 	UFUNCTION()
 		bool IsEnabled() const {return bEnabled; }
 	

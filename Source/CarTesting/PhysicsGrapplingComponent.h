@@ -11,6 +11,11 @@
 
 #include "PhysicsGrapplingComponent.generated.h"
 
+//events
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFoundHomingTarget, USceneComponent*, UGrappleSphereComponent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBeginHoming);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLostHomingTarget);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CARTESTING_API UPhysicsGrapplingComponent : public UActorComponent
@@ -24,12 +29,23 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	void HandleTargetHomingComp();
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	//my deseg ------------
+
+	//events
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+		FFoundHomingTarget FoundHomingTargetEvent;
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+		FBeginHoming BeginHomingEvent;
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+		FLostHomingTarget LostHomingTargetEvent;
+	
 private:
 	UPROPERTY()
 		class ACarPawn* CarPawn = nullptr;
@@ -51,7 +67,7 @@ private:
 
 	//caps how slow or fast Player shoudl move
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapp|OnHooked")
-		float LowestOnHookedSpeed = 2000.f;
+		float LowestOnHookedSpeed = 4000.f;
 	UPROPERTY(meta = (AllowPrivateAccess = "true"), EditAnywhere ,Category = "Grapp|OnHooked")
 		float HighestOnHookedSpeed = 9000.f;
 
@@ -71,7 +87,7 @@ private:
 	UPROPERTY()
 		float CurrentHookedTime = 0.f; 
 
-	UPROPERTY()
+	UPROPERTY(/*meta = (AllowPrivateAccess = "true"), EditAnywhere, Category = "Grapple"*/)
 		UGrappleSphereComponent* TargetGrappableComponent = nullptr;
 
 	// OnHooked eatable
@@ -91,13 +107,13 @@ public:
 	UFUNCTION()
 		EGrappleStates GetCurrentGrappleState(){return CurrentGrappleState; }
 	UFUNCTION()
-		float GetOnHookedVelocitySize(){ return OnHookedSpeed; }
+		float GetOnHookedVelocitySize() const { return OnHookedSpeed; }
 	UFUNCTION()
-		FVector GetOnHookedDirection(){ return OnHookedDirection; }
+		FVector GetOnHookedDirection() const { return OnHookedDirection; }
 	UFUNCTION()
 		FTransform GetOnHookedVehicleTransform(){return OnHookedVehicleTransfrom; }
 	UFUNCTION()
-		UGrappleSphereComponent* GetTargetComponent(){return TargetGrappableComponent; }
+		UGrappleSphereComponent* GetTargetComponent() const {return TargetGrappableComponent; }
 	UFUNCTION()
 		bool IsGrappleInsideOfRange();
 	
@@ -110,12 +126,6 @@ public:
 		void ResetTemporalVariables();
 	UFUNCTION()
 		void OnGrappleHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	UFUNCTION()
-	void OnSensorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnSensorEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
 	
 	UFUNCTION()
 		void EnterState(EGrappleStates NewState);
@@ -134,4 +144,9 @@ public:
 		void MoveTowardsGrapple(float LengthAtSpline);
 	UFUNCTION()
 		bool ValidGrappleState();
+
+	//debug
+public:
+	UPROPERTY(EditAnywhere, Category = "Grapple|Debug")
+		bool bDebugGrappleState = false;
 };
