@@ -21,11 +21,20 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
-		float ForwardOffset{500.f};
+		float ForwardOffset{5000.f};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
 		float InterceptTime{3.f};
 	float InterceptTimer{};
 	float InterceptSpeed{};
+
+	UPROPERTY(EditAnywhere, Category = "GrappleTarget")
+		class UGrappleSphereComponent* GrappleSphereComponent{nullptr};
+
+	UFUNCTION()
+		void Grappled(FTransform SphereCompTransform);
+
+	UFUNCTION()
+		void Reached(float AddSpeedAmount);
 	
 protected:
 	FVector TargetLocation{};
@@ -48,6 +57,7 @@ protected:
 
 	void InterceptingState();
 	void AttackingState();
+
 
 	void Move(FVector Target);
 };

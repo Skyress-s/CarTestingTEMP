@@ -4,16 +4,23 @@
 #include "DroneActor.h"
 
 #include "CarTesting/CarPawn.h"
+#include "CarTesting/GrappleSphereComponent.h"
 #include "CarTesting/GravitySplineActor.h"
 #include "Components/SphereComponent.h"
 
 ADroneActor::ADroneActor()
 {
+	GrappleSphereComponent = CreateDefaultSubobject<UGrappleSphereComponent>(TEXT("GrappleSphereComponent"));
+	GrappleSphereComponent->SetupAttachment(GetRootComponent());
+	GrappleSphereComponent->SetIsEnabled(true);
+	GrappleSphereComponent->SetIsEatable(true);
 }
 
 void ADroneActor::BeginPlay()
 {
 	Super::BeginPlay();
+	GrappleSphereComponent->OnGrappleHitEvent.AddDynamic(this, &ADroneActor::Grappled);
+	GrappleSphereComponent->OnReachedEvent.AddDynamic(this, &ADroneActor::Reached);
 }
 
 void ADroneActor::Tick(float DeltaSeconds)
@@ -44,14 +51,14 @@ void ADroneActor::Tick(float DeltaSeconds)
 
 void ADroneActor::InterceptingState()
 {
+	TargetLocation = PlayerPawn->GetActorLocation() + PlayerPawn->GetActorForwardVector()*ForwardOffset;
 	if (bEnteringState)
 	{
 		InterceptSpeed = (TargetLocation-GetActorLocation()).Size()/InterceptTime;
-		TargetLocation = PlayerPawn->GetActorLocation() + PlayerPawn->GetActorForwardVector()*ForwardOffset;
 		bEnteringState = false;
-		
 	}
 	TargetLocation.Z = GetActorLocation().Z;
+	SetActorRotation((TargetLocation - GetActorLocation()).Rotation());
 	Move(TargetLocation);
 	if (GetActorLocation().Equals(TargetLocation))
 	{
@@ -65,12 +72,28 @@ void ADroneActor::AttackingState()
 	{
 		bEnteringState = false;
 	}
+
+	FRotator CurrentRot{GetActorRotation()};
+	FRotator TargetRot{(PlayerPawn->GetActorLocation()-GetActorLocation()).Rotation()};
+	FRotator NewRot{FMath::RInterpTo(CurrentRot, TargetRot, GetWorld()->GetDeltaSeconds(), 5.f)};
+	SetActorRotation(NewRot);
+}
+
+void ADroneActor::Grappled(FTransform SphereCompTransform)
+{
+	//TODO: Add behaviour for being grappled.
+}
+
+void ADroneActor::Reached(float AddSpeedAmount)
+{
+	//TODO: Add animation for destruction.
+	Destroy();
 }
 
 void ADroneActor::Move(FVector Target)
 {
 	InterceptTimer += GetWorld()->GetDeltaSeconds();
-	SphereComp->AddRelativeLocation((TargetLocation-GetActorLocation()).GetSafeNormal()*InterceptSpeed*InterceptTimer);
+	SphereComp->AddRelativeLocation((TargetLocation-GetActorLocation()).GetSafeNormal()*InterceptSpeed*GetWorld()->GetDeltaSeconds());
 	if (InterceptTimer >= InterceptTime)
 	{
 		ChangeState(EDroneState::Attacking);
