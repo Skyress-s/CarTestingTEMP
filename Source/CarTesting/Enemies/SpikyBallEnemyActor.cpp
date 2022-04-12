@@ -3,6 +3,7 @@
 
 #include "SpikyBallEnemyActor.h"
 
+#include "CarTesting/CarPawn.h"
 #include "CarTesting/GravitySplineActor.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -35,8 +36,8 @@ void ASpikyBallEnemyActor::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	if (CurrentState == EBallState::Spiked && GetToPlayerVector(false).Size() > TargetDistance) { Destroy(); }
 	else if (GetToPlayerVector(false).Size() > TargetDistance) { return; }
-	
-	SphereComp->AddForce(-LocalUpVector*Acceleration, NAME_None, true);
+
+	SphereComp->AddForce(-LocalUpVector * Acceleration, NAME_None, true);
 	switch (CurrentState)
 	{
 	case EBallState::Airborne:
@@ -48,14 +49,16 @@ void ASpikyBallEnemyActor::Tick(float DeltaSeconds)
 	case EBallState::Spiked:
 		SpikedState();
 		break;
+	case EBallState::Idle:
+		break;
 	}
 }
 
 void ASpikyBallEnemyActor::OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                          const FHitResult& SweepResult)
 {
 	Super::OnBeginOverLap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
 }
 
 void ASpikyBallEnemyActor::SetUpVectorAsSplineUpAxis()
@@ -96,7 +99,8 @@ void ASpikyBallEnemyActor::GroundedState()
 		// 	SphereComp->SetSimulatePhysics(false);
 		// 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		// }
-		GetWorld()->GetTimerManager().SetTimer(SpikeTimerHandle, this, &ASpikyBallEnemyActor::TriggerSpikes, SpikeTimer);
+		GetWorld()->GetTimerManager().SetTimer(SpikeTimerHandle, this, &ASpikyBallEnemyActor::TriggerSpikes,
+		                                       SpikeTimer);
 		bEnteringState = false;
 	}
 	LookAtPlayer();
@@ -117,8 +121,8 @@ void ASpikyBallEnemyActor::LookAtPlayer()
 {
 	FRotator CurrentRot{GetActorRotation()};
 	FVector NewDir{(PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal()};
-	FRotator NewRot = FMath::RInterpTo(CurrentRot, NewDir.Rotation(), GetWorld()->GetDeltaSeconds(),0.75f);
-	
+	FRotator NewRot = FMath::RInterpTo(CurrentRot, NewDir.Rotation(), GetWorld()->GetDeltaSeconds(), 0.75f);
+
 	SetActorRotation(NewRot, ETeleportType::TeleportPhysics);
 }
 
@@ -128,6 +132,6 @@ void ASpikyBallEnemyActor::Move()
 	// MoveDir.Z = 0.f;
 	if (SphereComp->GetPhysicsLinearVelocity().Size() <= MaxSpeed)
 	{
-		SphereComp->AddForce(MoveDir*Acceleration, NAME_None, true);
+		SphereComp->AddForce(MoveDir * Acceleration, NAME_None, true);
 	}
 }

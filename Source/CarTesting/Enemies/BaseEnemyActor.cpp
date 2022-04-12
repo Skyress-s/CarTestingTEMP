@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BaseEnemyActor.h"
 
+#include "CarTesting/CarPawn.h"
 #include "CarTesting/GravitySplineActor.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
@@ -112,7 +114,7 @@ bool ABaseEnemyActor::IsGrounded()
 void ABaseEnemyActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!PlayerPawn) PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!PlayerPawn) PlayerPawn = Cast<ACarPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());;
 	
 }
 

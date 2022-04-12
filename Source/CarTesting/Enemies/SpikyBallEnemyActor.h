@@ -31,6 +31,7 @@ protected:
 
 	enum EBallState
 	{
+		Idle,
 		Airborne,
 		OnGround,
 		Spiked

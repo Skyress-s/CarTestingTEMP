@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity|Spline")
 		class AGravitySplineActor* GravitySplineActive{nullptr};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Target|Player Pawn")
-		class APawn* PlayerPawn{nullptr};
+		class ACarPawn* PlayerPawn{nullptr};
 	
 	UFUNCTION()
 	virtual void OnBeginOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
